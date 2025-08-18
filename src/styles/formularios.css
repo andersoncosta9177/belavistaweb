@@ -1,0 +1,253 @@
+.gradient-background {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+.container {
+   width: 100%;
+  max-width: 500px;
+  padding: 0 20px; /* Adicionado padding lateral */
+  box-sizing: border-box; /* Importante para cálculo de largura */
+}
+
+.form-container {
+background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 30px;
+  width: 100%;
+  box-sizing: border-box; /* Adicionado */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Centraliza o formulário */
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.icon-container {
+  background-color: rgba(237, 145, 33, 0.2);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #ED9121;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+}
+
+.icon {
+  color: white;
+  font-size: 30px;
+}
+
+.title {
+  color: white;
+  font-size: 24px;
+  margin: 0;
+  font-weight: 300;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.input-wrapper {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0 15px;
+  height: 50px;
+}
+
+.input-icon {
+  color: #ED9121;
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  outline: none;
+  height: 100%;
+}
+
+.input-field::placeholder {
+  color: #B0C4DE;
+}
+
+.password-toggle {
+  background: none;
+  border: none;
+  color: #f9f9f9;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.error-text {
+  color: #F39C12;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Substitua as regras existentes dos botões por estas: */
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.cancel-button, 
+.login-button, 
+.register-button {
+  flex: 1;
+  padding: 12px 20px !important; /* Força o padding */
+  border-radius: 8px !important; /* Força o border-radius */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  border: none !important; /* Remove qualquer borda padrão */
+  outline: none !important; /* Remove outline */
+}
+
+.cancel-button {
+  background-color: #F39C12 !important;
+  color: white !important;
+}
+
+.login-button, .register-button {
+  background-color: #4CC9FE !important;
+  color: white !important;
+}
+
+/* Efeitos de hover */
+.cancel-button:hover, 
+.login-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Estilo quando desabilitado */
+.login-button:disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed;
+  transform: none !important;
+}
+.button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.button-icon {
+  font-size: 16px;
+}
+
+.link-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.register-text {
+  color: white;
+  font-size: 14px;
+}
+
+.link-text {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.link-action {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  left: 10px
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid white;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .gradient-background {
+    padding: 15px;
+  }
+  
+  .container {
+    padding: 0 15px;
+  }
+  
+  .form-container {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gradient-background {
+    padding: 10px;
+    align-items: flex-start; /* Alinha ao topo em telas muito pequenas */
+  }
+  
+  .container {
+    padding: 0 10px;
+  }
+  
+  .form-container {
+    padding: 20px 15px;
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+  
+  .input-group {
+    height: 45px;
+  }
+  
+  .button-container {
+    flex-direction: row;
+    gap: 10px;
+  }
+  
+  .cancel-button, 
+  .login-button {
+    width: 100px;
+  }
+}
+
+

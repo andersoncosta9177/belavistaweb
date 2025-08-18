@@ -1,0 +1,188 @@
+/* stylesComunicadosPublicados.css */
+.comunicados-publicados-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  padding: 20px;
+}
+
+.scroll-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.header {
+  margin-bottom: 25px;
+  /* text-align: center; */
+
+}
+
+.header-icon {
+  background-color: rgba(255,255,255,0.2);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 10px;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #FFF;
+  margin-bottom: 5px;
+
+}
+
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.empty-container {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 40px;
+  margin: 0 20px;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  margin-top: 15px;
+}
+
+.card {
+  background-color: #FFF;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-icon {
+  background-color: rgba(44, 62, 80, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 12px;
+}
+
+.card-header-content {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-date {
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+.expanded-content {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.card-content-container {
+  background-color: rgba(44, 62, 80, 0.05);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.card-content {
+  font-size: 14px;
+  color: #34495e;
+  line-height: 22px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.author-container {
+  display: flex;
+  align-items: center;
+}
+
+.author-icon {
+  margin-right: 8px;
+  background-color: rgba(44, 62, 80, 0.1);
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.card-author {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.card-role {
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+}
+
+.edit-button {
+  background-color: #2ecc71;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .card-header {
+    flex-wrap: wrap;
+  }
+  
+  .card-title {
+    white-space: normal;
+  }
+}
