@@ -1,0 +1,340 @@
+/* ESTILOS GERAIS */
+.gradientBackground {
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+  color: white;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* SEARCH - CORREÇÃO PRINCIPAL */
+.searchContainer {
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+}
+
+.searchInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 0 15px;
+  height: 50px;
+  width: 100%; /* Ocupa toda a largura disponível */
+  max-width: 600px; /* Limite máximo de largura */
+}
+
+.searchIcon {
+  color: #7f8c8d;
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: #2c3e50;
+  outline: none;
+  height: 100%;
+  width: 100%; /* Garante que ocupe toda a largura */
+}
+
+.searchInput::placeholder {
+  color: #95a5a6;
+}
+
+/* TABS - CORREÇÃO PRINCIPAL */
+.tabContainer {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+}
+
+.tabButtons {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%; /* Ocupa toda a largura disponível */
+  max-width: 600px; /* Limite máximo de largura */
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.tabButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tabButtonActive {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #B6F500;
+}
+
+.tabIcon {
+  font-size: 16px;
+}
+
+/* LOADING */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #0F98A1;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* PROTOCOLS CONTAINER */
+.protocolsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* CARD STYLES */
+.card {
+  border-radius: 10px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #F68537;
+  color: white;
+}
+
+.cardEntrada {
+  border-left-color: #05e5f5;
+}
+
+.cardSaida {
+  border-left-color: #e74c3c;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  flex-direction: row;
+}
+
+.cardTitleContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardIcon {
+  font-size: 20px;
+}
+
+.cardEntrada .cardIcon {
+  color: #05e5f5;
+}
+
+.cardSaida .cardIcon {
+  color: #e74c3c;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #05e5f5;
+}
+
+.cardDate {
+  font-size: 12px;
+  color: #05e5f5;
+  align-self: flex-end;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rowIcon {
+  font-size: 16px;
+  color: #F9F9F9;
+  width: 16px;
+}
+
+.cardText {
+  margin: 0;
+  font-size: 14px;
+  color: #F9F9F9;
+}
+
+.cardTextBold {
+  font-weight: bold;
+  color: #F9F9F9;
+}
+
+/* EMPTY STATE */
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 50px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.emptyText {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* RESPONSIVIDADE - CORREÇÕES PARA CELULAR */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px; /* Reduz o padding em dispositivos móveis */
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .searchContainer {
+    padding: 0 5px; /* Remove margens extras */
+  }
+  
+  .searchInputContainer {
+    width: 100%; /* Garante que ocupe toda a largura */
+    margin: 0; /* Remove qualquer margem */
+  }
+  
+  .tabContainer {
+    padding: 0 5px; /* Remove margens extras */
+  }
+  
+  .tabButtons {
+    width: 100%; /* Garante que ocupe toda a largura */
+    margin: 0; /* Remove qualquer margem */
+  }
+  
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .cardDate {
+    align-self: flex-end;
+  }
+  
+  .tabButton {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gradientBackground {
+    padding: 10px; /* Reduz ainda mais o padding em telas muito pequenas */
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+  
+  .tabButton {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    padding: 8px 5px; /* Ajusta o padding para caber melhor */
+  }
+  
+  .tabIcon {
+    font-size: 14px;
+  }
+  
+  .card {
+    padding: 12px;
+  }
+  
+  .cardTitle {
+    font-size: 16px;
+  }
+  
+  .cardHeader {
+    flex-direction: row;
+    margin-right: 12px;
+  }
+  
+  .cardDate {
+    align-self: flex-start;
+    margin-top: 5px;
+  }
+}

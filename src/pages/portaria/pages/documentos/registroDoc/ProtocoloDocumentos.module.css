@@ -1,0 +1,203 @@
+/* ESTILOS GERAIS */
+.gradientBackground {
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.headerIcon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  color: white;
+}
+
+.porteiroText {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* FORM CONTAINER */
+.formContainer {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 25px;
+  backdrop-filter: blur(10px);
+}
+
+/* TIPO SELECTOR */
+.tipoContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  gap: 10px;
+}
+
+.tipoButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.tipoButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.tipoButtonActive {
+  background-color: #0F98A1;
+}
+
+.tipoButtonActive:hover {
+  background-color: #0d8790;
+}
+
+.tipoIcon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.tipoButtonText {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tipoButtonTextActive {
+  font-weight: bold;
+}
+
+/* INPUT STYLES */
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 0 15px;
+  height: 50px;
+}
+
+.inputIcon {
+  color: #7f8c8d;
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: #2c3e50;
+  outline: none;
+  height: 100%;
+}
+
+.input::placeholder {
+  color: #95a5a6;
+}
+
+/* SUBMIT BUTTON */
+.submitButton {
+  width: 100%;
+  background-color: #0F98A1;
+  border: none;
+  border-radius: 8px;
+  padding: 15px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #0d8790;
+}
+
+.submitButton:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+}
+
+.buttonIcon {
+  font-size: 18px;
+}
+
+/* LOADING */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .formContainer {
+    padding: 20px;
+  }
+  
+  .tipoContainer {
+    flex-direction: column;
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+}

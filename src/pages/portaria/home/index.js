@@ -166,7 +166,7 @@ function HomePortaria() {
             <span className={styles.gridTextPortaria}>Colaboradores</span>
           </Link>
 
-          <Link to="/portaria/documentos" className={styles.gridItemPortaria}>
+          <Link to="/portaria/documentos/home-documentos" className={styles.gridItemPortaria}>
             <Description fontSize="medium" className={styles.gridIconPortaria} />
             <span className={styles.gridTextPortaria}>Documentos</span>
           </Link>

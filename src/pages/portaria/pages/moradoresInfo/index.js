@@ -77,32 +77,43 @@ const PerfilMorador = () => {
   );
 
   const handleWhatsAppPress = (phoneNumber) => {
-    if (!phoneNumber || phoneNumber === "Não informado") {
-      alert("Atenção: Número de telefone não disponível");
-      return;
+  if (!phoneNumber || phoneNumber === "Não informado") {
+    alert("Atenção: Número de telefone não disponível");
+    return;
+  }
+  
+  const cleanNumber = phoneNumber.replace(/\D/g, '');
+  const url = `https://wa.me/55${cleanNumber}`;
+  
+  try {
+    const newWindow = window.open(url, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      alert("Erro: Não foi possível abrir o WhatsApp. Verifique se os pop-ups estão bloqueados.");
     }
-    
-    const cleanNumber = phoneNumber.replace(/\D/g, '');
-    const url = `https://wa.me/55${cleanNumber}`;
-    
-    window.open(url, '_blank').catch(err => {
-      alert("Erro: Não foi possível abrir o WhatsApp");
-      console.error("Erro ao abrir WhatsApp:", err);
-    });
-  };
+  } catch (err) {
+    alert("Erro: Não foi possível abrir o WhatsApp");
+    console.error("Erro ao abrir WhatsApp:", err);
+  }
+};
 
-  const handleCallPress = (phoneNumber) => {
-    if (!phoneNumber || phoneNumber === "Não informado") {
-      alert("Atenção: Número de telefone não disponível");
-      return;
-    }
-    
-    const url = `tel:${phoneNumber}`;
-    window.open(url, '_self').catch(err => {
+const handleCallPress = (phoneNumber) => {
+  if (!phoneNumber || phoneNumber === "Não informado") {
+    alert("Atenção: Número de telefone não disponível");
+    return;
+  }
+  
+  const url = `tel:${phoneNumber}`;
+  
+  try {
+    const newWindow = window.open(url, '_self');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
       alert("Erro: Não foi possível realizar a chamada");
-      console.error("Erro ao chamar:", err);
-    });
-  };
+    }
+  } catch (err) {
+    alert("Erro: Não foi possível realizar a chamada");
+    console.error("Erro ao chamar:", err);
+  }
+};
 
   const openDetailsModal = (morador) => {
     setSelectedMorador(morador);

@@ -38,6 +38,10 @@ import AgendadosPortaria from '../portaria/pages/agenda/agendado';
 import EventosRealizadosPortaria from '../portaria/pages/agenda/realizados';  
 import RelatorioEventos from '../portaria/pages/agenda/relatorio';
 import Termos from '../portaria/pages/agenda/termos';
+import Convidados   from '../moradores/pages/agenda/convidados';
+import HomeDocumentos from '../portaria/pages/documentos/HomeDocumentos';
+import RegistroDoc from '../portaria/pages/documentos/registroDoc';
+import DocumentosRegistrados from '../portaria/pages/documentos/documentosRegistrados';
 function AppRoutes() {
   return (
     <Router>
@@ -46,11 +50,16 @@ function AppRoutes() {
         <Route path="/registro-condominio/login" element={<LoginCondominio />} />
         <Route path="/registro-usuario/recuperar-senha" element={<RecuperarSenha />} />
         <Route path="/sindico/comunicados/comunicados-home" element={<HomeComunicados />} />
-        <Route path="/sindico/agenda/agenda-home" element={<AgendaSindico />} />
+        <Route path="/sindico/agenda/agenda-home" element={<AgendaSindico />} />    
+        <Route path="/portaria/documentos/home-documentos" element={<HomeDocumentos />} /> 
+
+        <Route path="/portaria/documentos/registro-doc" element={<RegistroDoc />} /> 
+        <Route path="/portaria/documentos/documentos-registrados" element={<DocumentosRegistrados />} />
 
         <Route path="/portaria/visitantes" element={<VisitantesPortaria/>} />
          <Route path='/portaria/agenda/relatorio' element={<RelatorioEventos/>} />
          <Route path='/portaria/agenda/termos/:id' element={<Termos/>} />
+         <Route path='/moradores/agenda/convidados/:id' element={<Convidados/>} />
         <Route path="/moradores/prestadores-servicos" element={<PrestadoresServicos />} />
         <Route path="/portaria/encomendas/registro" element={<RegistroEncomendas />} />
         <Route path="/portaria/agenda/agendamento" element={<AgendamentoPortaria />} />
