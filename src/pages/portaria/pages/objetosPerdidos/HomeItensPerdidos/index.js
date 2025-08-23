@@ -1,43 +1,38 @@
+
 import React from "react";
-import { View, Text, TouchableOpacity, StatusBar} from "react-native";
-import {Link} from "expo-router";
-import GradientLayout from "../../../../../../src/Utils/gradiente";
-import StylesHomeIcons from "../../../../../GlobalStyles/StylesHomeIcons"; 
-import { Icon } from "@rneui/themed";
+import { Link } from "react-router-dom";
+import { 
+  MdOutlineSearch ,
+  MdCreate,
+} from "react-icons/md";
+import "../../../../../styles/stylesHome.css";
 
-function ObjetosPerdidos() {
-   return (
-    <GradientLayout style={StylesHomeIcons.container}>
-
-      <View style={StylesHomeIcons.contentContainer}>
-        <View style={StylesHomeIcons.buttonContainer}>
-          <Link href="/src/pages/portaria/pages/objetosPerdidos/cadastroItensPerdidos" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="pen-plus"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Registrar</Text>
-            </TouchableOpacity>
+function ItensPerdidosHome() {
+  return (
+    <div className="container-center">
+      <div className="content-wrapper">
+        <div className="buttons-grid">
+          <Link 
+            to="/src/pages/portaria/alertas/alerta-home" 
+            className="card-button"
+          >
+         <MdCreate style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Registrar</span>
           </Link>
 
-          <Link href="/src/pages/portaria/pages/objetosPerdidos/visualizacaoItensPerdidos" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="calendar-clock"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Registrados</Text>
-            </TouchableOpacity>
+          <Link 
+            to="/src/pages/portaria/pages/objetos-perdidos/cadastro-itens-perdidos" 
+            className="card-button"
+          >
+           <MdOutlineSearch style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Registrados</span>
           </Link>
-        </View>
-      </View>
-    </GradientLayout>
+
+ 
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default ObjetosPerdidos;
+export default ItensPerdidosHome;

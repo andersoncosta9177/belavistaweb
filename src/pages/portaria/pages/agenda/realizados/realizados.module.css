@@ -1,0 +1,382 @@
+.container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradientBackground {
+  display: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  padding: 0 16px;
+}
+
+.title {
+  color: #FFF;
+  font-size: 20px;
+  font-weight: 600;
+  margin-left: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.searchContainer {
+  margin: 0 auto 16px auto;
+  max-width: 96%;
+}
+
+.searchInput {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  color: #EFF3EA;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.searchInput .MuiOutlinedInput-root {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.searchInput .MuiOutlinedInput-input {
+  color: #EFF3EA;
+  padding: 12px 14px;
+}
+
+.searchInput .MuiInputBase-input::placeholder {
+  color: rgba(239, 243, 234, 0.7);
+}
+
+.searchInputField {
+  color: #EFF3EA;
+}
+
+.resultsContainer {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.resultsText {
+  color: #EFF3EA;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.scrollContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loadingText {
+  color: #EFF3EA;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.card {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden;
+  width: 96% !important;
+  max-width: 500px;
+  margin: 0 auto !important;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.eventType {
+  font-size: 14px;
+  color: #EFF3EA;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.dateBadge {
+  background: rgba(74, 144, 226, 0.2);
+  border-radius: 6px;
+  padding: 4px 8px;
+  border: 1px solid #4A90E2;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.dateBadgeText {
+  font-size: 11px;
+  color: #EFF3EA;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.divider {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  margin: 0 !important;
+}
+
+.cardContent {
+  padding: 12px !important;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.infoRowContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding: 4px 0;
+  width: 100%;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 100px;
+}
+
+.infoText {
+  font-size: 14px !important;
+  color: #EFF3EA;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.infoValue {
+  font-size: 13px;
+  color: #EFF3EA;
+  text-align: right;
+  flex: 1;
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.footerTextContainer {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.footerText {
+  font-size: 11px !important;
+  color: #f9f9f9;
+  margin-left: 5px;
+  font-style: italic;
+}
+
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  width: 100%;
+}
+
+.emptyText {
+  color: #EFF3EA;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.emptySubtext {
+  color: rgba(239, 243, 234, 0.7);
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.clearSearchButton {
+  display: flex;
+  align-items: center;
+  color: #EFF3EA;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 16px;
+}
+
+.clearSearchButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Media Queries para responsividade */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .header {
+    margin-bottom: 16px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
+  
+  .card {
+    width: 96% !important;
+  }
+  
+  .cardHeader {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .eventType {
+    font-size: 13px;
+  }
+  
+  .dateBadge {
+    padding: 3px 6px;
+  }
+  
+  .dateBadgeText {
+    font-size: 10px;
+  }
+  
+  .infoRowContainer {
+    margin-bottom: 4px;
+  }
+  
+  .infoRow {
+    min-width: 80px;
+  }
+  
+  .infoText, .infoValue {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .header {
+    flex-direction: row;
+    text-align: center;
+    gap: 8px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+  }
+  
+  .title {
+    margin-left: 0;
+    font-size: 16px;
+  }
+  
+  .cardHeader {
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  
+  .eventType {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 60px;
+  }
+  
+  .infoRow {
+    min-width: 70px;
+  }
+  
+  .infoText, .infoValue {
+    font-size: 13px;
+  }
+  
+  .cardFooter {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .footerText {
+    font-size: 9px;
+  }
+}
+
+/* Ajustes específicos para telas muito pequenas */
+@media (max-width: 360px) {
+  .cardHeader {
+    gap: 4px;
+  }
+  
+  .eventType {
+    font-size: 12px;
+    min-width: 50px;
+  }
+  
+  .dateBadge {
+    padding: 2px 4px;
+  }
+  
+  .dateBadgeText {
+    font-size: 9px;
+  }
+  
+  .infoRow {
+    min-width: 60px;
+  }
+  
+  .infoText, .infoValue {
+    font-size: 10px;
+  }
+}

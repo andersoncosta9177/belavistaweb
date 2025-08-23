@@ -10,7 +10,8 @@ import {
   MdCancel, 
   MdSave 
 } from 'react-icons/md';
-import './publicarComunicados.css';
+import '../publicarComunicado/publicarComunicados.css';
+
 
 const EmitirComunicado = () => {
   const [titulo, setTitulo] = useState("");

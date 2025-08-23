@@ -120,7 +120,6 @@ export default function CadastroMorador() {
   };
 
   return (
-    <div className="gradient-background">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -353,6 +352,5 @@ export default function CadastroMorador() {
         </div>
       </motion.div>
        
-    </div>
   );
 }

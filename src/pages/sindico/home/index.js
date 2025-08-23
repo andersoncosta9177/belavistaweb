@@ -3,13 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { ref, get } from "firebase/database";
 import { db } from "../../../database/firebaseConfig";
+import { Link } from "react-router-dom";
 import { 
-  MdLogout, MdNotifications, MdNewspaper, MdCalendarToday, MdWarning, 
-  MdBuild, MdAssignment, MdMenuBook, MdPeople, MdDescription, 
-  MdVisibility, MdVpnKey, MdContacts, MdDirectionsCar, MdInsertDriveFile,
-  MdAccountCircle, MdHandyman, MdAssessment, MdHelp 
-} from "react-icons/md";
-import "../../../../src/styles/stylesHomeUsers.css"
+  Logout,
+  Notifications,
+  Article,
+  CalendarToday,
+  Warning,
+  Build,
+  Description,
+  MenuBook,
+  Groups,
+  Visibility,
+  VpnKey,
+  Contacts,
+  DirectionsCar,
+  InsertDriveFile,
+  AccountCircle,
+  Handyman,
+  Assessment,
+  Help
+} from "@mui/icons-material";
+import styles from './homesindico.module.css'
+
 function HomeSindico() {
   const auth = getAuth();
   const navigate = useNavigate();
@@ -53,149 +69,124 @@ function HomeSindico() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className={styles.gradientBackground + " " + styles.loading}>
+        <div className={styles.spinner}></div>
       </div>
     );
   }
 
-return (
-  <div className="gradient-background">
-    <div className="container">
-      <div className="header">
-        <div className="top-icons">
-          <button onClick={handleLogout} className="icon-button">
-            <MdLogout className="icon" size={25} />
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.topIcons}>
+          <button onClick={handleLogout} className={styles.iconButton}>
+            <Logout fontSize="medium" className={styles.icon} />
           </button>
-          <button className="icon-button">
-            <MdNotifications className="icon" size={30} />
+          <p className={styles.welcome}>Administração</p>
+          <button className={styles.iconButton}>
+            <Notifications fontSize="medium" className={styles.icon} />
           </button>
         </div>
-        <h1 className="title">Condomínio Residencial</h1>
-        <h1 className="title bold orange">Bela Vista</h1>
-        <p className="welcome">Administração</p>
+        <div className={styles.headerTitle}>
+          <h1 className={styles.title}>Condomínio Residencial</h1>
+          <h1 className={styles.title + " " + styles.bold + " " + styles.orange}>Bela Vista</h1>
+        </div>
       </div>
 
-      <div className="grid-container">
+      <div className={styles.gridContainer}>
         {/* Primeira Linha */}
-        <div className="grid-row">
-          <div className="grid-item" onClick={() => navigate("/sindico/comunicados/comunicados-home")}>
-            <MdNewspaper className="grid-icon" size={35} />
-            <span className="grid-text">Comunicados</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/agenda")}>
-            <MdCalendarToday className="grid-icon" size={35} />
-            <span className="grid-text">Agenda</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/portaria/alertas")}>
-            <MdWarning className="grid-icon" size={35} />
-            <span className="grid-text">Alertas</span>
-          </div>
-        </div>
+        <Link to="/sindico/comunicados/comunicados-home" className={styles.gridItem}>
+          <Article fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Comunicados</span>
+        </Link>
+
+        <Link to="/sindico/agenda/agenda-home" className={styles.gridItem}>
+          <CalendarToday fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Agenda</span>
+        </Link>
+
+        <Link to="/portaria/alertas" className={styles.gridItem}>
+          <Warning fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Alertas</span>
+        </Link>
 
         {/* Segunda Linha */}
-        <div className="grid-row">
-          <div className="grid-item" onClick={() => navigate("/sindico/manutencao")}>
-            <MdBuild className="grid-icon" size={35} />
-            <span className="grid-text">Manutenção</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/normas")}>
-            <MdAssignment className="grid-icon" size={35} />
-            <span className="grid-text">Normas</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/ocorrencias")}>
-            <MdMenuBook className="grid-icon" size={35} />
-            <span className="grid-text">Ocorrências</span>
-          </div>
-        </div>
+        <Link to="/portaria/manutencao" className={styles.gridItem}>
+          <Build fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Manutenção</span>
+        </Link>
+
+        <Link to="/sindico/normas" className={styles.gridItem}>
+          <Description fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Normas</span>
+        </Link>
+
+        <Link to="/sindico/ocorrencias" className={styles.gridItem}>
+          <MenuBook fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Ocorrências</span>
+        </Link>
 
         {/* Terceira Linha */}
-        <div className="grid-row">
-          <div className="grid-item" onClick={() => navigate("/sindico/moradores")}>
-            <MdPeople className="grid-icon" size={35} />
-            <span className="grid-text">Moradores</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/atas")}>
-            <MdDescription className="grid-icon" size={35} />
-            <span className="grid-text">Atas</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/transparencia")}>
-            <MdVisibility className="grid-icon" size={35} />
-            <span className="grid-text">Transparência</span>
-          </div>
-        </div>
+        <Link to="/sindico/moradores" className={styles.gridItem}>
+          <Groups fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Moradores</span>
+        </Link>
+
+        <Link to="/sindico/atas" className={styles.gridItem}>
+          <Description fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Atas</span>
+        </Link>
+
+        <Link to="/sindico/transparencia" className={styles.gridItem}>
+          <Visibility fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Transparência</span>
+        </Link>
 
         {/* Quarta Linha */}
-        <div className="grid-row">
-          <div className="grid-item" onClick={() => navigate("/sindico/tokens")}>
-            <MdVpnKey className="grid-icon" size={35} />
-            <span className="grid-text">Tokens</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/contatos")}>
-            <MdContacts className="grid-icon" size={35} />
-            <span className="grid-text">Contatos</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/garagem")}>
-            <MdDirectionsCar className="grid-icon" size={35} />
-            <span className="grid-text">Garagem</span>
-          </div>
-        </div>
+        <Link to="/sindico/tokens" className={styles.gridItem}>
+          <VpnKey fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Tokens</span>
+        </Link>
+
+        <Link to="/sindico/contatos" className={styles.gridItem}>
+          <Contacts fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Contatos</span>
+        </Link>
+
+        <Link to="/sindico/garagem" className={styles.gridItem}>
+          <DirectionsCar fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Garagem</span>
+        </Link>
 
         {/* Quinta Linha */}
-        <div className="grid-row">
-          <div className="grid-item" onClick={() => navigate("/portaria/documentos")}>
-            <MdInsertDriveFile className="grid-icon" size={35} />
-            <span className="grid-text">Documentos</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/meus-dados")}>
-            <MdAccountCircle className="grid-icon" size={35} />
-            <span className="grid-text">Meus Dados</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/moradores/prestadores-servicos")}>
-            <MdHandyman className="grid-icon" size={35} />
-            <span className="grid-text">Prest. serviços</span>
-          </div>
-        </div>
+        <Link to="/portaria/documentos" className={styles.gridItem}>
+          <InsertDriveFile fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Documentos</span>
+        </Link>
+
+        <Link to="/sindico/meus-dados" className={styles.gridItem}>
+          <AccountCircle fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Meus Dados</span>
+        </Link>
+
+        <Link to="/moradores/prestadores-servicos" className={styles.gridItem}>
+          <Handyman fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Prest. serviços</span>
+        </Link>
 
         {/* Sexta Linha */}
-        <div className="grid-row">
-          <div className="grid-item" onClick={() => navigate("/sindico/relatorios")}>
-            <MdAssessment className="grid-icon" size={35} />
-            <span className="grid-text">Relatórios</span>
-          </div>
-          
-          <div className="grid-item" onClick={() => navigate("/sindico/ajuda")}>
-            <MdHelp className="grid-icon" size={35} />
-            <span className="grid-text">Ajuda</span>
-          </div>
-          
-          <div className="grid-item empty"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-}
+        <Link to="/sindico/relatorios" className={styles.gridItem}>
+          <Assessment fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Relatórios</span>
+        </Link>
 
-// Componente auxiliar para os ícones
-function IconBox({ icon, text, onClick, size = "normal" }) {
-  const boxClass = size === "large" ? "icon-box-large" : 
-                  size === "medium" ? "icon-box-medium" : "icon-box";
-  
-  return (
-    <div className={boxClass} onClick={onClick}>
-      <div className="icon">{icon}</div>
-      <span className="icon-text">{text}</span>
+        <Link to="/sindico/ajuda" className={styles.gridItem}>
+          <Help fontSize="medium" className={styles.gridIcon} />
+          <span className={styles.gridText}>Ajuda</span>
+        </Link>
+
+        <div className={styles.gridItem + " " + styles.empty}></div>
+      </div>
     </div>
   );
 }

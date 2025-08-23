@@ -44,7 +44,6 @@ export default function RecuperarSenha() {
   };
 
   return (
-    <div className="gradient-background">
       <div className="container">
         <div className="form-container">
           <div className="header">
@@ -97,6 +96,5 @@ export default function RecuperarSenha() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

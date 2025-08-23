@@ -70,7 +70,6 @@ export default function LoginUsuarioMorador() {
   };
 
   return (
-    <div className="gradient-background">
       <div className="container">
         <form onSubmit={handleLogin} className="form-container">
           <div className="header">
@@ -164,6 +163,5 @@ export default function LoginUsuarioMorador() {
           </div>
         </form>
       </div>
-    </div>
   );
 }

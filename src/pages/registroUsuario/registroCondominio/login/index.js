@@ -46,7 +46,6 @@ export default function LoginUsuarioCondominio() {
   };
 
   return (
-    <div className="gradient-background">
       <div className="container">
         <div className="form-container">
           <div className="header">
@@ -135,6 +134,5 @@ export default function LoginUsuarioCondominio() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

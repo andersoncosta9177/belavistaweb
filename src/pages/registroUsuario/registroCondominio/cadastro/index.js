@@ -138,7 +138,6 @@ export default function CadastroCondominio() {
   };
 
   return (
-    <div className="gradient-background">
       <div className="container">
         <form className="form-container" onSubmit={handleCadastro}>
           <div className="header">
@@ -306,6 +305,5 @@ export default function CadastroCondominio() {
           </div>
         </form>
       </div>
-    </div>
   );
 }

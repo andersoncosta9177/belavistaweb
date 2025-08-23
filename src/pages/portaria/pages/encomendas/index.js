@@ -1,55 +1,46 @@
-import { View, Text, TouchableOpacity, StyleSheet} from "react-native";
-import {Link} from "expo-router";
-import GradientLayout from "../../../../../src/Utils/gradiente";
-import { Icon } from "@rneui/themed";
-import StylesHomeIcons from "../../../../GlobalStyles/StylesHomeIcons";
 
+import React from "react";
+import { Link } from "react-router-dom";
+import { 
+  MdCheckCircle,
+  MdInventory, 
+  MdEdit
+} from "react-icons/md";
+import "../../../../styles/stylesHome.css";
 
-function Encomendas() {
+function HomeEncomendas() {
   return (
-    <GradientLayout style={StylesHomeIcons.container}>
-
-      <View style={StylesHomeIcons.contentContainer}>
-        <View style={StylesHomeIcons.buttonContainer}>
-          <Link href="/src/pages/portaria/pages/encomendas/registro" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="pen-plus"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Registro</Text>
-            </TouchableOpacity>
+    <div className="container-center">
+      <div className="content-wrapper">
+        <div className="buttons-grid">
+          <Link 
+            to="/portaria/encomendas/registro" 
+            className="card-button"
+          >
+            <MdEdit style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Registro</span>
           </Link>
 
-          <Link href="/src/pages/portaria/pages/encomendas/pendentes" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="calendar-clock"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Pendentes</Text>
-            </TouchableOpacity>
+          <Link 
+            to="/portaria/encomendas/pendentes" 
+            className="card-button"
+          >
+            <MdInventory style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Pendentes</span>
           </Link>
-               <Link href="/src/pages/portaria/pages/encomendas/EncomendasEntregues" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="calendar-clock"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Entregues</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
-      </View>
-    </GradientLayout>
+
+    <Link 
+  to="/portaria/encomendas/entregues" 
+  className="card-button"
+>
+  <MdCheckCircle style={{ fontSize: 40, color: "#ED9121" }} /> 
+  <span className="button-label">Entregues</span>
+</Link>
+
+        </div>
+      </div>
+    </div>
   );
 }
 
-
-export default Encomendas;
+export default HomeEncomendas;

@@ -1,486 +1,354 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
-import { 
-  Text, 
-  SearchBar, 
-  Card, 
-  Divider, 
-  Icon, 
-  Avatar, 
-  Badge,
-  BottomSheet,
-  ListItem
-} from '@rneui/themed';
-import { LinearGradient } from 'expo-linear-gradient';
-import GradientLayout from '../../../../Utils/gradiente';
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { ref, onValue } from 'firebase/database';
+import { db } from '../../../../database/firebaseConfig';
+import styles from './prestadores.module.css';
+import   WhatsApp  from "@mui/icons-material/WhatsApp";
+import FilterList from '@mui/icons-material/FilterList';
+import { Phone } from '@mui/icons-material';
+
 
 const PrestadoresServicos = () => {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [prestadores, setPrestadores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Filtros disponíveis
-  const filters = ['Todos', 'Pintores', 'Eletricistas', 'Encanadores', 'Diaristas', 'Marceneiros'];
+  const filters = [
+    'Todos', 'Pintores', 'Eletricistas', 'Encanadores', 'Diaristas', 'Marceneiros',
+    'Pedreiros', 'Jardineiro', 'Piscineiro', 'Técnico em Ar Condicionado', 'Vidraceiro',
+    'Serralheiro', 'Gesseiro', 'Ladrilheiro', 'Tapeceiro', 'Técnico em Eletrônica',
+    'Montador de Móveis', 'Instalador de Cortinas', 'Dedetizador', 'Limpeza de Fachada',
+    'Técnico em Segurança', 'Instalador de Alarmes', 'Técnico em Câmeras', 'Encanador Industrial',
+    'Eletricista Industrial', 'Soldador', 'Carpinteiro', 'Açougueiro', 'Churrasqueiro',
+    'Chaveiro', 'Detetizador', 'Babá', 'Professor de Idiomas', 'Técnico em Informática',
+    'Técnico em Mecânica', 'Personal Trainner'
+  ];
 
-  // Dados de exemplo (substitua pela sua fonte de dados real)
+  // Função para abrir WhatsApp
+  const openWhatsApp = (phone) => {
+    const cleanNumber = phone.replace(/\D/g, '');
+    const url = `https://wa.me/55${cleanNumber}`;
+    window.open(url, '_blank');
+  };
+
+  // Função para fazer ligação
+  const handleCallPress = (phoneNumber) => {
+    if (!phoneNumber || phoneNumber === "Não informado") {
+      alert("Número de telefone não disponível");
+      return;
+    }
+    
+    const url = `tel:${phoneNumber}`;
+    window.open(url, '_self');
+  };
+
+  // Buscar prestadores no Firebase
   useEffect(() => {
-    const dadosExemplo = [
-      {
-        id: 1,
-        nome: 'Carlos Pinturas',
-        categoria: 'Pintores',
-        avaliacao: 4.8,
-        servicosRealizados: 124,
-        foto: 'https://randomuser.me/api/portraits/men/32.jpg',
-        descricao: 'Especialista em pintura residencial e comercial com 10 anos de experiência.',
-        telefone: '(11) 98765-4321',
-        endereco: 'Zona Norte - São Paulo'
-      },
-      {
-        id: 2,
-        nome: 'Eletro Silva',
-        categoria: 'Eletricistas',
-        avaliacao: 4.9,
-        servicosRealizados: 89,
-        foto: 'https://randomuser.me/api/portraits/men/44.jpg',
-        descricao: 'Instalações elétricas residenciais e industriais, padrão CEMIG.',
-        telefone: '(11) 91234-5678',
-        endereco: 'Zona Leste - São Paulo'
-      },
-      {
-        id: 3,
-        nome: 'Hidráulica Moderna',
-        categoria: 'Encanadores',
-        avaliacao: 4.7,
-        servicosRealizados: 156,
-        foto: 'https://randomuser.me/api/portraits/men/67.jpg',
-        descricao: 'Resolução de vazamentos, instalações hidráulicas e reformas.',
-        telefone: '(11) 99876-5432',
-        endereco: 'Centro - São Paulo'
-      },
-      {
-        id: 4,
-        nome: 'Maria Limpeza',
-        categoria: 'Diaristas',
-        avaliacao: 4.9,
-        servicosRealizados: 210,
-        foto: 'https://randomuser.me/api/portraits/women/63.jpg',
-        descricao: 'Limpeza residencial e comercial, organização de ambientes.',
-        telefone: '(11) 94567-8901',
-        endereco: 'Zona Sul - São Paulo'
-      },
-      {
-        id: 5,
-        nome: 'Móveis Sob Medida',
-        categoria: 'Marceneiros',
-        avaliacao: 4.6,
-        servicosRealizados: 72,
-        foto: 'https://randomuser.me/api/portraits/men/22.jpg',
-        descricao: 'Marcenaria fina e móveis planejados com design exclusivo.',
-        telefone: '(11) 92345-6789',
-        endereco: 'Zona Oeste - São Paulo'
-      },
-    ];
-    setPrestadores(dadosExemplo);
+    const prestadoresRef = ref(db, 'DadosBelaVista/DadosGerais/PrestadoresDeServicos');
+    
+    const unsubscribe = onValue(prestadoresRef, (snapshot) => {
+      try {
+        setLoading(true);
+        const data = snapshot.val();
+        
+        if (data) {
+          const prestadoresArray = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key],
+            avaliacao: data[key].avaliacao || '0',
+            servicosRealizados: data[key].servicosRealizados || '0',
+            foto: data[key].foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(data[key].nome || '')}&background=random`,
+            formasPagamento: data[key].formasPagamento || {
+              pix: false,
+              cartaoDebito: false,
+              cartaoCredito: false,
+              boleto: false
+            }
+          }));
+          setPrestadores(prestadoresArray);
+        } else {
+          setPrestadores([]);
+        }
+        setError(null);
+      } catch (err) {
+        console.error("Erro ao buscar prestadores:", err);
+        setError("Erro ao carregar prestadores");
+      } finally {
+        setLoading(false);
+      }
+    }, (error) => {
+      console.error("Erro na leitura:", error);
+      setError("Erro na conexão com o banco de dados");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Filtrar prestadores
   const filteredPrestadores = prestadores.filter(prestador => {
-    const matchesSearch = prestador.nome.toLowerCase().includes(search.toLowerCase()) || 
-                          prestador.descricao.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = prestador.nome?.toLowerCase().includes(search.toLowerCase()) || 
+                         prestador.descricao?.toLowerCase().includes(search.toLowerCase());
     const matchesFilter = activeFilter === 'Todos' || prestador.categoria === activeFilter;
     return matchesSearch && matchesFilter;
   });
 
   // Obter ícone por categoria
   const getCategoryIcon = (category) => {
-    switch(category) {
-      case 'Pintores':
-        return <MaterialIcons name="format-paint" size={24} color="#fff" />;
-      case 'Eletricistas':
-        return <MaterialIcons name="electrical-services" size={24} color="#fff" />;
-      case 'Encanadores':
-        return <MaterialCommunityIcons name="pipe" size={24} color="#fff" />;
-      case 'Diaristas':
-        return <MaterialCommunityIcons name="broom" size={24} color="#fff" />;
-      case 'Marceneiros':
-        return <MaterialCommunityIcons name="hammer" size={24} color="#fff" />;
-      default:
-        return <FontAwesome name="user" size={24} color="#fff" />;
-    }
+    const icons = {
+      'Pintores': '🎨',
+      'Eletricistas': '⚡',
+      'Encanadores': '🔧',
+      'Diaristas': '🧹',
+      'Marceneiros': '🔨',
+      'Pedreiros': '🧱',
+      'Jardineiro': '🌿',
+      'Piscineiro': '🏊',
+      'Técnico em Ar Condicionado': '❄️',
+      'Vidraceiro': '🪟',
+      'Serralheiro': '⚙️',
+      'Gesseiro': '🏗️',
+      'Ladrilheiro': '🧱',
+      'Tapeceiro': '🛋️',
+      'Técnico em Eletrônica': '📱',
+      'Montador de Móveis': '🪑',
+      'Instalador de Cortinas': '🪟',
+      'Dedetizador': '🐜',
+      'Limpeza de Fachada': '🏢',
+      'Técnico em Segurança': '🔒',
+      'Instalador de Alarmes': '🚨',
+      'Técnico em Câmeras': '📷',
+      'Encanador Industrial': '🏭',
+      'Eletricista Industrial': '⚡',
+      'Soldador': '🔗',
+      'Carpinteiro': '🪵',
+      'Açougueiro': '🥩',
+      'Churrasqueiro': '🍖',
+      'Chaveiro': '🔑',
+      'Detetizador': '🐞',
+      'Babá': '👶',
+      'Professor de Idiomas': '📚',
+      'Técnico em Informática': '💻',
+      'Técnico em Mecânica': '🔧',
+      'Personal Trainner': '💪'
+    };
+    return icons[category] || '👤';
   };
 
+  // Renderizar formas de pagamento
+  const renderPaymentMethods = (formasPagamento) => {
+    return (
+      <div className={styles.paymentMethodsContainer}>
+        <span className={styles.paymentMethodsTitle}>Formas de Pagamento:</span>
+        <div className={styles.paymentMethodsIcons}>
+          {formasPagamento.pix && (
+            <div className={styles.paymentMethod}>
+              <span className={styles.paymentIcon}>💳</span>
+              <span className={styles.paymentMethodText}>PIX</span>
+            </div>
+          )}
+          {formasPagamento.cartaoDebito && (
+            <div className={styles.paymentMethod}>
+              <span className={styles.paymentIcon}>💳</span>
+              <span className={styles.paymentMethodText}>Débito</span>
+            </div>
+          )}
+          {formasPagamento.cartaoCredito && (
+            <div className={styles.paymentMethod}>
+              <span className={styles.paymentIcon}>💳</span>
+              <span className={styles.paymentMethodText}>Crédito</span>
+            </div>
+          )}
+          {formasPagamento.boleto && (
+            <div className={styles.paymentMethod}>
+              <span className={styles.paymentIcon}>📄</span>
+              <span className={styles.paymentMethodText}>Boleto</span>
+            </div>
+          )}
+          {!formasPagamento.pix && !formasPagamento.cartaoDebito && 
+           !formasPagamento.cartaoCredito && !formasPagamento.boleto && (
+            <span className={styles.noPaymentMethods}>Não informado</span>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p className={styles.loadingText}>Carregando prestadores...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <span className={styles.errorIcon}>❌</span>
+        <p className={styles.errorText}>{error}</p>
+        <button 
+          className={styles.retryButton}
+          onClick={() => window.location.reload()}
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <GradientLayout
-      colors={['#0f0c29', '#302b63', '#24243e']}
-      style={styles.container}
-    >
+    <div className={styles.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <Text h3 style={styles.headerTitle}>Prestadores de Serviços</Text>
-        <Text style={styles.headerSubtitle}>Encontre os melhores profissionais</Text>
-      </View>
+      <div className={styles.header}>
+        <h1 className={styles.headerTitle}>Prestadores de Serviços</h1>
+        <p className={styles.headerSubtitle}>Encontre os melhores profissionais</p>
+      </div>
 
       {/* Barra de pesquisa e filtros */}
-      <View style={styles.searchContainer}>
-        <SearchBar
-          placeholder="Buscar prestadores..."
-          onChangeText={setSearch}
-          value={search}
-          lightTheme
-          round
-          containerStyle={styles.searchBarContainer}
-          inputContainerStyle={styles.searchInputContainer}
-          inputStyle={styles.searchInput}
-          searchIcon={<MaterialIcons name="search" size={24} color="#666" />}
-          clearIcon={<MaterialIcons name="close" size={24} color="#666" />}
-        />
+      <div className={styles.searchContainer}>
+        <div className={styles.searchBarContainer}>
+          <span className={styles.searchIcon}>🔍</span>
+          <input
+            type="text"
+            placeholder="Buscar prestadores..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.searchInput}
+          />
+          {search && (
+            <button 
+              onClick={() => setSearch('')}
+              className={styles.clearButton}
+            >
+              ✕
+            </button>
+          )}
+          
+        </div>
+                <button 
+  className={styles.filterButton}
+  onClick={() => setIsFilterVisible(true)}
+>
+  <FilterList className={styles.filterIcon} />
+</button>
         
-        <TouchableOpacity 
-          style={styles.filterButton}
-          onPress={() => setIsFilterVisible(true)}
-        >
-          <MaterialIcons name="filter-list" size={28} color="#fff" />
-        </TouchableOpacity>
-      </View>
+
+      </div>
 
       {/* Filtro ativo */}
-      <View style={styles.activeFilterContainer}>
-        <Text style={styles.activeFilterText}>Categoria: </Text>
-        <Badge
-          value={activeFilter}
-          status="primary"
-          badgeStyle={styles.badge}
-          textStyle={styles.badgeText}
-        />
-      </View>
+      <div className={styles.activeFilterContainer}>
+        <span className={styles.activeFilterText}>Categoria: </span>
+        <span className={styles.badge}>{activeFilter}</span>
+      </div>
 
       {/* Lista de prestadores */}
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <div className={styles.scrollContainer}>
         {filteredPrestadores.length > 0 ? (
           filteredPrestadores.map((prestador) => (
-            <Card key={prestador.id} containerStyle={styles.card}>
-              <LinearGradient
-                 colors={['#474E93', '#B771E5']} // Azul claro para azul mais claro
-                 start={{ x: 0, y: 0 }}
-                 end={{ x: 1, y: 1 }}
-                 style={styles.cardGradient}
-              >
-                <View style={styles.cardHeader}>
-                  <Avatar
-                    size={70}
-                    rounded
-                    source={{ uri: prestador.foto }}
-                    containerStyle={styles.avatar}
+            <div key={prestador.id} className={styles.card}>
+              <div className={styles.cardGradient}>
+                <div className={styles.cardHeader}>
+                  <img
+                    src={prestador.foto}
+                    alt={prestador.nome}
+                    className={styles.avatar}
                   />
-                  <View style={styles.cardHeaderInfo}>
-                    <Text h4 style={styles.cardTitle}>{prestador.nome}</Text>
-                    <View style={styles.categoryBadge}>
-                      {getCategoryIcon(prestador.categoria)}
-                      <Text style={styles.categoryText}>{prestador.categoria}</Text>
-                    </View>
-                  </View>
-                </View>
+                  <div className={styles.cardHeaderInfo}>
+                    <h3 className={styles.cardTitle}>{prestador.nome}</h3>
+                    <div className={styles.categoryContainer}>
+                      <div className={styles.categoryBadge}>
+                        <span className={styles.categoryIcon}>{getCategoryIcon(prestador.categoria)}</span>
+                        <span className={styles.categoryText}>{prestador.categoria}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                <Divider style={styles.divider} />
+                <div className={styles.divider}></div>
 
-                <Text style={styles.cardDescription}>{prestador.descricao}</Text>
+                <p className={styles.cardDescription}>{prestador.descricao}</p>
+                <div className={styles.divider}></div>
 
-                <View style={styles.cardFooter}>
-                  <View style={styles.ratingContainer}>
-                    <MaterialIcons name="star" size={20} color="#FFD700" />
-                    <Text style={styles.ratingText}>{prestador.avaliacao}</Text>
-                    <Text style={styles.servicesText}>({prestador.servicosRealizados} serviços)</Text>
-                  </View>
+                {/* Formas de pagamento */}
+                {renderPaymentMethods(prestador.formasPagamento)}
 
-                  <View style={styles.infoContainer}>
-                    <MaterialIcons name="location-on" size={16} color="#fff" />
-                    <Text style={styles.infoText}>{prestador.endereco}</Text>
-                  </View>
+                <div className={styles.divider}></div>
 
-                  <View style={styles.infoContainer}>
-                    <MaterialIcons name="phone" size={16} color="#fff" />
-                    <Text style={styles.infoText}>{prestador.telefone}</Text>
-                  </View>
-                </View>
+                <div className={styles.infoContainer}>
+                  <span className={styles.infoText}>Atendemos em:</span>
+                  <span className={styles.infoText}>{prestador.endereco}</span>
+                  <span className={styles.locationIcon}>📍</span>
+                </div>
 
-                <TouchableOpacity style={styles.contactButton}>
-                  <Text style={styles.contactButtonText}>Entrar em Contato</Text>
-                  <MaterialIcons name="send" size={20} color="#fff" />
-                </TouchableOpacity>
-              </LinearGradient>
-            </Card>
+                <div className={styles.contactButtonsContainer}>
+                  <button 
+                    className={`${styles.contactButton} ${styles.whatsappButton}`}
+                    onClick={() => openWhatsApp(prestador.telefone)}
+                  >
+                    <WhatsApp className={styles.whatsappIcon} />
+                    <span className={styles.contactButtonText}>WhatsApp</span>
+                  </button>
+
+                  <button 
+                    className={`${styles.contactButton} ${styles.callButton}`}
+                    onClick={() => handleCallPress(prestador.telefone)}
+                  >
+                    <Phone className={styles.callIcon} />
+                    <span className={styles.contactButtonText}>Ligar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           ))
         ) : (
-          <View style={styles.emptyContainer}>
-            <MaterialIcons name="search-off" size={50} color="#fff" />
-            <Text style={styles.emptyText}>Nenhum prestador encontrado</Text>
-          </View>
+          <div className={styles.emptyContainer}>
+            <span className={styles.emptyIcon}>🔍</span>
+            <p className={styles.emptyText}>Nenhum prestador encontrado</p>
+          </div>
         )}
-      </ScrollView>
+      </div>
 
-      {/* Bottom Sheet de Filtros */}
-      <BottomSheet isVisible={isFilterVisible} modalProps={{}}>
-        <View style={styles.filterSheet}>
-          <Text h4 style={styles.filterTitle}>Filtrar por Categoria</Text>
-          <Divider style={styles.sheetDivider} />
-          
-          {filters.map((filter, i) => (
-            <ListItem
-              key={i}
-              containerStyle={[
-                styles.filterItem,
-                activeFilter === filter && styles.activeFilterItem
-              ]}
-              onPress={() => {
-                setActiveFilter(filter);
-                setIsFilterVisible(false);
-              }}
+      {/* Modal de Filtros */}
+      {isFilterVisible && (
+        <div className={styles.modalOverlay} onClick={() => setIsFilterVisible(false)}>
+          <div className={styles.filterSheet} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.filterTitle}>Filtrar por Categoria</h3>
+            <div className={styles.sheetDivider}></div>
+            
+            <div className={styles.filterList}>
+              {filters.map((filter, i) => (
+                <div
+                  key={i}
+                  className={`${styles.filterItem} ${activeFilter === filter ? styles.activeFilterItem : ''}`}
+                  onClick={() => {
+                    setActiveFilter(filter);
+                    setIsFilterVisible(false);
+                  }}
+                >
+                  <span className={styles.filterItemText}>{filter}</span>
+                  {activeFilter === filter && (
+                    <span className={styles.checkIcon}>✓</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            <button
+              className={styles.closeFilterButton}
+              onClick={() => setIsFilterVisible(false)}
             >
-              <ListItem.Content>
-                <ListItem.Title style={styles.filterItemText}>
-                  {filter}
-                </ListItem.Title>
-              </ListItem.Content>
-              {activeFilter === filter && (
-                <Icon name="check" type="material" color="#4568DC" />
-              )}
-            </ListItem>
-          ))}
-          
-          <TouchableOpacity
-            style={styles.closeFilterButton}
-            onPress={() => setIsFilterVisible(false)}
-          >
-            <Text style={styles.closeFilterText}>Fechar</Text>
-          </TouchableOpacity>
-        </View>
-      </BottomSheet>
-    </GradientLayout>
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 50,
-  },
-  header: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  headerSubtitle: {
-    color: '#ddd',
-    fontSize: 16,
-    marginTop: 5,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    marginBottom: 15,
-  },
-  searchBarContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    padding: 0,
-  },
-  searchInputContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    height: 45,
-  },
-  searchInput: {
-    color: '#333',
-  },
-  filterButton: {
-    marginLeft: 10,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 10,
-    padding: 8,
-  },
-  activeFilterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  activeFilterText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  badge: {
-    backgroundColor: '#4568DC',
-    paddingHorizontal: 12,
-    height: 28,
-    borderRadius: 14,
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: 14,
-  },
-  scrollContainer: {
-    paddingBottom: 30,
-  },
-  card: {
-    borderRadius: 15,
-    padding: 0,
-    borderWidth: 0,
-    marginHorizontal: 15,
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 8,
-  },
-  cardGradient: {
-    padding: 20,
-    borderRadius: 15,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  avatar: {
-    borderWidth: 3,
-    borderColor: '#fff',
-  },
-  cardHeaderInfo: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  cardTitle: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  categoryBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 15,
-    alignSelf: 'flex-start',
-  },
-  categoryText: {
-    color: '#fff',
-    marginLeft: 5,
-    fontSize: 14,
-  },
-  divider: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    marginVertical: 10,
-    height: 1,
-  },
-  cardDescription: {
-    color: '#fff',
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 15,
-  },
-  cardFooter: {
-    marginTop: 10,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  ratingText: {
-    color: '#fff',
-    marginLeft: 5,
-    marginRight: 10,
-    fontWeight: 'bold',
-  },
-  servicesText: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 12,
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  infoText: {
-    color: '#fff',
-    marginLeft: 5,
-    fontSize: 13,
-  },
-  contactButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 15,
-  },
-  contactButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginRight: 10,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  emptyText: {
-    color: '#fff',
-    fontSize: 18,
-    marginTop: 15,
-    textAlign: 'center',
-  },
-  filterSheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    paddingBottom: 30,
-  },
-  filterTitle: {
-    textAlign: 'center',
-    marginBottom: 10,
-    color: '#333',
-  },
-  sheetDivider: {
-    marginBottom: 15,
-  },
-  filterItem: {
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  activeFilterItem: {
-    backgroundColor: 'rgba(69, 104, 220, 0.1)',
-  },
-  filterItemText: {
-    fontSize: 16,
-  },
-  closeFilterButton: {
-    backgroundColor: '#4568DC',
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  closeFilterText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
 
 export default PrestadoresServicos;

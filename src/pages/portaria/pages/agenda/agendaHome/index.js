@@ -1,41 +1,52 @@
-import { View, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
-import { Icon, Text } from "@rneui/themed";
-import GradientLayout from '../../../../../../src/Utils/gradiente';
-import StylesHomeIcons from "../../../../../GlobalStyles/StylesHomeIcons";
+import React from "react";
+import { Link } from "react-router-dom";
+import { 
+  MdEventAvailable, 
+  MdEvent, 
+  MdAssignment, 
+  MdCheckCircle 
+} from "react-icons/md";
+import "../../../../../styles/stylesHome.css";
 
 function AgendaHome() {
   return (
-    <GradientLayout style={StylesHomeIcons.container}>
-
-      <View style={StylesHomeIcons.contentContainer}>
-        <View style={StylesHomeIcons.buttonContainer}>
-          <Link href="/src/pages/portaria/pages/agenda/agendamento" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="pen-plus"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Agendar</Text>
-            </TouchableOpacity>
+    <div className="container-center">
+      <div className="content-wrapper">
+        <div className="buttons-grid">
+          <Link 
+            to="/portaria/agenda/agendamento" 
+            className="card-button"
+          >
+            <MdEventAvailable style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Agendar</span>
           </Link>
 
-          <Link href="/src/pages/portaria/pages/agenda/agendado" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="calendar-clock"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Agendados</Text>
-            </TouchableOpacity>
+          <Link 
+            to="/portaria/agenda/agendado" 
+            className="card-button"
+          >
+            <MdEvent style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Agendados</span>
           </Link>
-        </View>
-      </View>
-    </GradientLayout>
+
+          <Link 
+            to="/portaria/agenda/relatorio" 
+            className="card-button"
+          >
+            <MdAssignment style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Relatório</span>
+          </Link>
+
+          <Link 
+            to="/portaria/agenda/realizados" 
+            className="card-button"
+          >
+            <MdCheckCircle style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Realizados</span>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
 

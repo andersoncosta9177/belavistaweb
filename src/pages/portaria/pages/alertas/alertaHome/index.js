@@ -1,43 +1,74 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Link } from "expo-router";
-import GradientLayout from "../../../../../../src/Utils/gradiente";
-import { Icon } from "@rneui/themed";
-import StylesHomeIcons from "../../../../../GlobalStyles/StylesHomeIcons";
+// import React from "react";
+// import { Link } from "react-router-dom";
+// import { 
+//   MdCreate, 
+//   MdNotifications 
+// } from "react-icons/md";
+// import "../../../../../styles/stylesHome.css";
+
+// function Alertas() {
+//   return (
+//     <div className="container-center">
+//       <div className="content-wrapper">
+//         <div className="buttons-list">
+//           <Link 
+//             to="/src/pages/portaria/pages/alertas/registrar" 
+//             className="list-button"
+//           >
+//             <MdCreate className="button-icon" />
+//             <span className="button-label">Registrar</span>
+//           </Link>
+
+//           <Link 
+//             to="/src/pages/portaria/pages/alertas/alertasEnviados" 
+//             className="list-button"
+//           >
+//             <MdNotifications className="button-icon" />
+//             <span className="button-label">Alertas</span>
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Alertas;
+
+
+import React from "react";
+import { Link } from "react-router-dom";
+import { 
+  MdDescription,
+  MdNotifications,
+  MdCreate
+} from "react-icons/md";
+import "../../../../../styles/stylesHome.css";
 
 function Alertas() {
   return (
-    <GradientLayout style={StylesHomeIcons.container}>
-      <View style={StylesHomeIcons.contentContainer}>
-        <View style={StylesHomeIcons.buttonContainer}>
-          <Link href="/src/pages/portaria/pages/alertas/registrar" asChild>
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="pen-plus"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Registrar</Text>
-            </TouchableOpacity>
+    <div className="container-center">
+      <div className="content-wrapper">
+        <div className="buttons-grid">
+          <Link 
+            to="/src/pages/portaria/alertas/alerta-home" 
+            className="card-button"
+          >
+         <MdCreate style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Registrar</span>
           </Link>
 
-          <Link
-            href="/src/pages/portaria/pages/alertas/alertasEnviados"
-            asChild
+          <Link 
+            to="/src/pages/portaria/pages/agenda/agendado" 
+            className="card-button"
           >
-            <TouchableOpacity style={StylesHomeIcons.button}>
-              <Icon
-                name="calendar-clock"
-                type="material-community"
-                size={40}
-                color="#EFF3EA"
-              />
-              <Text style={StylesHomeIcons.buttonText}>Alertas</Text>
-            </TouchableOpacity>
+            <MdNotifications style={{ fontSize: 40, color: "#ED9121" }} />
+            <span className="button-label">Alertas</span>
           </Link>
-        </View>
-      </View>
-    </GradientLayout>
+
+ 
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,0 +1,350 @@
+/* EncomendasPendentes.module.css */
+.container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+   background: linear-gradient(135deg, #4568DC 0%, #b06ab3 100%);
+        /* colors={['#4568DC', '#B06AB3']} */
+
+
+}
+
+.gradientBackground {
+  display: none; /* Removido pois o background está sendo aplicado no container */
+}
+
+.header {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  color: #f5f5f5;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  padding: 8px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.searchInput {
+  background-color: #ffffff;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  width: 94%;
+}
+
+.searchInput .MuiOutlinedInput-root {
+  border-radius: 8px;
+}
+
+.searchInput .MuiOutlinedInput-input {
+  color: #333;
+}
+
+.searchInput .MuiInputBase-input::placeholder {
+  color: #86939e;
+  opacity: 1;
+}
+
+.gridContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.gridItem {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.card {
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.cardContent {
+  flex: 1;
+  padding: 8px;
+}
+
+.cardItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 0.3px solid rgba(255, 255, 255, 0.6);
+  padding: 6px 4px;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+  min-width: 40%;
+  flex-shrink: 0;
+}
+
+.cardLabel {
+  font-weight: bold;
+  margin-left: 8px;
+  color: #f9f9f9;
+  font-size: 14px;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.cardValue {
+    color: #f9f9f9;
+
+  text-align: right;
+  flex: 1;
+  margin-left: 10px;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  gap: 10px;
+  padding: 0 8px 8px;
+}
+
+.editButton {
+  background-color: #f39c12 !important;
+  border-radius: 8px;
+  flex: 1;
+  min-height: 36px;
+  font-weight: 600;
+}
+
+.deliverButton {
+  background-color: #0f98a1 !important;
+  border-radius: 8px;
+  flex: 1;
+  min-height: 36px;
+  font-weight: 600;
+}
+
+.noEncomendasText {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+/* Estilos para os modais */
+.modalPaper {
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%) !important;
+  border-radius: 12px !important;
+}
+
+.modalTitle {
+  color: #f5f5f5;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px 24px 10px;
+}
+
+.modalText {
+  margin-bottom: 15px;
+  text-align: center;
+  color: #f5f5f5;
+  font-size: 16px;
+}
+
+.modalInput {
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.modalInput .MuiOutlinedInput-root {
+  color: #333;
+  border-radius: 8px;
+}
+
+.modalInput .MuiOutlinedInput-notchedOutline {
+  border-color: #ddd;
+}
+
+.modalInput .MuiInputBase-input::placeholder {
+  color: #86939e;
+  opacity: 1;
+}
+
+.modalActions {
+  padding: 20px 24px !important;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.confirmButton {
+  background-color: #4caf50 !important;
+  color: white !important;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 12px 20px;
+  flex: 1;
+}
+
+.cancelButton {
+  background-color: #f39c12 !important;
+  color: white !important;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 12px 20px;
+  flex: 1;
+}
+
+/* Media Queries para responsividade */
+@media (max-width: 600px) {
+  .container {
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 10px;
+    max-width: 100%;
+  }
+
+  .cardItem {
+    margin-bottom: 8px;
+    padding: 4px 2px;
+  }
+
+  .cardLabel,
+  .cardValue {
+    font-size: 13px;
+  }
+
+  .labelContainer {
+    min-width: 45%;
+  }
+
+  .buttonRow {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .editButton,
+  .deliverButton {
+    min-height: 40px;
+    font-size: 12px;
+  }
+
+  .gridItem {
+    margin-bottom: 12px;
+  }
+  
+  .modalActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .confirmButton, 
+  .cancelButton {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 960px) {
+  .gridContainer {
+    justify-content: flex-start;
+  }
+
+  .card {
+    padding: 16px;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 961px) {
+  .gridContainer {
+    justify-content: flex-start;
+  }
+
+  .card {
+    padding: 18px;
+    max-width: 100%;
+  }
+}
+
+/* Ajustes específicos para o Grid do Material-UI */
+.MuiGrid-root {
+  width: 100%;
+  margin: 0;
+}
+
+.MuiGrid-container {
+  justify-content: center;
+}
+
+@media (min-width: 600px) {
+  .MuiGrid-container {
+    justify-content: flex-start;
+  }
+}

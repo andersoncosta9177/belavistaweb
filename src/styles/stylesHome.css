@@ -6,6 +6,8 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+
 }
 
 .content-wrapper {
@@ -26,19 +28,21 @@
 }
 
 .card-button {
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.3);
   text-decoration: none;
   color: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid #f9f9f9;
+  box-shadow:  0 5px 12px  rgba(7, 7, 7, 0.6);
 }
 
 /* Mobile: um botão por linha */
@@ -49,11 +53,12 @@
   }
   
   .card-button {
-    width: 100%;
-    max-width: 200px; /* Mantém um tamanho máximo */
-    height: 150px; /* Altura menor para mobile */
+    width: 90%;
+    height: 100px; /* Altura menor para mobile */
   }
 }
+
+
 
 /* Efeitos e texto (comuns a todos os tamanhos) */
 .card-button:hover {

@@ -1,0 +1,307 @@
+.container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradientBackground {
+  display: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  margin-top: 15px;
+  padding: 0 20px;
+}
+
+.title {
+  color: #FFF;
+  font-size: 24px;
+  font-weight: 600;
+  margin-left: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.scrollContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.controlCard {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden;
+  width: 96% !important;
+  margin: 0 auto !important;
+}
+
+.previewCard {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden;
+  width: 96% !important;
+  margin: 0 auto !important;
+}
+
+.monthSelector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.monthButton {
+  color: #FFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 8px 16px !important;
+  min-width: 100px !important;
+}
+
+.monthButton:disabled {
+  opacity: 0.5;
+}
+
+.monthText {
+  color: #FFF;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+  text-align: center;
+  flex: 1;
+}
+
+.infoText {
+  color: #EFF3EA;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.generateButton {
+  background: #E74C3C !important;
+  border-radius: 8px !important;
+  padding: 12px 20px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
+
+.generateButton:hover {
+  background: #C0392B !important;
+}
+
+.previewTitle {
+  color: #FFF;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.divider {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  margin: 15px 0 !important;
+}
+
+.previewHeader {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
+}
+
+.previewHeaderText {
+  color: #FFF;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+}
+
+.previewRow {
+  display: flex;
+  padding: 10px 0;
+  align-items: center;
+}
+
+.previewRowEven {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.previewText {
+  color: #EFF3EA;
+  font-size: 13px;
+  padding: 0 8px;
+  flex: 1;
+  overflow: hidden;
+  
+}
+
+.totalContainer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: right;
+}
+
+.totalText {
+  color: #FFF;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.emptyPreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptyPreviewText {
+  color: #EFF3EA;
+  margin-top: 15px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loadingText {
+  color: #EFF3EA;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+/* Media Queries para responsividade */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+  
+  .scrollContainer {
+    gap: 15px;
+  }
+  
+  .controlCard,
+  .previewCard {
+    width: 100% !important;
+  }
+  
+  .monthSelector {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .monthButton {
+    width: 100%;
+    order: 2;
+  }
+  
+  .monthText {
+    order: 1;
+    margin-bottom: 10px;
+  }
+  
+  .previewHeader {
+    flex-wrap: wrap;
+  }
+  
+  .previewHeaderText,
+  .previewText {
+    font-size: 11px;
+    flex: 1;
+    min-width: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .title {
+    margin-left: 0;
+    font-size: 18px;
+  }
+  
+  .monthText {
+    font-size: 16px;
+  }
+  
+  .previewHeader {
+    display: none;
+  }
+  
+  .previewRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .previewText {
+    display: flex;
+    width: 100%;
+    font-size: 12px;
+  }
+  
+  .previewText::before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 8px;
+    color: #FFF;
+    min-width: 60px;
+  }
+  
+  /* Adicionar labels para mobile */
+  .previewRow > :nth-child(1)::before { content: "Data: "; }
+  .previewRow > :nth-child(2)::before { content: "Tipo: "; }
+  .previewRow > :nth-child(3)::before { content: "Morador: "; }
+  .previewRow > :nth-child(4)::before { content: "Apto: "; }
+}

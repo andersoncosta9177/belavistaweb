@@ -1,28 +1,27 @@
-.gradient-background {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
-}
 
 
 .container {
-   width: 100%;
+  width: 100%;
   max-width: 500px;
-  padding: 0 20px; /* Adicionado padding lateral */
-  box-sizing: border-box; /* Importante para cálculo de largura */
+  padding: 0 3px; /* Reduzi o padding lateral */
+  box-sizing: border-box;
+  min-height: 100vh;
+    justify-content: center;
+  align-items: center;
+    display: flex;
+
+  padding: 10px; /* Reduzi o padding geral */
+  margin: auto; /* Removi margens */
+
 }
 
 .form-container {
-background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
-  padding: 30px;
+  padding: 25px 20px; /* Ajustei o padding interno */
   width: 100%;
-  box-sizing: border-box; /* Adicionado */
+  box-sizing: border-box;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 0 auto; /* Centraliza o formulário */
 }
 
 .header {
@@ -219,16 +218,22 @@ background-color: rgba(0, 0, 0, 0.3);
 
 @media (max-width: 480px) {
   .gradient-background {
-    padding: 10px;
-    align-items: flex-start; /* Alinha ao topo em telas muito pequenas */
+    padding: 5px; /* Reduzi ainda mais o padding */
+    align-items: flex-start;
+    padding-top: 20px; /* Adicionei um pouco de espaço no topo */
   }
   
   .container {
     padding: 0 10px;
+    width: 100%;
+    max-width: none;
   }
   
   .form-container {
-    padding: 20px 15px;
+      padding: 20px 15px;
+    margin: 0 5px; /* Pequena margem para não colar nas bordas */
+    width: 100%;
+    max-width: none
   }
   
   .title {
@@ -236,17 +241,19 @@ background-color: rgba(0, 0, 0, 0.3);
   }
   
   .input-group {
-    height: 45px;
+    height: 40px;
   }
   
   .button-container {
     flex-direction: row;
     gap: 10px;
+    width: 100%;
+    justify-content: space-between;
   }
   
   .cancel-button, 
   .login-button {
-    width: 100px;
+    width: 40%;
   }
 }
 

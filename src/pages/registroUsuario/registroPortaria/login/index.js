@@ -46,7 +46,6 @@ export default function LoginUsuarioPortaria() {
   };
 
   return (
-    <div className="gradient-background">
       <div className="container">
         <div className="form-container">
           <div className="header">
@@ -102,6 +101,5 @@ export default function LoginUsuarioPortaria() {
           </p>
         </div>
       </div>
-    </div>
   );
 }

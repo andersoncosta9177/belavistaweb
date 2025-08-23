@@ -1,0 +1,242 @@
+/* Container principal */
+.eventos-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.eventos-gradient-background {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+/* Header */
+.eventos-header {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 10px;
+  flex-direction: row;
+}
+
+.eventos-header-icon {
+  font-size: 25px !important;
+  color: #ED9121 !important;
+  margin-right: 12px;
+}
+
+.eventos-title {
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Conteúdo */
+.eventos-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+/* Loading */
+.eventos-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: white;
+}
+
+.eventos-loading-text {
+  color: white !important;
+}
+
+/* Cards */
+.eventos-card {
+  margin-bottom: 20px !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.eventos-card-header-container {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 16px !important;
+}
+
+.eventos-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.eventos-event-type {
+  color: white !important;
+}
+
+.eventos-date-chip {
+  background-color: rgba(74, 144, 226, 0.2) !important;
+  border: 1px solid #4A90E2 !important;
+  color: white !important;
+}
+
+.eventos-today-chip {
+  background-color: rgba(76, 175, 80, 0.2) !important;
+  border-color: #4CAF50 !important;
+}
+
+.eventos-card-content {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  padding: 16px !important;
+}
+
+.eventos-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eventos-info-row {
+  display: flex;
+  align-items: center;
+}
+
+.eventos-info-icon {
+  font-size: 18px !important;
+  color: #ED9121 !important;
+  margin-right: 8px !important;
+}
+
+.eventos-info-label {
+  color: white !important;
+  font-weight: bold !important;
+  margin-right: 8px !important;
+}
+
+.eventos-info-value {
+  color: white !important;
+}
+
+.eventos-divider {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.eventos-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.eventos-footer-item {
+  display: flex;
+  align-items: center;
+}
+
+.eventos-footer-icon {
+  font-size: 16px !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  margin-right: 4px !important;
+}
+
+.eventos-footer-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Estado vazio */
+.eventos-empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: white;
+  text-align: center;
+}
+
+.eventos-empty-icon {
+  font-size: 60px !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  margin-bottom: 20px !important;
+}
+
+.eventos-empty-text {
+  color: white !important;
+  margin-bottom: 8px !important;
+}
+
+.eventos-empty-subtext {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .eventos-header {
+    flex-direction: row;
+    text-align: center;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .eventos-header-icon {
+    margin-right: 6PX;
+    /* margin-bottom: 10px; */
+  }
+  
+  .eventos-title {
+    font-size: 24px;
+  }
+  
+  .eventos-card-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .eventos-card-footer {
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .eventos-info-row {
+    flex-wrap: wrap;
+  }
+  .eventos-footer-text {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventos-container {
+    padding: 15px 10px;
+  }
+  
+  .eventos-title {
+    font-size: 20px;
+  }
+  
+  .eventos-content {
+    padding: 0 5px;
+  }
+  .eventos-card-header{
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+}

@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  ScrollView, 
-  ActivityIndicator,
-  TouchableOpacity,
-  Clipboard,
-  Alert,
-  Platform,
-  Linking
-} from 'react-native';
-import { Text, Card, Divider, Icon, Badge } from '@rneui/themed';
-import GradientLayout from '../../../../../src/Utils/gradiente';
 import { ref, onValue } from 'firebase/database';
 import { db } from '../../../../database/firebaseConfig';
-import { LinearGradient } from 'expo-linear-gradient';
+import styles from './contatos.module.css';
+import {
 
+  WhatsApp,
+  Handyman
+} from "@mui/icons-material";
 function ContatosScreen() {
   const [contatos, setContatos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,333 +39,113 @@ function ContatosScreen() {
   }, []);
 
   const copiarContato = (telefone) => {
-    Clipboard.setString(telefone);
-    Alert.alert(
-      'Copiado!',
-      'O telefone foi copiado para a área de transferência.',
-      [{ text: 'OK' }]
-    );
-  };
-
-  const ligarParaContato = (telefone) => {
-    const numero = telefone.replace(/\D/g, '');
-    Linking.openURL(`tel:${numero}`).catch(err => {
-      Alert.alert('Erro', 'Não foi possível realizar a chamada');
-      console.error('Erro ao chamar:', err);
+    navigator.clipboard.writeText(telefone).then(() => {
+      alert('O telefone foi copiado para a área de transferência.');
+    }).catch(err => {
+      console.error('Erro ao copiar:', err);
     });
   };
 
+
+
   const enviarWhatsApp = (telefone) => {
     const numero = telefone.replace(/\D/g, '');
-    Linking.openURL(`https://wa.me/55${numero}`).catch(err => {
-      Alert.alert('Erro', 'Não foi possível abrir o WhatsApp');
+    window.open(`https://wa.me/55${numero}`, '_blank').catch(err => {
+      alert('Não foi possível abrir o WhatsApp');
       console.error('Erro ao abrir WhatsApp:', err);
     });
   };
 
+  const formatarTelefone = (telefone) => {
+    const apenasNumeros = telefone.replace(/\D/g, '');
+    
+    if (apenasNumeros.length === 10) {
+      return apenasNumeros.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    } 
+    if (apenasNumeros.length === 11) {
+      return apenasNumeros.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+    
+    return telefone;
+  };
+
   if (loading && contatos.length === 0) {
     return (
-      <GradientLayout style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0F98A1" />
-          <Text style={styles.loadingText}>Carregando contatos...</Text>
-        </View>
-      </GradientLayout>
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner}></div>
+          <p className={styles.loadingText}>Carregando contatos...</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <GradientLayout style={styles.container}>
+    <div className={styles.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <Text style={styles.title}> Contatos Importantes</Text>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Contatos Importantes</h1>
         
-        <Badge
-          value={contatos.length}
-          status="primary"
-          badgeStyle={styles.badge}
-          textStyle={styles.badgeText}
-        />
-      </View>
+        <span className={styles.badge}>{contatos.length}</span>
+      </div>
 
       {/* Lista de Contatos */}
-      <ScrollView contentContainerStyle={styles.listContainer}>
+      <div className={styles.listContainer}>
         {contatos.length === 0 ? (
-          <Card containerStyle={styles.emptyCard}>
-            <Icon
-              name="account-multiple"
-              type="material-community"
-              size={40}
-              color="#0F98A1"
-              style={styles.emptyIcon}
-            />
-            <Text style={styles.emptyText}>Nenhum contato disponível</Text>
-          </Card>
+          <div className={styles.emptyCard}>
+            <span className={styles.emptyIcon}>👥</span>
+            <p className={styles.emptyText}>Nenhum contato disponível</p>
+          </div>
         ) : (
           contatos.map(contato => (
-           
-            <View key={contato.id}>
-                <Card containerStyle={styles.contatoCard}>
-                <View style={styles.contatoHeader}>
-                  <View style={styles.contatoInfo}>
-                    <Icon
-                      name="account-circle"
-                      type="material-community"
-                      size={28}
-                      color="#0F98A1"
-                      style={styles.contatoIcon}
-                    />
-                    <View style={styles.contatoTextContainer}>
-                      <Text style={styles.contatoNome}>{contato.nome}</Text>
-                      <Text style={styles.contatoTelefone}>{formatarTelefone(contato.telefone)}</Text>
-                    </View>
-                  </View>
-                </View>
-                
-                {contato.descricao && (
-                  <>
-                    <Divider style={styles.divider} />
-                    <View style={styles.descricaoContainer}>
-                      <Icon
-                        name="information-outline"
-                        type="material-community"
-                        size={18}
-                        color="#0F98A1"
-                        style={styles.descricaoIcon}
-                      />
-                      <Text style={styles.contatoDescricao}>{contato.descricao}</Text>
-                    </View>
-                  </>
-                )}
+            <div key={contato.id} className={styles.contatoCard}>
+              <div className={styles.contatoHeader}>
+                <div className={styles.contatoInfo}>
+                  <span className={styles.contatoIcon}>👤</span>
+                  <div className={styles.contatoTextContainer}>
+                    <h3 className={styles.contatoNome}>{contato.nome}</h3>
+                    <p className={styles.contatoTelefone}>{formatarTelefone(contato.telefone)}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {contato.descricao && (
+                <>
+                  <div className={styles.divider}></div>
+                  <div className={styles.descricaoContainer}>
+                    <span className={styles.descricaoIcon}>ℹ️</span>
+                    <p className={styles.contatoDescricao}>{contato.descricao}</p>
+                  </div>
+                </>
+              )}
 
-                <Divider style={styles.divider} />
+              <div className={styles.divider}></div>
 
-                <View style={styles.actionsContainer}>
-                  <TouchableOpacity 
-                    style={[styles.actionButton, styles.callButton]}
-                    onPress={() => ligarParaContato(contato.telefone)}
-                  >
-                    <Icon
-                      name="phone"
-                      type="material-community"
-                      size={16}
-                      color="#FFF"
-                    />
-                    <Text style={styles.actionButtonText}>Ligar</Text>
-                  </TouchableOpacity>
+              <div className={styles.actionsContainer}>
+            
 
-                  <TouchableOpacity 
-                    style={[styles.actionButton, styles.whatsappButton]}
-                    onPress={() => enviarWhatsApp(contato.telefone)}
-                  >
-                    <Icon
-                      name="whatsapp"
-                      type="material-community"
-                      size={16}
-                      color="#FFF"
-                    />
-                    <Text style={styles.actionButtonText}>WhatsApp</Text>
-                  </TouchableOpacity>
+                <button 
+                  className={`${styles.actionButton} ${styles.whatsappButton}`}
+                  onClick={() => enviarWhatsApp(contato.telefone)}
+                >
+                  <WhatsApp className={styles.buttonIcon} />
+                  <span className={styles.actionButtonText}>WhatsApp</span>
+                </button>
 
-                  <TouchableOpacity 
-                    style={[styles.actionButton, styles.copyButton]}
-                    onPress={() => copiarContato(contato.telefone)}
-                  >
-                    <Icon
-                      name="content-copy"
-                      type="material"
-                      size={16}
-                      color="#FFF"
-                    />
-                    <Text style={styles.actionButtonText}>Copiar</Text>
-                  </TouchableOpacity>
-                </View>
-              </Card>
-            </View>
+                <button 
+                  className={`${styles.actionButton} ${styles.copyButton}`}
+                  onClick={() => copiarContato(contato.telefone)}
+                >
+                  <span className={styles.buttonIcon}>📋</span>
+                  <span className={styles.actionButtonText}>Copiar</span>
+                </button>
+              </div>
+            </div>
           ))
         )}
-      </ScrollView>
-    </GradientLayout>
+      </div>
+    </div>
   );
 }
-
-const formatarTelefone = (telefone) => {
-  const apenasNumeros = telefone.replace(/\D/g, '');
-  
-  if (apenasNumeros.length === 10) {
-    return apenasNumeros.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-  } 
-  if (apenasNumeros.length === 11) {
-    return apenasNumeros.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-  }
-  
-  return telefone;
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 40 : 20,
-  },
-  header: {
-    alignItems: 'center',
-    paddingVertical: 15,
-    marginBottom: 10,
-    backgroundColor: 'rgba(15, 152, 161, 0.2)',
-    borderRadius: 10,
-    marginHorizontal: 15,
-    marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
-  },
-  title: {
-    color: '#FFF',
-    fontWeight: 'condensedBold',
-    fontSize: 20,
-    marginBottom: 5,
-    textAlign: 'center',
-  },
-  badge: {
-    backgroundColor: '#0B1D51',
-    height: 28,
-    minWidth: 28,
-    borderRadius: 14,
-    borderWidth: 0,
-  },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  listContainer: {
-    paddingBottom: 20,
-    paddingHorizontal: 10,
-  },
-  cardGradient: {
-    borderRadius: 12,
-    marginBottom: 15,
-    borderWidth: 0,
-    shadowColor: 'transparent',
-   
-  },
-  contatoCard: {
-     borderRadius: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    borderWidth: 0,
-    shadowColor: "transparent",
-    elevation: 0,
-    paddingVertical: 10,
-    overflow: "hidden",
-    width: "96%",
-    marginHorizontal: "2%",
-  },
-  contatoHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  contatoInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  contatoIcon: {
-    marginRight: 12,
-  },
-  contatoTextContainer: {
-    flex: 1,
-  },
-  contatoNome: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFF',
-  },
-  contatoTelefone: {
-    fontSize: 15,
-    color: '#FFF',
-    marginTop: 3,
-    opacity: 0.9,
-  },
-  divider: {
-    marginVertical: 12,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    height: 1,
-  },
-  descricaoContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 10,
-  },
-  descricaoIcon: {
-    marginRight: 8,
-    marginTop: 2,
-  },
-  contatoDescricao: {
-    fontSize: 14,
-    color: '#f5f5f5',
-    opacity: 0.9,
-    flex: 1,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 5,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    flex: 1,
-    marginHorizontal: 3,
-  },
-  callButton: {
-    backgroundColor: '#0F98A1',
-  },
-  whatsappButton: {
-    backgroundColor: '#25D366',
-  },
-  copyButton: {
-    backgroundColor: '#0B1D51',
-  },
-  actionButtonText: {
-    fontSize: 12,
-    color: '#FFF',
-    marginLeft: 5,
-    fontWeight: '600',
-  },
-  emptyCard: {
-  borderRadius: 10,
-    marginHorizontal: "2%",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    borderWidth: 0,
-    shadowColor: "transparent",
-    elevation: 0,
-    width: "96%",
-    padding: 12,
-    overflow: "hidden",
-  },
-  emptyIcon: {
-    marginBottom: 15,
-  },
-  emptyText: {
-    color: '#f5f5f5',
-    fontSize: 16,
-    textAlign: 'center',
-    opacity: 0.8,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 15,
-    color: '#f5f5f5',
-    fontSize: 16,
-  },
-});
 
 export default ContatosScreen;
