@@ -188,7 +188,7 @@ const RegistroEncomendas = () => {
               <TextField
                 fullWidth
 
-                placeholder="Número do apartamento"
+                placeholder="N° Apto"
                 value={form.apartamento}
                 onChange={(e) => handleChange("apartamento", e.target.value)}
                 type="number"

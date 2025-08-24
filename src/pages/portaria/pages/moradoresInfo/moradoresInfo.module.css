@@ -91,8 +91,9 @@
   padding: 15px 15px;
   margin-bottom: 20px;
   width: 100%;
+  height: 50px !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   
-  height: 50px important;
 }
 
 .searchIcon {
@@ -106,7 +107,7 @@
   border: none;
   color: #f5f5f5;
   font-size: 14px;
-  padding: 10px;
+  padding: 13px;
   outline: none;
   height: 50px !important;
 }
@@ -145,18 +146,19 @@
 }
 
 .cardContainer {
-  background: rgba(0, 0, 0, 0.5);
-  border:  1px solid #f9f9f9;
+  background: rgba(0, 0, 0, 0.2);
+      border:  1px solid #ED9121;
+  box-shadow: 0 0.6px 5px 0 #955a13;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .cardContainer:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0.6px 8px 0 #955a13;
 }
 
 .cardGradient {

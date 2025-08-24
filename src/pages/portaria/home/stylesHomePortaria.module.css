@@ -35,8 +35,8 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-    border:  1px solid #ED9121;
-  box-shadow: 0 1px 3px 0 #ED9121
+    border:  1px solid #955a13;
+  box-shadow: 0 1px 3px 0 #955a13
 }
 
 .headerTitlePortaria {
@@ -120,7 +120,7 @@
   text-decoration: none;
   box-sizing: border-box;
     border:  1px solid #ED9121;
-  box-shadow: 0 1px 3px 0 #ED9121
+  box-shadow: 0 0.6px 3px 0 #955a13
 }
 
 .gridItemPortaria:hover {
