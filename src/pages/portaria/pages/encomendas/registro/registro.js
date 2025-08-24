@@ -13,15 +13,12 @@ import {
   Zoom
 } from "@mui/material";
 import {
-  Business,
   Person,
-  QrCode,
   Badge,
   ConfirmationNumber,
   Cancel,
   CheckCircle,
   LocalShipping,
-  Numbers,
   Apartment
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";

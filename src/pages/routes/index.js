@@ -91,6 +91,7 @@ function AppRoutes() {
         <Route path="/moradores/home" element={<HomeMorador />} />
         <Route path="/sindico/home" element={<HomeSindico />} />
        <Route path="/portaria/home/:codigo" element={<HomePortaria />} />
+       <Route path="/portaria/home" element={<HomePortaria />} />
 
       </Routes>
     </Router>
