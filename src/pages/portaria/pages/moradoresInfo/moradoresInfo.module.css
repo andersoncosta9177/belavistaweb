@@ -1,5 +1,4 @@
 .gradientContainer {
-  background: linear-gradient(135deg, #4568dc 0%, #733b75 100%);
 
   min-height: 100vh;
   /* padding: 20px; */
@@ -144,8 +143,8 @@
 }
 
 .cardContainer {
-  background: linear-gradient(135deg, #442446 0%, #4568dc 100%);
-
+  background: rgba(0, 0, 0, 0.5);
+  border:  1px solid #f9f9f9;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;

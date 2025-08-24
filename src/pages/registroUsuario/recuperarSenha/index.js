@@ -71,6 +71,15 @@ export default function RecuperarSenha() {
 
           {/* Button */}
           <div className="button-container-single">
+                <button
+                onClick={() => navigate('/')}
+              className="cancel-button"              
+            >
+              <Link to="/" className="link-text-password">
+                <FaArrowLeft className="button-icon" />
+                Voltar
+              </Link>
+            </button>
             <button
               className="login-button"
               onClick={handleRecuperarSenha}
@@ -80,20 +89,17 @@ export default function RecuperarSenha() {
                 <div className="spinner"></div>
               ) : (
                 <>
-                  Enviar Link
+                  Enviar
                   <FaPaperPlane className="button-icon" />
                 </>
               )}
             </button>
+          
+      
           </div>
 
           {/* Back Link */}
-          <div className="link-container">
-            <Link to="/" className="link-text">
-              <FaArrowLeft className="button-icon" />
-              Voltar para o login
-            </Link>
-          </div>
+      
         </div>
       </div>
   );

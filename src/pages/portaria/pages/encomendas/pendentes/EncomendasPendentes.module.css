@@ -8,14 +8,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-   background: linear-gradient(135deg, #4568DC 0%, #b06ab3 100%);
-        /* colors={['#4568DC', '#B06AB3']} */
 
 
 }
 
 .gradientBackground {
-  display: none; /* Removido pois o background está sendo aplicado no container */
+  display: none; 
 }
 
 .header {
@@ -178,8 +176,10 @@
 
 /* Estilos para os modais */
 .modalPaper {
-  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%) !important;
   border-radius: 12px !important;
+  background: linear-gradient(135deg, #8e5e30 0%, #42250b 100%) !important;
+  width: 100% !important;
+
 }
 
 .modalTitle {
@@ -213,16 +213,18 @@
 }
 
 .modalInput .MuiInputBase-input::placeholder {
-  color: #86939e;
+  color: #000;
   opacity: 1;
 }
 
 .modalActions {
-  padding: 20px 24px !important;
+  padding: 20px !important;
   display: flex;
-  justify-content: space-between;
+  justify-content: center !important;
   gap: 12px;
-  align-items: center;
+  align-items: center !important;
+  width: 100% !important;
+  flex-direction: row !important;
 }
 
 .confirmButton {
@@ -230,7 +232,7 @@
   color: white !important;
   border-radius: 8px;
   font-weight: 600;
-  padding: 12px 20px;
+  padding: 12px 20px !important;
   flex: 1;
 }
 
@@ -239,7 +241,7 @@
   color: white !important;
   border-radius: 8px;
   font-weight: 600;
-  padding: 12px 20px;
+  padding: 12px 20px !important;
   flex: 1;
 }
 

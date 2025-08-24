@@ -2,8 +2,10 @@ body{
   margin: 0;
   font-family: 'Segoe UI', Roboto, sans-serif;
    /* background: linear-gradient(135deg, #142b57 0%, #256fee 100%); */
-  background: linear-gradient(135deg, #4568dc 0%, #733b75 100%);
+  background: linear-gradient(135deg, #8e5e30 0%, #2B1807 100%) !important;
   /* background: linear-gradient(135deg, #4568DC 0%, #0a94cb 100%); */
+           
+
 
 
   box-sizing: border-box;

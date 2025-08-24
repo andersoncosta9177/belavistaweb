@@ -52,7 +52,7 @@ function AppRoutes() {
         <Route path="/sindico/comunicados/comunicados-home" element={<HomeComunicados />} />
         <Route path="/sindico/agenda/agenda-home" element={<AgendaSindico />} />    
         <Route path="/portaria/documentos/home-documentos" element={<HomeDocumentos />} /> 
-
+         
         <Route path="/portaria/documentos/registro-doc" element={<RegistroDoc />} /> 
         <Route path="/portaria/documentos/documentos-registrados" element={<DocumentosRegistrados />} />
 
@@ -85,6 +85,7 @@ function AppRoutes() {
         <Route path="/sindico/comunicados/publicar-comunicado" element={<PublicarComunicado />} />
         <Route path="/registro-morador/cadastro" element={<CadastroMorador />} />
         <Route path="/registro-usuario/registro-condominio/cadastro" element={<CadastroCondominio />} />
+        <Route path="/registro-usuario/registro-condominio/login" element={<LoginCondominio />} />
         <Route path="/registro-morador/login" element={<LoginMorador />} />
         <Route path="/registro-portaria/login" element={<LoginPortaria />} />
         <Route path="/moradores/home" element={<HomeMorador />} />

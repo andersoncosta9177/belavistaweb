@@ -4,7 +4,6 @@
   width: 100%;
   padding: 16px;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }

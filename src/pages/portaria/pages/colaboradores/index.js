@@ -47,24 +47,33 @@ function Colaboradores() {
     return () => unsubscribe();
   }, [currentUser]);
 
-  const toggleServico = async (id) => {
-    try {
-      const updates = {};
-      
-      // Primeiro desativa todos os outros porteiros
-      colaboradores.forEach(colab => {
-        updates[`DadosBelaVista/RegistroFuncionario/Tokens/${colab.id}/emServico`] = false;
-      });
-      
-      // Ativa apenas o selecionado
-      updates[`DadosBelaVista/RegistroFuncionario/Tokens/${id}/emServico`] = true;
-      
-      await update(ref(db), updates);
-    } catch (error) {
-      console.error("Erro ao atualizar status:", error);
-      alert("Não foi possível atualizar o status");
-    }
-  };
+const toggleServico = async (id) => {
+  try {
+    // Busca o valor atual diretamente do Firebase em vez de confiar no estado local
+    const colaboradorRef = ref(db, `DadosBelaVista/RegistroFuncionario/Tokens/${id}`);
+    
+    onValue(colaboradorRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const novoEstado = !data.emServico;
+        
+        const updates = {};
+        updates[`DadosBelaVista/RegistroFuncionario/Tokens/${id}/emServico`] = novoEstado;
+        
+        update(ref(db), updates)
+          .then(() => console.log("Status atualizado com sucesso"))
+          .catch((error) => {
+            console.error("Erro ao atualizar status:", error);
+            alert("Erro", "Não foi possível atualizar o status");
+          });
+      }
+    }, { onlyOnce: true }); // Apenas executa uma vez
+
+  } catch (error) {
+    console.error("Erro ao atualizar status:", error);
+    alert("Erro", "Não foi possível atualizar o status");
+  }
+};
 
   const getIconByFunction = (funcao) => {
     switch(funcao.toLowerCase()) {

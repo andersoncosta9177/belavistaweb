@@ -61,10 +61,10 @@
 .input-group {
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 0 15px;
-  height: 50px;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 5px !important;
+  padding: 7px 15px !important;
+  height: 50px !important;
 }
 
 .input-icon {
@@ -111,19 +111,31 @@
   gap: 15px;
   margin-top: 25px;
 }
+.button-container-single{
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.link-text-password {
+  font-size: 14px;
+  color: #f9f9f9;
+  text-decoration: none;
+}
 
 .cancel-button, 
 .login-button, 
 .register-button {
   flex: 1;
-  padding: 12px 20px !important; /* Força o padding */
+  padding: 14px 20px !important; /* Força o padding */
   border-radius: 8px !important; /* Força o border-radius */
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   gap: 8px;
   transition: all 0.3s ease;
   border: none !important; /* Remove qualquer borda padrão */
@@ -161,6 +173,7 @@
 
 .button-icon {
   font-size: 16px;
+  color: white;
 }
 
 .link-container {
@@ -174,7 +187,7 @@
 }
 
 .link-text {
-  color: #FFD700;
+  color: #f5a626;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -228,6 +241,20 @@
     width: 100%;
     max-width: none;
   }
+  .icon-container{
+     width: 45px;
+  height: 45px;
+
+  }
+  .icon{
+    width: 24px;
+    height: 24px;
+  }
+
+  .header{
+    flex-direction: column;
+    align-items: center;
+  }
   
   .form-container {
       padding: 20px 15px;
@@ -237,7 +264,7 @@
   }
   
   .title {
-    font-size: 20px;
+    font-size: 16px !important;
   }
   
   .input-group {

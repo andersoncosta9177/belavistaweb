@@ -17,9 +17,12 @@ import {
   Person,
   QrCode,
   Badge,
+  ConfirmationNumber,
   Cancel,
   CheckCircle,
-  LocalShipping
+  LocalShipping,
+  Numbers,
+  Apartment
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import "./registroEncomendas.modules.css";
@@ -162,27 +165,7 @@ const RegistroEncomendas = () => {
           )}
 
           <form onSubmit={handleSubmit} className="form-encomendas">
-            <Box className="input-container-encomendas">
-              <Business className="input-icon-encomendas" />
-              <TextField
-                fullWidth
-                placeholder="Número do apartamento"
-                value={form.apartamento}
-                onChange={(e) => handleChange("apartamento", e.target.value)}
-                type="number"
-                className="input-field-encomendas"
-                disabled={loading}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    moradorRef.current?.focus();
-                  }
-                }}
-                variant="standard"
-                InputProps={{ disableUnderline: true }}
-              />
-            </Box>
-
+         
             <Box className="input-container-encomendas">
               <Person className="input-icon-encomendas" />
               <TextField
@@ -203,9 +186,32 @@ const RegistroEncomendas = () => {
                 InputProps={{ disableUnderline: true }}
               />
             </Box>
+               <Box className="input-container-encomendas">
+              <Apartment className="input-icon-encomendas" />
+              <TextField
+                fullWidth
+
+                placeholder="Número do apartamento"
+                value={form.apartamento}
+                onChange={(e) => handleChange("apartamento", e.target.value)}
+                type="number"
+                className="input-field-encomendas"
+                disabled={loading}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    moradorRef.current?.focus();
+                  }
+                }}
+                variant="standard"
+                InputProps={{ disableUnderline: true }}
+              />
+            </Box>
+
 
             <Box className="input-container-encomendas">
-              <QrCode className="input-icon-encomendas" />
+              <ConfirmationNumber
+ className="input-icon-encomendas" />
               <TextField
                 fullWidth
                 inputRef={rastreamentoRef}

@@ -292,9 +292,9 @@ export default function CadastroCondominio() {
 
           {/* Link para Login */}
          <div className="link-container">
-            <span className="register-text">Não possui cadastro? </span>
-            <Link to='/registro-usuario/registro-condominio/cadastro' className="link-text">
-              Cadastre-se
+            <span className="register-text">Ja possui cadastro? </span>
+            <Link to='/registro-usuario/registro-condominio/login' className="link-text">
+              Faça login
             </Link>
           </div>
           <div className="link-container">

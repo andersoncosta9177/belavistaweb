@@ -35,8 +35,9 @@ export default function LoginUsuarioPortaria() {
         return;
       }
 
-      localStorage.setItem("codigo", codigo);
-      navigate(`/portaria/home/${codigo}`);
+  localStorage.setItem("codigo", codigo);
+navigate(`/portaria/home/${codigo}`); // mantido igual ao App.js
+
     } catch (error) {
       console.error("Erro ao validar o código:", error);
       alert("Ocorreu um erro ao validar o código. Tente novamente.");
@@ -60,9 +61,9 @@ export default function LoginUsuarioPortaria() {
             <div className="input-group">
               <FaKey className="input-icon" />
               <input
-                type="text"
                 placeholder="Digite o código de acesso"
                 value={codigo}
+               type="number"
                 onChange={(e) => setCodigo(e.target.value)}
                 className="input-field"
               />

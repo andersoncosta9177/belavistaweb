@@ -392,6 +392,20 @@ function EncomendasPendentes() {
               startAdornment: <Person sx={{ color: '#86939e', mr: 1 }} />
             }}
             className={styles.modalInput}
+                sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  border: "none",
+                },
+                "&.Mui-focused fieldset": {
+                  border: "none",
+                  boxShadow: "none",
+                },
+              },
+            }}
             value={recebedor}
             onChange={(e) => setRecebedor(e.target.value)}
             fullWidth
@@ -432,6 +446,20 @@ function EncomendasPendentes() {
               startAdornment: <Person sx={{ color: '#86939e', mr: 1 }} />
             }}
             className={styles.modalInput}
+                sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  border: "none",
+                },
+                "&.Mui-focused fieldset": {
+                  border: "none",
+                  boxShadow: "none",
+                },
+              },
+            }}
             value={editData.nomeMorador}
             onChange={(e) => setEditData({...editData, nomeMorador: e.target.value})}
             fullWidth
@@ -445,6 +473,20 @@ function EncomendasPendentes() {
               startAdornment: <Apartment sx={{ color: '#86939e', mr: 1 }} />
             }}
             className={styles.modalInput}
+                sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  border: "none",
+                },
+                "&.Mui-focused fieldset": {
+                  border: "none",
+                  boxShadow: "none",
+                },
+              },
+            }}
             value={editData.apartamento}
             onChange={(e) => setEditData({...editData, apartamento: e.target.value})}
             fullWidth
@@ -458,6 +500,20 @@ function EncomendasPendentes() {
               startAdornment: <QrCode sx={{ color: '#86939e', mr: 1 }} />
             }}
             className={styles.modalInput}
+                sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  border: "none",
+                },
+                "&.Mui-focused fieldset": {
+                  border: "none",
+                  boxShadow: "none",
+                },
+              },
+            }}
             value={editData.numeroRastreamento}
             onChange={(e) => setEditData({...editData, numeroRastreamento: e.target.value})}
             fullWidth

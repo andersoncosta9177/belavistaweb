@@ -11,7 +11,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-    background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%) !important;
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
   z-index: -1;

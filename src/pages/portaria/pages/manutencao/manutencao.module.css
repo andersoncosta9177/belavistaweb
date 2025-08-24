@@ -1,10 +1,7 @@
 .gradientContainer {
-  background: linear-gradient(135deg, #4568dc 0%, #733b75 100%);
-
-
   min-height: 100vh;
   padding: 20px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   margin: 0;
 }
 
@@ -35,8 +32,8 @@
 }
 
 @keyframes spin {
-  to { 
-    transform: rotate(360deg); 
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -56,12 +53,12 @@
   font-weight: 700;
   font-size: 1.4rem;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   line-height: 1.2;
 }
 
 .countBadge {
-  background: linear-gradient(135deg, #4CAF50, #45a049);
+  background: linear-gradient(135deg, #4caf50, #45a049);
   color: white;
   padding: 8px 16px;
   border-radius: 20px;
@@ -69,7 +66,7 @@
   font-size: 1.1rem;
   min-width: 35px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .listContainer {
@@ -117,15 +114,15 @@
   justify-content: center;
   font-size: 24px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .avatar.concluido {
-  background: linear-gradient(135deg, #4CAF50, #45a049);
+  background: linear-gradient(135deg, #4caf50, #45a049);
 }
 
 .avatar.pendente {
-  background: linear-gradient(135deg, #FF5252, #e74c3c);
+  background: linear-gradient(135deg, #ff5252, #e74c3c);
 }
 
 .avatarIcon {
@@ -158,20 +155,25 @@
   display: inline-block;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .badgeSuccess {
-  background: linear-gradient(135deg, #4CAF50, #45a049);
+  background: linear-gradient(135deg, #4caf50, #45a049);
 }
 
 .badgeError {
-  background: linear-gradient(135deg, #FF5252, #e74c3c);
+  background: linear-gradient(135deg, #ff5252, #e74c3c);
 }
 
 .divider {
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   margin: 20px 0;
   border: none;
 }
@@ -247,8 +249,8 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  transition: .4s;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  transition: 0.4s;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider:before {
@@ -259,12 +261,12 @@
   left: 4px;
   bottom: 4px;
   background-color: white;
-  transition: .4s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: 0.4s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider {
-  background: linear-gradient(135deg, #4CAF50, #45a049);
+  background: linear-gradient(135deg, #4caf50, #45a049);
 }
 
 input:checked + .slider:before {
@@ -311,16 +313,16 @@ input:checked + .slider:before {
   .container {
     padding: 0 20px;
   }
-  
+
   .headerTitle {
     font-size: 1.8rem;
   }
-  
+
   .listContainer {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
   }
-  
+
   .card {
     padding: 22px;
     min-height: 260px;
@@ -331,37 +333,37 @@ input:checked + .slider:before {
   .gradientContainer {
     padding: 15px;
   }
-  
+
   .header {
     padding: 15px 0;
     margin-bottom: 25px;
   }
-  
+
   .headerTitle {
     font-size: 1.6rem;
   }
-  
+
   .countBadge {
     font-size: 1rem;
     padding: 7px 14px;
   }
-  
+
   .listContainer {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 18px;
   }
-  
+
   .card {
     padding: 20px;
     min-height: 250px;
   }
-  
+
   .avatar {
     width: 45px;
     height: 45px;
     font-size: 22px;
   }
-  
+
   .titulo {
     font-size: 1.15rem;
   }
@@ -371,78 +373,78 @@ input:checked + .slider:before {
   .gradientContainer {
     padding: 12px;
   }
-  
+
   .container {
     padding: 0 10px;
   }
-  
+
   .header {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
     padding: 12px 0;
   }
-  
+
   .headerTitle {
     font-size: 1.5rem;
     text-align: center;
   }
-  
+
   .listContainer {
     grid-template-columns: 1fr;
     gap: 16px;
     padding-bottom: 30px;
   }
-  
+
   .card {
     padding: 18px;
     border-radius: 14px;
     min-height: auto;
   }
-  
+
   .cardHeader {
     flex-direction: row;
     text-align: left;
     gap: 12px;
   }
-  
+
   .titulo {
     font-size: 1.1rem;
     white-space: normal;
   }
-  
+
   .descricao {
     font-size: 0.9rem;
   }
-  
+
   .switchContainer {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
   }
-  
+
   .switchLabel {
     text-align: center;
   }
-  
+
   .switch {
     align-self: center;
   }
-  
+
   .footerRow {
     flex-direction: row;
     align-items: center;
   }
-  
+
   .emptyContainer {
     padding: 50px 15px;
     margin: 15px 0;
   }
-  
+
   .emptyIcon {
     font-size: 48px;
   }
-  
+
   .emptyText {
     font-size: 1.1rem;
   }
@@ -452,37 +454,37 @@ input:checked + .slider:before {
   .headerTitle {
     font-size: 1.3rem;
   }
-  
+
   .countBadge {
     font-size: 0.9rem;
     padding: 6px 12px;
   }
-  
+
   .card {
     padding: 15px;
   }
-  
+
   .avatar {
     width: 40px;
     height: 40px;
     font-size: 20px;
   }
-  
+
   .badge {
     padding: 5px 12px;
     font-size: 0.7rem;
   }
-  
+
   .switch {
     width: 50px;
     height: 25px;
   }
-  
+
   .slider:before {
     height: 19px;
     width: 19px;
   }
-  
+
   input:checked + .slider:before {
     transform: translateX(25px);
   }

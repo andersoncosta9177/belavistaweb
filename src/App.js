@@ -16,20 +16,22 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCodigo = async () => {
-      try {
-        const codigo = localStorage.getItem('codigo');
-        if (codigo) {
-          navigate('/portaria/home', { state: { codigo } });
-        }
-      } catch (error) {
-        console.error('Erro ao buscar o código:', error);
+useEffect(() => {
+  const fetchCodigo = async () => {
+    try {
+      const codigo = localStorage.getItem('codigo');
+      if (codigo) {
+        // Corrigido: agora navega para a rota correta com o parâmetro
+        navigate(`/portaria/home/${codigo}`);
       }
-    };
+    } catch (error) {
+      console.error('Erro ao buscar o código:', error);
+    }
+  };
 
-    fetchCodigo();
-  }, [navigate]);
+  fetchCodigo();
+}, [navigate]);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
