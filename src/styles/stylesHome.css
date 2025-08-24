@@ -5,31 +5,30 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #8e5e30 0%, #2B1807 100%);
-
-
+  padding: 15px;
 }
 
 .content-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px; /* Aumentado para acomodar 3 botões */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-/* Layout padrão (desktop): lado a lado */
+/* Layout grid responsivo */
 .buttons-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr; /* Padrão: 1 coluna (mobile) */
+  gap: 12px;
   width: 100%;
   justify-content: center;
 }
 
 .card-button {
   width: 100%;
+  max-width: 250px; /* Limite máximo para não ficar gigante */
   height: 150px;
   display: flex;
   flex-direction: column;
@@ -37,35 +36,85 @@
   align-items: center;
   border-radius: 12px;
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.2);
   text-decoration: none;
   color: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid #f9f9f9;
-  box-shadow:  0 5px 12px  rgba(7, 7, 7, 0.6);
+  margin: 0 auto; /* Centraliza os botões */
+      border:  1px solid #ED9121;
+  box-shadow: 0 0.5px 4px 0 #ED9121;
 }
 
-/* Mobile: um botão por linha */
-@media (max-width: 600px) {
+/* Tablet: 2 botões por linha */
+@media (min-width: 600px) {
   .buttons-grid {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    gap: 25px;
   }
   
   .card-button {
-    width: 90%;
-    height: 100px; /* Altura menor para mobile */
+    height: 140px;
+    max-width: 250px;
   }
 }
 
+/* Desktop: 3 botões por linha */
+@media (min-width: 900px) {
+  .buttons-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+    gap: 20px;
+    max-width: 1000px;
+  }
+  
+  .card-button {
+    height: 150px;
+    max-width: 280px;
+  }
+}
 
+/* Telas muito grandes: mantém 3 botões mas com tamanho controlado */
+@media (min-width: 1200px) {
+  .buttons-grid {
+    max-width: 1000px;
+    gap: 35px;
+  }
+  
+  .card-button {
+    max-width: 300px;
+    height: 160px;
+  }
+}
+
+/* Mobile: ajustes para telas muito pequenas */
+@media (max-width: 480px) {
+  .container-center {
+    padding: 15px;
+  }
+  
+  .buttons-grid {
+    gap: 15px;
+  }
+  
+  .card-button {
+    height: 120px;
+    padding: 15px;
+    max-width: 100%;
+  }
+  
+  .button-label {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}
 
 /* Efeitos e texto (comuns a todos os tamanhos) */
 .card-button:hover {
-   background-color: rgba(0, 0, 0, 0.3);
-
+  background-color: rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
+  box-shadow: 0 0.5px 7px 0 #ED9121;
+
+
 }
 
 .button-label {
@@ -74,4 +123,19 @@
   font-weight: 600;
   color: #EFF3EA;
   text-align: center;
+}
+
+/* Ícones dentro dos botões */
+.button-icon {
+  font-size: 32px;
+  color: #ED9121;
+  margin-bottom: 10px;
+}
+
+/* Ajuste de ícones para mobile */
+@media (max-width: 480px) {
+  .button-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
 }

@@ -76,7 +76,7 @@ export default function RecuperarSenha() {
               className="cancel-button"              
             >
               <Link to="/" className="link-text-password">
-                <FaArrowLeft className="button-icon" />
+                {/* <FaArrowLeft className="button-icon" /> */}
                 Voltar
               </Link>
             </button>
@@ -90,7 +90,7 @@ export default function RecuperarSenha() {
               ) : (
                 <>
                   Enviar
-                  <FaPaperPlane className="button-icon" />
+                  {/* <FaPaperPlane className="button-icon" /> */}
                 </>
               )}
             </button>

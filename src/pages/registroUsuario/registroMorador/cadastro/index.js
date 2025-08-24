@@ -317,7 +317,7 @@ export default function CadastroMorador() {
               className="cancel-button"
               onClick={() => navigate(-1)}
             >
-              <FaArrowLeft className="button-icon" />
+              {/* <FaArrowLeft className="button-icon" /> */}
               Cancelar
             </button>
             
@@ -331,7 +331,7 @@ export default function CadastroMorador() {
               ) : (
                 <>
                   Cadastrar
-                  <FaUserPlus className="button-icon" />
+                  {/* <FaUserPlus className="button-icon" /> */}
                 </>
               )}
             </button>

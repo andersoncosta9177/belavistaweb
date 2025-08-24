@@ -1,10 +1,10 @@
 /* homeMoradores.module.css */
-
-/* ESTILOS GERAIS */
 .gradientBackground {
-  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%) !important;
   min-height: 100vh;
+
 }
+
+
 
 .container {
   width: 100%;
@@ -29,17 +29,8 @@
   width: 100%;
   box-sizing: border-box;
 }
+
 .headerTitleMoradores {
- font-size: 20px;
-  margin: 5px 0;
-  font-weight: 300;
-  color: white;
-  width: 100%;
-  text-align: center;
-}
-
-
-.headerTitle {
   font-size: 20px;
   margin: 5px 0;
   font-weight: 300;
@@ -73,19 +64,12 @@
   color: white;
   letter-spacing: 1px;
 }
+
 .boldPortaria {
   font-weight: 600;
 }
 
 .orangePortaria {
-  color: #ED9121;
-}
-
-.bold {
-  font-weight: 600;
-}
-
-.orange {
   color: #ED9121;
 }
 
@@ -185,7 +169,7 @@
     margin-bottom: 30px;
   }
   
-  .headerTitle, .title {
+  .headerTitleMoradores, .title {
     font-size: 24px;
   }
   
@@ -222,7 +206,7 @@
     margin-bottom: 30px;
   }
   
-  .headerTitle, .title {
+  .headerTitleMoradores, .title {
     font-size: 24px;
   }
   

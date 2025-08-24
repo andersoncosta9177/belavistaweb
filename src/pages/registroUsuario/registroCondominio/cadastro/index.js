@@ -270,7 +270,7 @@ export default function CadastroCondominio() {
               className="cancel-button"
               onClick={() => navigate(-1)}
             >
-              <FontAwesomeIcon icon={faArrowLeft} className="button-icon" />
+              {/* <FontAwesomeIcon icon={faArrowLeft} className="button-icon" /> */}
               Cancelar
             </button>
             
@@ -284,7 +284,7 @@ export default function CadastroCondominio() {
               ) : (
                 <>
                   Cadastrar
-                  <FontAwesomeIcon icon={faUserPlus} className="button-icon" />
+                  {/* <FontAwesomeIcon icon={faUserPlus} className="button-icon" /> */}
                 </>
               )}
             </button>

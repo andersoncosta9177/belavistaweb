@@ -76,7 +76,7 @@ navigate(`/portaria/home/${codigo}`); // mantido igual ao App.js
               className="cancel-button"
               onClick={() => navigate(-1)}
             >
-              <FaArrowLeft className="button-icon" />
+              {/* <FaArrowLeft className="button-icon" /> */}
               Cancelar
             </button>
             
@@ -90,7 +90,7 @@ navigate(`/portaria/home/${codigo}`); // mantido igual ao App.js
               ) : (
                 <>
                   Entrar
-                  <FaSignInAlt className="button-icon" />
+                  {/* <FaSignInAlt className="button-icon" /> */}
                 </>
               )}
             </button>

@@ -90,8 +90,9 @@ function AppRoutes() {
         <Route path="/registro-portaria/login" element={<LoginPortaria />} />
         <Route path="/moradores/home" element={<HomeMorador />} />
         <Route path="/sindico/home" element={<HomeSindico />} />
-       <Route path="/portaria/home/:codigo" element={<HomePortaria />} />
        <Route path="/portaria/home" element={<HomePortaria />} />
+
+       <Route path="/portaria/home/:codigo" element={<HomePortaria />} />
 
       </Routes>
     </Router>

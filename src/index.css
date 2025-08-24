@@ -1,15 +1,17 @@
 body{
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, sans-serif;
-   /* background: linear-gradient(135deg, #142b57 0%, #256fee 100%); */
-  background: linear-gradient(135deg, #8e5e30 0%, #2B1807 100%) !important;
-  /* background: linear-gradient(135deg, #4568DC 0%, #0a94cb 100%); */
-           
-
-
-
-  box-sizing: border-box;
-  padding: 0;
+ margin: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #8e5e30, #44280f, #a96628);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      box-sizing: border-box;
+      padding: 0;
+      min-height: 100vh;
+}
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 *, *::before, *::after {
   box-sizing: border-box;

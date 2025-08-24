@@ -1,12 +1,11 @@
 /* ESTILOS GERAIS */
 .gradientBackground {
-  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%) !important;
   min-height: 100vh;
 }
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1000px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,6 +25,8 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
+      border:  1px solid #ED9121;
+  box-shadow: 0 1px 3px 0 #ED9121
 }
 
 .headerTitle {
@@ -104,10 +105,12 @@
   text-align: center;
   text-decoration: none;
   box-sizing: border-box;
+      border:  1px solid #ED9121;
+  box-shadow: 0 1px 5px 0 #ED9121
 }
 
 .gridItem:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

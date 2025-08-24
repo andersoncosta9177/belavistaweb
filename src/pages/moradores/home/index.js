@@ -143,7 +143,7 @@ function HomeMoradores() {
             <span className={styles.gridText}>Comunicados</span>
           </Link>
           
-          <Link to="/src/pages/moradores/pages/prestadoresServicos" className={styles.gridItem}>
+          <Link to="/moradores/prestadores-servicos" className={styles.gridItem}>
             <FontAwesomeIcon icon={faHandsHelping} className={styles.gridIcon} />
             <span className={styles.gridText}>Prest. serviços</span>
           </Link>

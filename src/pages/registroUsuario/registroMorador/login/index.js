@@ -129,7 +129,7 @@ export default function LoginUsuarioMorador() {
               className="cancel-button"
               onClick={() => navigate(-1)}
             >
-              <FaArrowLeft className="button-icon" />
+              {/* <FaArrowLeft className="button-icon" /> */}
               Cancelar
             </button>
             
@@ -143,7 +143,7 @@ export default function LoginUsuarioMorador() {
               ) : (
                 <>
                   Entrar
-                  <FaSignInAlt className="button-icon" />
+                  {/* <FaSignInAlt className="button-icon" /> */}
                 </>
               )}
             </button>

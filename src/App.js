@@ -73,7 +73,8 @@ useEffect(() => {
   }
 
   return (
-    <div className="app-container">
+  <div className="gradientBackground">
+      <div className="app-container">
       <div className="content-container">
         {/* Logo Centralizado */}
         <motion.div 
@@ -131,6 +132,7 @@ useEffect(() => {
         </motion.div>
       </div>
     </div>
+  </div>
   );
 }
 

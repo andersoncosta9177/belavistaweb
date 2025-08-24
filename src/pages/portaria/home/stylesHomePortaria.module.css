@@ -2,33 +2,41 @@
 
 /* ESTILOS GERAIS */
 .gradientBackgroundPortaria {
-  background: linear-gradient(135deg, #8e5e30 0%, #2B1807 100%);
-
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* padding: 10px; */
+  box-sizing: border-box;
 }
 
 .containerPortaria {
   width: 100%;
-  max-width: 1400px;
+  max-width: 900px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 10px;
   box-sizing: border-box;
-  margin: 0 auto;
 }
 
 /* HEADER */
 .headerPortaria {
   color: white;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   padding: 15px 10px;
   margin: 0 auto 20px;
   height: auto;
   flex-direction: column;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+    border:  1px solid #ED9121;
+  box-shadow: 0 1px 3px 0 #ED9121
 }
 
 .headerTitlePortaria {
@@ -47,6 +55,7 @@
   margin-bottom: 10px;
   padding: 0 5px;
   width: 100%;
+  max-width: 100%;
 }
 
 .iconButtonPortaria {
@@ -79,6 +88,7 @@
   margin-top: 5px;
   color: #f0f0f0;
   text-align: center;
+  width: 100%;
 }
 
 /* GRID DE ÍCONES */
@@ -87,13 +97,15 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 5px;
   box-sizing: border-box;
+  justify-content: center;
 }
 
 .gridItemPortaria {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -102,17 +114,20 @@
   cursor: pointer;
   transition: all 0.3s ease;
   color: white;
-  padding: 15px 5px;
+  padding: 10px 5px;
   aspect-ratio: 1/1;
   text-align: center;
   text-decoration: none;
   box-sizing: border-box;
+    border:  1px solid #ED9121;
+  box-shadow: 0 1px 3px 0 #ED9121
 }
 
 .gridItemPortaria:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.3);
   transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 7px 0 #ED9121
+
 }
 
 .gridIconPortaria {
@@ -152,16 +167,15 @@
 }
 
 /* RESPONSIVIDADE PARA TELAS MAIORES */
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .containerPortaria {
-    max-width: 760px;
     padding: 20px;
   }
   
   .headerPortaria {
-    height: 200px;
-    padding: 15px;
+    padding: 20px;
     margin-bottom: 30px;
+    max-width: 100%;
   }
   
   .headerTitlePortaria, .titlePortaria {
@@ -173,7 +187,9 @@
   }
   
   .gridContainerPortaria {
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
+    max-width: 100%;
   }
   
   .gridItemPortaria {
@@ -189,32 +205,27 @@
   }
 }
 
-@media (min-width: 480px) {
-  .containerPortaria {
-    max-width: 470px;
-    padding: 20px;
-  }
-
-  .headerPortaria {
-    height: 200px;
-    padding: 15px;
-    margin-bottom: 30px;
-  }
-  
-  .headerTitlePortaria, .titlePortaria {
-    font-size: 24px;
-  }
-  
-  .welcomePortaria {
-    font-size: 16px;
-  }
-  
+/* TELAS GRANDES - 5 ÍCONES POR LINHA */
+@media (min-width: 1024px) {
   .gridContainerPortaria {
-    gap: 15px;
+    grid-template-columns: repeat(6, 1fr);
+    max-width: 1000px;
   }
   
+  .headerPortaria {
+    max-width: 1000px;
+  }
   .gridItemPortaria {
-    padding: 20px 10px;
+     background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  aspect-ratio: 1/1;
   }
   
   .gridIconPortaria {
@@ -222,6 +233,18 @@
   }
   
   .gridTextPortaria {
-    font-size: 14px;
+    font-size: 16px;
+  }
+}
+
+/* TELAS MUITO PEQUENAS (opcional) */
+@media (max-width: 320px) {
+  .gridContainerPortaria {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .gridTextPortaria {
+    font-size: 11px;
   }
 }

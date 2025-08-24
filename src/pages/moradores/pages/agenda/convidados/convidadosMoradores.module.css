@@ -64,7 +64,6 @@
 
 /* Resto dos estilos permanecem iguais */
 .gradientBackground {
-  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);
   min-height: 100vh;
   padding: 20px;
   display: flex;

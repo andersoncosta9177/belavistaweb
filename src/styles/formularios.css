@@ -17,16 +17,19 @@
 
 .form-container {
   background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 25px 20px; /* Ajustei o padding interno */
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border:  1px solid #ED9121;
+  box-shadow: 0 1px 12px 0 #ED9121
 }
 
 .header {
   text-align: center;
   margin-bottom: 30px;
+  flex-direction: column;
 }
 
 .icon-container {
@@ -56,6 +59,7 @@
 
 .input-wrapper {
   margin-bottom: 20px;
+
 }
 
 .input-group {
@@ -63,12 +67,12 @@
   align-items: center;
   background-color: rgba(0, 0, 0, 0.3) !important;
   border-radius: 5px !important;
-  padding: 7px 15px !important;
-  height: 50px !important;
+  padding: 9px 15px !important;
+  height: 55px !important;
 }
 
 .input-icon {
-  color: #ED9121;
+  color: #f9f9f9 !important;
   margin-right: 10px;
   font-size: 18px;
 }
@@ -106,9 +110,9 @@
 /* Substitua as regras existentes dos botões por estas: */
 
 .button-container {
-  display: flex;
+ display: flex;
   justify-content: space-between;
-  gap: 15px;
+  gap: 10px;
   margin-top: 25px;
 }
 .button-container-single{
@@ -127,29 +131,32 @@
 .cancel-button, 
 .login-button, 
 .register-button {
-  flex: 1;
-  padding: 14px 20px !important; /* Força o padding */
-  border-radius: 8px !important; /* Força o border-radius */
+   flex: 1;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-evenly;
   transition: all 0.3s ease;
-  border: none !important; /* Remove qualquer borda padrão */
-  outline: none !important; /* Remove outline */
+  border: none;
+  outline: none;
+  height: 50px;
 }
 
 .cancel-button {
   background-color: #F39C12 !important;
+  align-items: center !important;
+  justify-content: space-around !important;
   color: white !important;
 }
 
 .login-button, .register-button {
   background-color: #4CC9FE !important;
   color: white !important;
+    align-items: center !important;
+  justify-content: space-around !important;
 }
 
 /* Efeitos de hover */
@@ -172,8 +179,9 @@
 }
 
 .button-icon {
-  font-size: 16px;
-  color: white;
+ font-size: 14px !important; 
+  color: #f9f9f9 !important;
+  flex-shrink: 0; 
 }
 
 .link-container {
@@ -257,7 +265,7 @@
   }
   
   .form-container {
-      padding: 20px 15px;
+      padding: 15px 15px;
     margin: 0 5px; /* Pequena margem para não colar nas bordas */
     width: 100%;
     max-width: none
