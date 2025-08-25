@@ -2,39 +2,64 @@ import React, { useState, useEffect } from 'react';
 import styles from './termos.module.css';
 import { ref, onValue, off } from 'firebase/database';
 import { db } from '../../../../../database/firebaseConfig';
+import { useParams } from 'react-router-dom';
 
 const TermosPortaria = () => {
-  const [termos, setTermos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+  const [termos, setTermos] = useState([]);
   const [expandedItems, setExpandedItems] = useState({});
 
   useEffect(() => {
-    const termosRef = ref(db, 'DadosBelaVista/usuarios/usuarioMorador');
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const termosRef = ref(db, `DadosBelaVista/DadosGerais/Reservas/${id}/termosDeResponsabilidade`);
     
     const fetchData = onValue(termosRef, (snapshot) => {
       try {
         const data = snapshot.val();
+        console.log('Dados recebidos do Firebase:', data);
+        
         if (data) {
-          const termosArray = [];
-          
-          Object.keys(data).forEach(userId => {
-            const user = data[userId];
-            if (user.termosResponsabilidade) {
-              Object.keys(user.termosResponsabilidade).forEach(termoId => {
-                termosArray.push({
-                  id: termoId,
-                  userId: userId,
-                  nome: user.nome || 'Nome não informado',
-                  apartamento: user.apartamento || 'Apartamento não informado',
-                  ...user.termosResponsabilidade[termoId]
-                });
+          // Se os dados são um objeto direto (não contém usuários)
+          if (data.dataEnvio) {
+            // É um único termo direto
+            const termo = {
+              id: 'termo-unico',
+              nome: data.nome || 'Nome não informado',
+              apartamento: data.apartamento || 'Apartamento não informado',
+              cpf: data.cpf || '',
+              data: data.data || '',
+              horario: data.horario || '',
+              dataEnvio: data.dataEnvio || '',
+              declaracao: data.declaracao || ''
+            };
+            setTermos([termo]);
+          } else {
+            // Se for um objeto com múltiplos campos mas não é um termo completo
+            const termosArray = [];
+            
+            // Verifica se há campos de termo no objeto principal
+            if (data.cpf || data.dataEnvio) {
+              termosArray.push({
+                id: 'termo-principal',
+                nome: data.nome || 'Nome não informado',
+                apartamento: data.apartamento || 'Apartamento não informado',
+                cpf: data.cpf || '',
+                data: data.data || '',
+                horario: data.horario || '',
+                dataEnvio: data.dataEnvio || '',
+                declaracao: data.declaracao || ''
               });
             }
-          });
-
-          termosArray.sort((a, b) => new Date(b.dataEnvio) - new Date(a.dataEnvio));
-          setTermos(termosArray);
+            
+            setTermos(termosArray);
+          }
         } else {
+          console.log('Nenhum termo encontrado');
           setTermos([]);
         }
         setLoading(false);
@@ -48,7 +73,7 @@ const TermosPortaria = () => {
     });
 
     return () => off(termosRef);
-  }, []);
+  }, [id]);
 
   const toggleExpand = (id) => {
     setExpandedItems(prev => ({
@@ -58,8 +83,14 @@ const TermosPortaria = () => {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+    try {
+      const date = new Date(dateString);
+      return isNaN(date.getTime()) 
+        ? 'Data inválida' 
+        : date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+    } catch {
+      return 'Data inválida';
+    }
   };
 
   const renderItem = (item) => (
@@ -81,17 +112,17 @@ const TermosPortaria = () => {
         <div className={styles.termoBody}>
           <div className={styles.infoRow}>
             <span className={styles.icon}>📅</span>
-            <div className={styles.infoText}>Data do evento: {item.data}</div>
+            <div className={styles.infoText}>Data do evento: {item.data || 'Não informado'}</div>
           </div>
           
           <div className={styles.infoRow}>
             <span className={styles.icon}>⏰</span>
-            <div className={styles.infoText}>Horário: {item.horario}</div>
+            <div className={styles.infoText}>Horário: {item.horario || 'Não informado'}</div>
           </div>
           
           <div className={styles.infoRow}>
             <span className={styles.icon}>📋</span>
-            <div className={styles.infoText}>CPF: {item.cpf}</div>
+            <div className={styles.infoText}>CPF: {item.cpf || 'Não informado'}</div>
           </div>
           
           <div className={styles.infoRow}>
@@ -102,7 +133,7 @@ const TermosPortaria = () => {
           <div className={styles.divider} />
           
           <div className={styles.declaracaoTitle}>Declaração:</div>
-          <div className={styles.declaracaoText}>{item.declaracao}</div>
+          <div className={styles.declaracaoText}>{item.declaracao || 'Declaração não informada'}</div>
         </div>
       )}
     </div>

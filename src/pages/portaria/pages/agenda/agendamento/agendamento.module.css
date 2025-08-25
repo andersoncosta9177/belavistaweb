@@ -146,7 +146,8 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 15px !important;
-  background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%) !important;
+    background: linear-gradient(135deg, #8e5e30 0%, #42250b 100%) !important;
+
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }

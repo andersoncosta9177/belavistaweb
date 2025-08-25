@@ -45,6 +45,20 @@ function AgendamentosMoradores() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Função para obter a data local no formato YYYY-MM-DD
+  const getLocalDateString = (date) => {
+    const d = new Date(date);
+    const offset = d.getTimezoneOffset() * 60000; // offset em milissegundos
+    const localDate = new Date(d.getTime() - offset);
+    return localDate.toISOString().split('T')[0];
+  };
+
+  // Função para criar uma data a partir de string YYYY-MM-DD sem problemas de timezone
+  const parseLocalDate = (dateString) => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   const handleTipoClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,7 +73,8 @@ function AgendamentosMoradores() {
   };
 
   const handleDateChange = (event) => {
-    setData(new Date(event.target.value));
+    const selectedDate = parseLocalDate(event.target.value);
+    setData(selectedDate);
   };
 
   const openDatePicker = () => {
@@ -82,12 +97,18 @@ function AgendamentosMoradores() {
 
     try {
       const reservasRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
+      
+      // Formata a data corretamente para o banco (mantém a data local)
+      const dataEvento = new Date(data);
+      const dataEventoFormatada = dataEvento.toLocaleDateString('pt-BR');
+      
       await push(reservasRef, {
         tipo,
         nome,
         cpf,
         apartamento,
-        dataEvento: data.toISOString(),
+        dataEvento: dataEventoFormatada, // Salva como string no formato local
+        dataEvento: dataEvento.toISOString(), // Salva também como ISO para referência
         dataCriacao: new Date().toISOString(),
         criadoPor: "Portaria",
       });
@@ -266,14 +287,14 @@ function AgendamentosMoradores() {
             <TextField
               fullWidth
               type="date"
-              value={data.toISOString().split("T")[0]}
+              value={getLocalDateString(data)}
               onChange={handleDateChange}
               className={styles.datePickerInput}
               InputLabelProps={{
                 shrink: true,
               }}
               inputProps={{
-                min: new Date().toISOString().split("T")[0],
+                min: getLocalDateString(new Date()),
                 className: styles.dateInput,
               }}
               autoFocus
@@ -297,14 +318,7 @@ function AgendamentosMoradores() {
 
         {/* Action Buttons */}
         <Box className={styles.actionButtons}>
-          <Button
-            variant="outlined"
-            className={styles.cancelButton}
-            onClick={() => navigate(-1)}
-            fullWidth={isSmallScreen}
-          >
-            Cancelar
-          </Button>
+      
           <Button
             variant="contained"
             className={styles.submitButton}
@@ -312,6 +326,14 @@ function AgendamentosMoradores() {
             fullWidth={isSmallScreen}
           >
             Agendar
+          </Button>
+              <Button
+            variant="outlined"
+            className={styles.cancelButton}
+            onClick={() => navigate(-1)}
+            fullWidth={isSmallScreen}
+          >
+            Cancelar
           </Button>
         </Box>
       </Paper>

@@ -301,20 +301,21 @@ async function salvarAgendamento() {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-          <Button
-            title="Cancelar"
-            type="outline"
-            titleStyle={styles.cancelButtonText}
-            buttonStyle={styles.cancelButton}
-            containerStyle={styles.actionButtonContainer}
-            onPress={() => navigation.goBack()}
-          />
+      
           <Button
             title="Agendar"
             titleStyle={styles.submitButtonText}
             buttonStyle={styles.submitButton}
             containerStyle={styles.actionButtonContainer}
             onPress={salvarAgendamento}
+          />
+              <Button
+            title="Cancelar"
+            type="outline"
+            titleStyle={styles.cancelButtonText}
+            buttonStyle={styles.cancelButton}
+            containerStyle={styles.actionButtonContainer}
+            onPress={() => navigation.goBack()}
           />
         </View>
       </View>
