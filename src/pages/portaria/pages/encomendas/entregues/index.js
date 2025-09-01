@@ -1,41 +1,41 @@
 import React, { useState, useEffect } from "react";
 import {
+  Box,
   Card,
-  CardContent,
   Typography,
   TextField,
-  Box,
-  Grid,
-  useMediaQuery,
-  useTheme
+  InputAdornment,
+  Divider,
+  CircularProgress
 } from "@mui/material";
 import {
-  Search,
-  Person,
-  Apartment,
-  QrCode,
-  CalendarToday,
-  Badge,
-  PersonOutline,
-  CalendarMonth,
-  CheckCircle
+  Search as SearchIcon,
+  Person as PersonIcon,
+  Apartment as ApartmentIcon,
+  Badge as BadgeIcon,
+  CalendarToday as CalendarIcon,
+  HowToReg as UserCheckIcon,
+  Engineering as EngineerIcon
 } from "@mui/icons-material";
-import { getDatabase, ref, get } from "firebase/database";
+import { ref, get } from "firebase/database";
+import { db } from "../../../../../database/firebaseConfig";
 import { formatDateWithTime } from "../../../../../Utils/hourBrazil";
-import styles from './EncomendasEntregues.module.css';
+import { useNavigate } from "react-router-dom";
+import styles from "./EncomendasEntregues.module.css";
 
 function EncomendasEntregues() {
+  const navigate = useNavigate();
   const [encomendas, setEncomendas] = useState([]);
   const [filteredEncomendas, setFilteredEncomendas] = useState([]);
   const [search, setSearch] = useState("");
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEncomendas = async () => {
-      const db = getDatabase();
-      const encomendasRef = ref(db, "DadosBelaVista/DadosMoradores/encomendas/EncomendasEntregues");
+      const encomendasRef = ref(
+        db,
+        "DadosBelaVista/DadosMoradores/encomendas/EncomendasEntregues"
+      );
 
       try {
         const snapshot = await get(encomendasRef);
@@ -44,10 +44,24 @@ function EncomendasEntregues() {
           const encomendasList = Object.keys(data).map((key) => ({
             id: key,
             ...data[key],
+            encomendas: Array.isArray(data[key].encomendas) 
+              ? data[key].encomendas.map(encomenda => {
+                  if (typeof encomenda === 'string') {
+                    return {
+                      codigo: encomenda,
+                      data: data[key].dataRegistro 
+                        ? new Date(data[key].dataRegistro).toLocaleDateString('pt-BR')
+                        : 'Data não disponível',
+                      timestamp: new Date(data[key].dataRegistro).getTime() || Date.now()
+                    };
+                  }
+                  return encomenda;
+                })
+              : []
           }));
-          // Ordenar por data de entrega (mais recente primeiro)
-          const sortedEncomendas = encomendasList.sort((a, b) => 
-            new Date(b.horarioEntrega) - new Date(a.horarioEntrega)
+
+          const sortedEncomendas = encomendasList.sort(
+            (a, b) => new Date(b.horarioEntrega) - new Date(a.horarioEntrega)
           );
           setEncomendas(sortedEncomendas);
           setFilteredEncomendas(sortedEncomendas);
@@ -56,6 +70,8 @@ function EncomendasEntregues() {
         }
       } catch (error) {
         console.error("Erro ao buscar encomendas entregues: ", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -76,119 +92,132 @@ function EncomendasEntregues() {
   }, [search, encomendas]);
 
   const renderItem = (item) => (
-    <Grid item xs={12} sm={6} md={4} className={styles.gridItem}>
-      <Card className={styles.card}>
-        <CardContent className={styles.cardContent}>
+    <Card key={item.id} className={styles.card}>
+      <Box className={styles.cardItem}>
+        <Box className={styles.labelContainer}>
+          <PersonIcon className={styles.cardIcon} />
+          <Typography className={styles.cardLabel}>Morador:</Typography>
+        </Box>
+        <Typography className={styles.cardValue}>{item.nomeMorador}</Typography>
+      </Box>
+      <Divider className={styles.divider} />
+
+      <Box className={styles.cardItem}>
+        <Box className={styles.labelContainer}>
+          <ApartmentIcon className={styles.cardIcon} />
+          <Typography className={styles.cardLabel}>Apartamento:</Typography>
+        </Box>
+        <Typography className={styles.cardValue}>{item.apartamento}</Typography>
+      </Box>
+      <Divider className={styles.divider} />
+
+      <Box className={styles.cardItem}>
+        <Box className={styles.labelContainer}>
+          <UserCheckIcon className={styles.cardIcon} />
+          <Typography className={styles.cardLabel}>Recebido por:</Typography>
+        </Box>
+        <Typography className={styles.cardValue}>{item.recebedor || 'Não informado'}</Typography>
+      </Box>
+      <Divider className={styles.divider} />
+      
+      <Box className={styles.cardItem}>
+        <Box className={styles.labelContainer}>
+          <EngineerIcon className={styles.cardIcon} />
+          <Typography className={styles.cardLabel}>Porteiro recebedor:</Typography>
+        </Box>
+        <Typography className={styles.cardValue}>{item.nomePorteiroRecebedor}</Typography>
+      </Box>
+      <Divider className={styles.divider} />
+
+      <Box className={styles.cardItem}>
+        <Box className={styles.labelContainer}>
+          <CalendarIcon className={styles.cardIcon} />
+          <Typography className={styles.cardLabel}>Entregue em:</Typography>
+        </Box>
+        <Typography className={styles.cardValue}>
+          {formatDateWithTime(item.horarioEntrega)}
+        </Typography>
+      </Box>
+      <Divider className={styles.divider} />
+
+      <Box className={styles.cardItem}>
+        <Box className={styles.labelContainer}>
+          <EngineerIcon className={styles.cardIcon} />
+          <Typography className={styles.cardLabel}>Porteiro entregador:</Typography>
+        </Box>
+        <Typography className={styles.cardValue}>{item.nomePorteiroEntregador}</Typography>
+      </Box>
+      <Divider className={styles.divider} />
+
+      {/* SEÇÃO DE ENCOMENDAS */}
+      <Box className={styles.encomendasSection}>
+        <Box className={styles.labelContainerEncomendas}>
+          <Typography className={styles.cardLabelEncomendas}>Encomenda(s)</Typography>
+        </Box>
         
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <Person fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Morador:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>{item.nomeMorador}</Typography>
+        {/* Tabela de encomendas */}
+        <Box className={styles.tableContainer}>
+          <Box className={styles.tableHeader}>
+            <Typography className={styles.tableHeaderText}>N° rastreamento</Typography>
+            <Typography className={styles.tableHeaderText}>Registrado em</Typography>
           </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <PersonOutline fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Recebido por:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>{item.recebedor}</Typography>
-          </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <Apartment fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Apartamento:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>{item.apartamento}</Typography>
-          </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <QrCode fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Código:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>{item.numeroRastreamento}</Typography>
-          </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <CalendarToday fontSize="small" sx={{ color: '#f9f9f9',   mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Recebido em:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>
-              {formatDateWithTime(item.dataRegistro)}
-            </Typography>
-          </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <Badge fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Porteiro recebedor:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>{item.nomePorteiroRecebedor}</Typography>
-          </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <CalendarMonth fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Entrega em:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>
-              {formatDateWithTime(item.horarioEntrega)}
-            </Typography>
-          </Box>
-
-          <Box className={styles.cardItem}>
-            <Box className={styles.labelContainer}>
-              <Badge fontSize="small" sx={{ color: '#f9f9f9', mr: 1 }} />
-              <Typography variant="body2" className={styles.cardLabel}>Porteiro entregador:</Typography>
-            </Box>
-            <Typography variant="body2" className={styles.cardValue}>{item.nomePorteiroEntregador}</Typography>
-          </Box>
-        </CardContent>
-      </Card>
-    </Grid>
+          
+          {item.encomendas && item.encomendas.length > 0 ? (
+            item.encomendas.map((encomenda, index) => (
+              <Box key={index} className={styles.tableRow}>
+                <Typography className={styles.tableCell}>
+                  {encomenda.codigo}
+                </Typography>
+                <Typography className={styles.tableCell}>
+                  {formatDateWithTime(encomenda.data)}
+                </Typography>
+              </Box>
+            ))
+          ) : (
+            <Typography className={styles.noEncomendasText}>Nenhuma encomenda</Typography>
+          )}
+        </Box>
+      </Box>
+    </Card>
   );
 
   return (
     <Box className={styles.container}>
-      <Box className={styles.gradientBackground}></Box>
+      <Box className={styles.gradientBackground} />
       
-      <Box className={styles.header}>
-        <Typography variant="h6" className={styles.title}>
-          Encomendas Entregues
+      <Box className={styles.contentContainer}>
+        <Typography variant="h5" className={styles.title}>
+          Encomendas entregues: {filteredEncomendas.length}
         </Typography>
-        
+
         <TextField
           placeholder="Pesquisar por apartamento ou nome"
-          InputProps={{
-            startAdornment: <Search sx={{ color: '#86939e', mr: 1 }} />
-          }}
-          className={styles.searchInput}
-          onChange={(e) => setSearch(e.target.value)}
           value={search}
-          fullWidth
-          variant="outlined"
-          size="small"
+          onChange={(e) => setSearch(e.target.value)}
+          className={styles.searchInput}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
-        
-        <Typography variant="body1" className={styles.subtitle}>
-          {`Total de ${encomendas.length} encomendas entregues`}
-        </Typography>
-      </Box>
 
-      {filteredEncomendas.length === 0 ? (
-        <Typography variant="body1" className={styles.noEncomendasText}>
-          Não há encomendas entregues
-        </Typography>
-      ) : (
-        <Grid container spacing={2} className={styles.gridContainer}>
-          {filteredEncomendas.map(item => renderItem(item))}
-        </Grid>
-      )}
+        {loading ? (
+          <Box className={styles.loadingContainer}>
+            <CircularProgress />
+          </Box>
+        ) : filteredEncomendas.length === 0 ? (
+          <Typography className={styles.emptyText}>
+            Não há encomendas entregues
+          </Typography>
+        ) : (
+          <Box className={styles.listContainer}>
+            {filteredEncomendas.map((item) => renderItem(item))}
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 }

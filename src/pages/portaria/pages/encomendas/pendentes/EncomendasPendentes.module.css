@@ -1,170 +1,56 @@
-/* EncomendasPendentes.module.css */
 .container {
-  position: relative;
   min-height: 100vh;
-  width: 100%;
+  position: relative;
   padding: 16px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-
 }
 
 .gradientBackground {
-  display: none; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
-.header {
-  width: 100%;
+.contentContainer {
   max-width: 1200px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin: 0 auto;
+  position: relative;
+}
+
+.backButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #EDE9D5 !important;
+  z-index: 10;
 }
 
 .title {
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 15px;
   color: #f5f5f5;
-  font-size: 20px;
-  font-weight: bold;
+  text-align: center;
+  margin: 20px 0 15px 0 !important;
+  font-weight: 500 !important;
+  font-size: 18px !important;
+}
+
+.searchInput {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  width: 100%;
+  height: 50px;
 }
 
 .subtitle {
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
+  border-radius: 5px;
   padding: 8px;
   font-weight: 500;
-  margin-bottom: 20px;
-}
-
-.searchInput {
-  background-color: #ffffff;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  width: 94%;
-}
-
-.searchInput .MuiOutlinedInput-root {
-  border-radius: 8px;
-}
-
-.searchInput .MuiOutlinedInput-input {
-  color: #333;
-}
-
-.searchInput .MuiInputBase-input::placeholder {
-  color: #86939e;
-  opacity: 1;
-}
-
-.gridContainer {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-}
-
-.gridItem {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.card {
-  border-radius: 12px;
-  background-color: rgba(0, 0, 0, 0.3) !important;
-
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  width: 100%;
-  max-width: 400px;
-  padding: 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: auto;
-}
-
-.cardContent {
-  flex: 1;
-  padding: 8px;
-}
-
-.cardItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  border-bottom: 0.3px solid rgba(255, 255, 255, 0.6);
-  padding: 6px 4px;
-}
-
-.labelContainer {
-  display: flex;
-  align-items: center;
-  min-width: 40%;
-  flex-shrink: 0;
-}
-
-.cardLabel {
-  font-weight: bold;
-  margin-left: 8px;
-  color: #f9f9f9;
-  font-size: 14px;
-  white-space: nowrap;
-  margin-left: 10px;
-}
-
-.cardValue {
-    color: #f9f9f9;
-
-  text-align: right;
-  flex: 1;
-  margin-left: 10px;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.buttonRow {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-  gap: 10px;
-  padding: 0 8px 8px;
-}
-
-.editButton {
-  background-color: #f39c12 !important;
-  border-radius: 8px;
-  flex: 1;
-  min-height: 36px;
-  font-weight: 600;
-}
-
-.deliverButton {
-  background-color: #0f98a1 !important;
-  border-radius: 8px;
-  flex: 1;
-  min-height: 36px;
-  font-weight: 600;
-}
-
-.noEncomendasText {
-  text-align: center;
-  margin-top: 40px;
-  font-size: 18px;
-  color: #fff;
-  font-weight: 500;
+  margin: 10px 0;
 }
 
 .loadingContainer {
@@ -174,179 +60,224 @@
   height: 200px;
 }
 
-/* Estilos para os modais */
-.modalPaper {
-  border-radius: 12px !important;
-  background: linear-gradient(135deg, #8e5e30 0%, #42250b 100%) !important;
-  width: 100% !important;
-
+.listContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding-bottom: 20px;
 }
 
-.modalTitle {
+.card {
+  border-radius: 10px;
+  background: rgba(201, 200, 200, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  padding: 12px;
+  box-shadow: none !important;
+}
+
+.cardItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  border-bottom: 0.3px solid #f5f5f5;
+  padding: 2px;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.cardIcon {
   color: #f5f5f5;
-  font-size: 20px;
+  font-size: 16px !important;
+  margin-right: 8px;
+}
+
+.cardLabel {
   font-weight: bold;
-  text-align: center;
-  padding: 20px 24px 10px;
-}
-
-.modalText {
-  margin-bottom: 15px;
-  text-align: center;
   color: #f5f5f5;
-  font-size: 16px;
+  font-size: 13px !important;
 }
 
-.modalInput {
-  background-color: #ffffff;
-  border-radius: 8px;
+.cardValue {
+  color: #f5f5f5;
+  text-align: right;
+  flex: 1;
+  font-size: 13px !important;
+}
+
+.cardItemEncomendas {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.labelContainerEncomendas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardLabelEncomendas {
+  color: #f5f5f5;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 1.2px;
+  margin: 0 auto;
+  
+
+}
+
+.tableContainer {
+  background: rgba(255, 255, 255, 0.1) !important;
   margin-top: 10px;
 }
 
-.modalInput .MuiOutlinedInput-root {
-  color: #333;
-  border-radius: 8px;
+.tableHeaderCell {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #f5f5f5 !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  border: none !important;
 }
 
-.modalInput .MuiOutlinedInput-notchedOutline {
-  border-color: #ddd;
+.tableCell {
+  color: #f5f5f5 !important;
+  font-size: 12px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.modalInput .MuiInputBase-input::placeholder {
-  color: #000;
-  opacity: 1;
-}
-
-.modalActions {
-  padding: 20px !important;
+.buttonRow {
   display: flex;
-  justify-content: center !important;
-  gap: 12px;
-  align-items: center !important;
-  width: 100% !important;
-  flex-direction: row !important;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 5px;
+}
+
+.editButton {
+  background-color: #F39C12 !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  flex: 1;
+}
+
+.deliverButton {
+  background-color: #0046FF !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  flex: 1;
+}
+
+.addButton {
+  background-color: #78C841 !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  flex: 1;
+}
+
+.noEncomendasText {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.modalOverlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modalTitle {
+  color: #123;
+  font-weight: bold !important;
+  text-align: center;
+  margin-bottom: 15px !important;
+}
+
+.modalText {
+  margin-bottom: 15px !important;
+  text-align: center;
+  color: #123;
+}
+
+.modalInput {
+  margin-bottom: 20px !important;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #2b2a2a !important;
+}
+
+.modalInput::placeholder {
+  color: #2b2a2a !important;
 }
 
 .confirmButton {
-  background-color: #4caf50 !important;
-  color: white !important;
-  border-radius: 8px;
-  font-weight: 600;
-  padding: 12px 20px !important;
-  flex: 1;
+  background-color: #4CAF50 !important;
+  margin-bottom: 10px !important;
+  padding: 10px !important;
+  color: #f9f9f9 !important;
 }
 
 .cancelButton {
-  background-color: #f39c12 !important;
-  color: white !important;
-  border-radius: 8px;
-  font-weight: 600;
-  padding: 12px 20px !important;
-  flex: 1;
+  color: #f9f9f9 !important;
+  padding: 10px !important;
+  background-color: #F39C12 !important;
 }
 
-/* Media Queries para responsividade */
-@media (max-width: 600px) {
-  .container {
-    padding: 12px;
-  }
+.alert {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  min-width: 300px;
+  z-index: 1000;
+}
 
-  .title {
-    font-size: 20px;
-    margin-bottom: 12px;
+/* Responsividade */
+@media (max-width: 768px) {
+  .listContainer {
+    grid-template-columns: 1fr;
   }
-
-  .subtitle {
-    font-size: 14px;
-    padding: 8px 12px;
-    margin-bottom: 16px;
-  }
-
-  .searchInput {
-    width: 100%;
-  }
-
-  .card {
-    padding: 14px;
-    border-radius: 10px;
-    max-width: 100%;
-  }
-
-  .cardItem {
-    margin-bottom: 8px;
-    padding: 4px 2px;
-  }
-
-  .cardLabel,
-  .cardValue {
-    font-size: 13px;
-  }
-
-  .labelContainer {
-    min-width: 45%;
-  }
-
+  
   .buttonRow {
     flex-direction: row;
     gap: 8px;
   }
-
-  .editButton,
-  .deliverButton {
-    min-height: 40px;
-    font-size: 12px;
+  
+  .modalContent {
+    width: 95%;
+    padding: 15px;
   }
+}
 
-  .gridItem {
-    margin-bottom: 12px;
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
   }
   
-  .modalActions {
-    flex-direction: column;
-    gap: 8px;
+  .title {
+    font-size: 1.5rem !important;
+    margin: 15px 0 10px 0;
   }
   
-  .confirmButton, 
-  .cancelButton {
-    width: 100%;
-    margin: 0;
-  }
-}
-
-@media (min-width: 601px) and (max-width: 960px) {
-  .gridContainer {
-    justify-content: flex-start;
-  }
-
   .card {
-    padding: 16px;
-    max-width: 100%;
-  }
-}
-
-@media (min-width: 961px) {
-  .gridContainer {
-    justify-content: flex-start;
-  }
-
-  .card {
-    padding: 18px;
-    max-width: 100%;
-  }
-}
-
-/* Ajustes específicos para o Grid do Material-UI */
-.MuiGrid-root {
-  width: 100%;
-  margin: 0;
-}
-
-.MuiGrid-container {
-  justify-content: center;
-}
-
-@media (min-width: 600px) {
-  .MuiGrid-container {
-    justify-content: flex-start;
+    padding: 10px;
   }
 }

@@ -1,0 +1,197 @@
+.container {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0F98A1 0%, #0A7A82 100%);
+}
+
+.contentContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px;
+}
+
+.formContainer {
+  position: relative;
+  width: 96%;
+  margin: 0 auto;
+  padding: 24px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 0.8px solid rgba(255, 255, 255, 0.6);
+}
+
+.backButton {
+  position: absolute !important;
+  top: 8px;
+  left: 8px;
+  color: #EDE9D5 !important;
+}
+
+.title {
+  color: #EDE9D5;
+  text-align: center;
+  margin-bottom: 20px !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+}
+
+.porteiroContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin-bottom: 20px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.porteiroIcon {
+  color: #EDE9D5;
+  margin-right: 10px;
+  font-size: 16px !important;
+}
+
+.porteiroText {
+  color: #EDE9D5 !important;
+  font-size: 14px !important;
+  margin-left: 10px;
+}
+
+.inputWrapper {
+  width: 94%;
+  margin: 0 3% 16px 3%;
+}
+
+.textField {
+  margin-bottom: 0;
+}
+
+.input {
+  color: #EDE9D5 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 5px;
+  padding: 0 15px;
+  height: 48px;
+  border: none !important;
+}
+
+.input fieldset {
+  border: none !important;
+}
+
+.inputIcon {
+  color: #EDE9D5 !important;
+  font-size: 18px !important;
+}
+
+.input input::placeholder {
+  color: #EDE9D5AA !important;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.input input {
+  color: #EDE9D5 !important;
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 10px;
+  width: 94%;
+  margin: 20px 3% 0 3%;
+}
+
+.cancelButton {
+  color: #F39C12 !important;
+  border-color: #F39C12 !important;
+  padding: 15px !important;
+  font-weight: bold !important;
+  border-radius: 8px !important;
+  flex: 1;
+  background-color: transparent !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+
+.submitButton {
+  background-color: #0F98A1 !important;
+  padding: 15px !important;
+  font-weight: bold !important;
+  border-radius: 8px !important;
+  flex: 1;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+}
+
+.alert {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  min-width: 300px;
+  z-index: 1000;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 600px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .formContainer {
+    width: 100%;
+    padding: 20px 12px;
+  }
+  
+  .inputWrapper {
+    width: 100%;
+    margin: 0 0 16px 0;
+  }
+  
+  .buttonRow {
+    width: 100%;
+    margin: 20px 0 0 0;
+    flex-direction: column;
+  }
+  
+  .title {
+    font-size: 16px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .porteiroContainer {
+    width: 90%;
+  }
+  
+  .cancelButton, .submitButton {
+    width: 100%;
+  }
+}
+
+/* Ajustes para navegadores Webkit (Chrome, Safari) */
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .formContainer {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Fallback para navegadores que não suportam backdrop-filter */
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .formContainer {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}

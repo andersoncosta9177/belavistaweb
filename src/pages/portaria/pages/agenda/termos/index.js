@@ -1,14 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import styles from './termos.module.css';
 import { ref, onValue, off } from 'firebase/database';
 import { db } from '../../../../../database/firebaseConfig';
-import { useParams } from 'react-router-dom';
+import styles from './termos.module.css';
+
+// Importando ícones do Material-UI
+import {
+  ExpandLess as ChevronUpIcon,
+  ExpandMore as ChevronDownIcon,
+  CalendarToday as CalendarIcon,
+  AccessTime as ClockIcon,
+  CreditCard as CardAccountDetailsIcon,
+  CalendarMonth as CalendarClockIcon,
+  InfoOutlined as InformationOutlineIcon,
+  Assignment as ClipboardListIcon,
+} from '@mui/icons-material';
 
 const TermosPortaria = () => {
-  const [loading, setLoading] = useState(true);
-  const { id } = useParams();
   const [termos, setTermos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [expandedItems, setExpandedItems] = useState({});
+  
+  // Obter ID da URL
+  const getEventIdFromUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+  };
+  
+  const id = getEventIdFromUrl();
 
   useEffect(() => {
     if (!id) {
@@ -21,7 +39,6 @@ const TermosPortaria = () => {
     const fetchData = onValue(termosRef, (snapshot) => {
       try {
         const data = snapshot.val();
-        console.log('Dados recebidos do Firebase:', data);
         
         if (data) {
           // Se os dados são um objeto direto (não contém usuários)
@@ -94,46 +111,48 @@ const TermosPortaria = () => {
   };
 
   const renderItem = (item) => (
-    <div className={styles.termoCard}>
+    <div key={item.id} className={styles.termoCard}>
       <div 
         className={styles.termoHeader} 
         onClick={() => toggleExpand(item.id)}
       >
         <div className={styles.termoHeaderInfo}>
-          <div className={styles.termoTitle}>{item.nome}</div>
-          <div className={styles.termoSubtitle}>Apto: {item.apartamento}</div>
+          <h3 className={styles.termoTitle}>{item.nome}</h3>
+          <p className={styles.termoSubtitle}>Apto: {item.apartamento}</p>
         </div>
-        <span className={styles.chevronIcon}>
-          {expandedItems[item.id] ? '▲' : '▼'}
-        </span>
+        {expandedItems[item.id] ? (
+          <ChevronUpIcon className={styles.chevronIcon} />
+        ) : (
+          <ChevronDownIcon className={styles.chevronIcon} />
+        )}
       </div>
 
       {expandedItems[item.id] && (
         <div className={styles.termoBody}>
           <div className={styles.infoRow}>
-            <span className={styles.icon}>📅</span>
-            <div className={styles.infoText}>Data do evento: {item.data || 'Não informado'}</div>
+            <CalendarIcon className={styles.infoIcon} />
+            <span className={styles.infoText}>Data do evento: {item.data || 'Não informado'}</span>
           </div>
           
           <div className={styles.infoRow}>
-            <span className={styles.icon}>⏰</span>
-            <div className={styles.infoText}>Horário: {item.horario || 'Não informado'}</div>
+            <ClockIcon className={styles.infoIcon} />
+            <span className={styles.infoText}>Horário: {item.horario || 'Não informado'}</span>
           </div>
           
           <div className={styles.infoRow}>
-            <span className={styles.icon}>📋</span>
-            <div className={styles.infoText}>CPF: {item.cpf || 'Não informado'}</div>
+            <CardAccountDetailsIcon className={styles.infoIcon} />
+            <span className={styles.infoText}>CPF: {item.cpf || 'Não informado'}</span>
           </div>
           
           <div className={styles.infoRow}>
-            <span className={styles.icon}>📩</span>
-            <div className={styles.infoText}>Enviado em: {formatDate(item.dataEnvio)}</div>
+            <CalendarClockIcon className={styles.infoIcon} />
+            <span className={styles.infoText}>Enviado em: {formatDate(item.dataEnvio)}</span>
           </div>
           
-          <div className={styles.divider} />
+          <hr className={styles.divider} />
           
-          <div className={styles.declaracaoTitle}>Declaração:</div>
-          <div className={styles.declaracaoText}>{item.declaracao || 'Declaração não informada'}</div>
+          <h4 className={styles.declaracaoTitle}>Declaração:</h4>
+          <p className={styles.declaracaoText}>{item.declaracao || 'Declaração não informada'}</p>
         </div>
       )}
     </div>
@@ -143,45 +162,43 @@ const TermosPortaria = () => {
     if (loading) {
       return (
         <div className={styles.loadingContainer}>
-          <div className={styles.loadingText}>Carregando...</div>
+          <p className={styles.loadingText}>Carregando termos...</p>
         </div>
       );
     }
 
     if (termos.length === 0) {
       return (
-        <div className={styles.emptyCard}>
-          <div className={styles.emptyContent}>
-            <span className={styles.infoIcon}>ℹ️</span>
-            <div className={styles.emptyText}>Nenhum termo de responsabilidade encontrado</div>
+        <div className={styles.emptyContainer}>
+          <div className={styles.emptyCard}>
+            <div className={styles.emptyContent}>
+              <InformationOutlineIcon className={styles.emptyIcon} />
+              <p className={styles.emptyText}>Nenhum termo de responsabilidade encontrado</p>
+              <p className={styles.emptySubtext}>Os moradores ainda não enviaram termos para esta reserva.</p>
+            </div>
           </div>
         </div>
       );
     }
 
     return (
-      <div className={styles.listContainer}>
+      <div className={styles.listContent}>
         <div className={styles.headerCard}>
           <div className={styles.headerContent}>
-            <span className={styles.headerIcon}>📋</span>
-            <div className={styles.headerTitle}>Termos de Responsabilidade</div>
+            <ClipboardListIcon className={styles.headerIcon} />
+            <h2 className={styles.headerTitle}>
+              Termo de Responsabilidade
+            </h2>
           </div>
         </div>
         
-        <div className={styles.termosList}>
-          {termos.map(item => (
-            <div key={item.id}>
-              {renderItem(item)}
-            </div>
-          ))}
-        </div>
+        {termos.map(item => renderItem(item))}
       </div>
     );
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.gradientBackground}></div>
       {renderContent()}
     </div>
   );

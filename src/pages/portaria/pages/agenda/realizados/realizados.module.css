@@ -1,82 +1,9 @@
 .container {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-}
-
-
-
-.gradientBackground {
-  display: none;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  margin-top: 10px;
-  padding: 0 16px;
-}
-
-.title {
-  color: #FFF;
-  font-size: 20px;
-  font-weight: 600;
-  margin-left: 10px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.searchContainer {
-  margin: 0 auto 16px auto;
-  max-width: 96%;
-}
-
-.searchInput {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  color: #EFF3EA;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.searchInput .MuiOutlinedInput-root {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-}
-
-.searchInput .MuiOutlinedInput-input {
-  color: #EFF3EA;
-  padding: 12px 14px;
-}
-
-.searchInput .MuiInputBase-input::placeholder {
-  color: rgba(239, 243, 234, 0.7);
-}
-
-.searchInputField {
-  color: #EFF3EA;
-}
-
-.resultsContainer {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.resultsText {
-  color: #EFF3EA;
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.scrollContainer {
-  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding-bottom: 20px;
+  min-height: 100vh;
+  padding-top: 20px;
+  width: 100%;
 }
 
 .loadingContainer {
@@ -84,129 +11,227 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.activityIndicator {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #FFF;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .loadingText {
-  color: #EFF3EA;
-  text-align: center;
+  color: #FFF;
   margin-top: 15px;
   font-size: 16px;
+  text-align: center;
 }
 
-.card {
-  background: rgba(0, 0, 0, 0.3) !important;
-  border: none !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.title {
+  color: #FFF;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+
+.subtitle {
+  color: #f9f9f9;
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+}
+
+.searchContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0 15px;
+  height: 50px;
+  margin-bottom: 10px;
+  margin: 0 15px 10px 15px;
+}
+
+.searchIcon {
+  color: #f9f9f9;
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #FFF;
+  font-size: 13px;
+  height: 100%;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #f9f9f9;
+  opacity: 0.7;
+}
+
+.clearButton {
+  background: transparent;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearIcon {
+  color: #95a5a6;
+  font-size: 18px;
+}
+
+.resultsContainer {
+  margin-bottom: 8px;
+  text-align: right;
+  margin: 0 15px 8px 15px;
+}
+
+.resultsText {
+  color: #f9f9f9;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  padding: 0 10px 20px 10px;
+}
+
+.eventCardContainer {
+  width: 100%;
+}
+
+.eventCard {
+  border-radius: 10px;
+  background-color: rgba(201, 200, 200, 0.2);
+  padding: 10px;
   overflow: hidden;
-  width: 96% !important;
-  max-width: 500px;
-  margin: 0 auto !important;
+  border: 0.6px solid #bdc3c7;
+  margin: 0;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .cardHeader {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  flex-wrap: nowrap;
-  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
-.eventType {
-  font-size: 14px;
-  color: #EFF3EA;
+.eventTypeBadge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  margin-right: 5px;
+}
+
+.eventIcon {
+  font-size: 22px;
+}
+
+.eventTypeText {
+  color: #FFF;
+  font-size: 12px;
   font-weight: 600;
-  flex-shrink: 0;
+  margin-left: 6px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.dateBadge {
-  background: rgba(74, 144, 226, 0.2);
-  border-radius: 6px;
-  padding: 4px 8px;
-  border: 1px solid #4A90E2;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.dateBadgeText {
-  font-size: 11px;
-  color: #EFF3EA;
+.eventDate {
+  color: #f9f9f9;
+  font-size: 10px;
   font-weight: 500;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .divider {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  margin: 0 !important;
+  margin: 8px 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 1px;
+  border: none;
 }
 
-.cardContent {
-  padding: 12px !important;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.infoRowContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  padding: 4px 0;
-  width: 100%;
+.eventDetails {
+  margin-top: 4px;
 }
 
 .infoRow {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  flex-shrink: 0;
-  min-width: 100px;
+  margin-bottom: 8px;
 }
 
-.infoText {
-  font-size: 14px !important;
+.infoIcon {
   color: #EFF3EA;
+  font-size: 16px;
+}
+
+.infoIconPresentes {
+  color: #4CAF50;
+  font-size: 16px;
+}
+
+.detailLabel {
+  color: #ecf0f1;
+  font-size: 11px;
   margin-left: 8px;
-  white-space: nowrap;
+  margin-right: 4px;
+  font-weight: 500;
 }
 
-.infoValue {
-  font-size: 13px;
-  color: #EFF3EA;
-  text-align: right;
+.detailValue {
+  color: #FFF;
+  font-size: 11px;
+  font-weight: bold;
   flex: 1;
-  margin-left: 8px;
+  text-align: right;
+  margin-right: 8px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.cardFooter {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: 8px;
+.presentesLabel {
+  color: #4CAF50 !important;
 }
 
-.footerTextContainer {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.footerText {
-  font-size: 11px !important;
-  color: #f9f9f9;
-  margin-left: 5px;
-  font-style: italic;
+.presentesValue {
+  color: #4CAF50 !important;
 }
 
 .emptyContainer {
@@ -214,162 +239,57 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 40px;
-  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  color: #bdc3c7;
+  font-size: 50px;
 }
 
 .emptyText {
-  color: #EFF3EA;
-  text-align: center;
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.emptySubtext {
-  color: rgba(239, 243, 234, 0.7);
-  text-align: center;
-  margin-top: 8px;
-  font-size: 14px;
+  color: #bdc3c7;
+  margin-top: 15px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .clearSearchButton {
-  display: flex;
-  align-items: center;
-  color: #EFF3EA;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
-  border-radius: 6px;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  transition: background 0.3s ease;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 
-.clearSearchButton:hover {
-  background: rgba(255, 255, 255, 0.2);
+.clearSearchText {
+  color: #3498db;
+  font-size: 14px;
 }
 
-/* Media Queries para responsividade */
+/* Responsividade */
 @media (max-width: 768px) {
-  .container {
-    padding: 12px;
-  }
-  
-  .header {
-    margin-bottom: 16px;
+  .eventsGrid {
+    grid-template-columns: 1fr;
   }
   
   .title {
     font-size: 18px;
   }
   
-  .card {
-    width: 96% !important;
-  }
-  
-  .cardHeader {
-    padding: 10px;
-    gap: 6px;
-  }
-  
-  .eventType {
-    font-size: 13px;
-  }
-  
-  .dateBadge {
-    padding: 3px 6px;
-  }
-  
-  .dateBadgeText {
-    font-size: 10px;
-  }
-  
-  .infoRowContainer {
-    margin-bottom: 4px;
-  }
-  
-  .infoRow {
-    min-width: 80px;
-  }
-  
-  .infoText, .infoValue {
-    font-size: 12px;
+  .searchContainer {
+    margin: 0 10px 10px 10px;
   }
 }
 
-@media (max-width: 480px) {
-  .container {
-    padding: 10px;
-  }
-  
-  .header {
-    flex-direction: row;
-    text-align: center;
-    gap: 8px;
-    margin-top: 5px;
-    margin-bottom: 12px;
-  }
-  
-  .title {
-    margin-left: 0;
-    font-size: 16px;
-  }
-  
-  .cardHeader {
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-  
-  .eventType {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 1;
-    min-width: 60px;
-  }
-  
-  .infoRow {
-    min-width: 70px;
-  }
-  
-  .infoText, .infoValue {
-    font-size: 13px;
-  }
-  
-  .cardFooter {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  
-  .footerText {
-    font-size: 9px;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .eventsGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Ajustes específicos para telas muito pequenas */
-@media (max-width: 360px) {
-  .cardHeader {
-    gap: 4px;
-  }
-  
-  .eventType {
-    font-size: 12px;
-    min-width: 50px;
-  }
-  
-  .dateBadge {
-    padding: 2px 4px;
-  }
-  
-  .dateBadgeText {
-    font-size: 9px;
-  }
-  
-  .infoRow {
-    min-width: 60px;
-  }
-  
-  .infoText, .infoValue {
-    font-size: 10px;
+@media (min-width: 1025px) {
+  .eventsGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

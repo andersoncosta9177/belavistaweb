@@ -1,188 +1,213 @@
 .container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-
-
-.gradientBackground {
-  display: none;
+  padding: 10px;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 25px;
-  margin-top: 15px;
-  padding: 0 20px;
+  margin-bottom: 15px;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.icon {
+  font-size: 24px;
+  margin-right: 10px;
 }
 
 .title {
-  color: #FFF;
-  font-size: 24px;
+  color: #f9f9f9;
+  font-size: 18px;
   font-weight: 600;
-  margin-left: 10px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .scrollContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  padding-bottom: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .controlCard {
-  background: rgba(0, 0, 0, 0.3) !important;
-  border: none !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  overflow: hidden;
-  width: 96% !important;
-  margin: 0 auto !important;
-}
-
-.previewCard {
-  background: rgba(0, 0, 0, 0.3) !important;
-  border: none !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  overflow: hidden;
-  width: 96% !important;
-  margin: 0 auto !important;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .monthSelector {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 15px;
+  justify-content: center;
+  margin-bottom: 10px;
+  gap: 12px;
 }
 
 .monthButton {
-  color: #FFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  padding: 8px 16px !important;
-  min-width: 100px !important;
+  background-color: #0F98A1;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.monthButton:hover:not(:disabled) {
+  background-color: #0d858d;
 }
 
 .monthButton:disabled {
-  opacity: 0.5;
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .monthText {
-  color: #FFF;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
-  text-transform: capitalize;
+  color: #333;
+  min-width: 140px;
   text-align: center;
-  flex: 1;
 }
 
 .infoText {
-  color: #EFF3EA;
-  font-size: 14px;
   text-align: center;
-  margin-bottom: 20px;
-  opacity: 0.9;
+  color: #666;
+  margin-bottom: 12px;
+  font-size: 11px;
 }
 
 .generateButton {
-  background: #E74C3C !important;
-  border-radius: 8px !important;
-  padding: 12px 20px !important;
-  font-weight: 600 !important;
-  text-transform: none !important;
+  background-color: #2B1807;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
 }
 
-.generateButton:hover {
-  background: #C0392B !important;
+.generateButton:hover:not(:disabled) {
+  background-color: #3d2410;
+}
+
+.generateButton:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.previewCard {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .previewTitle {
-  color: #FFF;
-  font-size: 18px;
+  color: #2B1807;
+  font-size: 16px;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin: 0 0 10px 0;
   text-align: center;
 }
 
 .divider {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  margin: 15px 0 !important;
-}
-
-.previewHeader {
-  display: flex;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  height: 1px;
+  background-color: #e0e0e0;
   margin-bottom: 10px;
 }
 
-.previewHeaderText {
-  color: #FFF;
+.previewHeader {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1fr 0.5fr 0.5fr;
+  gap: 3px;
+  padding: 8px 4px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 6px;
   font-weight: 600;
-  font-size: 12px;
+}
+
+.previewHeaderText {
+  text-align: center;
+  color: #2B1807;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .previewRow {
-  display: flex;
-  padding: 10px 0;
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1fr 0.5fr 0.5fr;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 4px;
+  margin-bottom: 4px;
   align-items: center;
 }
 
 .previewRowEven {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  background-color: #f8f9fa;
 }
 
 .previewText {
-  color: #EFF3EA;
-  font-size: 13px;
-  padding: 0 8px;
-  flex: 1;
+  text-align: center;
+  color: #333;
+  font-size: 11px;
   overflow: hidden;
-  
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .totalContainer {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  text-align: right;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
 }
 
 .totalText {
-  color: #FFF;
   font-weight: 600;
-  font-size: 14px;
+  color: #2B1807;
+  font-size: 13px;
 }
 
 .emptyPreview {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 20px;
+  justify-content: center;
+  padding: 25px 12px;
   text-align: center;
 }
 
+.emptyIcon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
 .emptyPreviewText {
-  color: #EFF3EA;
-  margin-top: 15px;
-  font-size: 16px;
-  opacity: 0.8;
+  color: #666;
+  font-size: 13px;
+  margin: 0;
 }
 
 .loadingContainer {
@@ -190,111 +215,61 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .loadingText {
-  color: #EFF3EA;
-  text-align: center;
-  margin-top: 15px;
-  font-size: 16px;
+  color: #f9f9f9;
+  margin-top: 10px;
+  font-size: 13px;
 }
 
-/* Media Queries para responsividade */
-@media (max-width: 768px) {
-  .container {
-    padding: 15px;
-  }
-  
-  .title {
-    font-size: 20px;
-  }
-  
-  .scrollContainer {
-    gap: 15px;
-  }
-  
-  .controlCard,
-  .previewCard {
-    width: 100% !important;
-  }
-  
-  .monthSelector {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .monthButton {
-    width: 100%;
-    order: 2;
-  }
-  
-  .monthText {
-    order: 1;
-    margin-bottom: 10px;
-  }
-  
+/* Ajustes para telas muito pequenas */
+@media (max-width: 340px) {
   .previewHeader {
-    flex-wrap: wrap;
-  }
-  
-  .previewHeaderText,
-  .previewText {
-    font-size: 11px;
-    flex: 1;
-    min-width: 70px;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 10px;
-  }
-  
-  .header {
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
-  }
-  
-  .title {
-    margin-left: 0;
-    font-size: 18px;
-  }
-  
-  .monthText {
-    font-size: 16px;
-  }
-  
-  .previewHeader {
-    display: none;
+    grid-template-columns: 0.9fr 0.7fr 0.9fr 0.4fr 0.4fr;
+    gap: 3px;
   }
   
   .previewRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    grid-template-columns: 0.9fr 0.7fr 0.9fr 0.4fr 0.4fr;
+    gap: 3px;
+  }
+  
+  .previewHeaderText {
+    font-size: 9px;
   }
   
   .previewText {
-    display: flex;
-    width: 100%;
+    font-size: 10px;
+  }
+  
+  .monthText {
+    min-width: 120px;
+    font-size: 13px;
+  }
+}
+
+/* Ajustes para telas maiores */
+@media (min-width: 400px) {
+  .previewHeaderText {
+    font-size: 11px;
+  }
+  
+  .previewText {
     font-size: 12px;
   }
-  
-  .previewText::before {
-    content: attr(data-label);
-    font-weight: 600;
-    margin-right: 8px;
-    color: #FFF;
-    min-width: 60px;
-  }
-  
-  /* Adicionar labels para mobile */
-  .previewRow > :nth-child(1)::before { content: "Data: "; }
-  .previewRow > :nth-child(2)::before { content: "Tipo: "; }
-  .previewRow > :nth-child(3)::before { content: "Morador: "; }
-  .previewRow > :nth-child(4)::before { content: "Apto: "; }
 }

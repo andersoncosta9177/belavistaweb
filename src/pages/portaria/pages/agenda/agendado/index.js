@@ -1,85 +1,103 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Divider,
-  Button,
-  CircularProgress,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
-import {
-  CalendarToday,
-  Person,
-  Home,
-  Groups,
-  Delete,
-  Description,
-  Event,
-  Today,
-} from "@mui/icons-material";
-import { ref, onValue, remove } from "firebase/database";
+import { ref, onValue, remove, get } from "firebase/database";
 import { db } from "../../../../../database/firebaseConfig";
-import { formatDateOnly } from "../../../../../Utils/hourBrazil";
-import styles from "./EventosAgendados.module.css";
-import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import FormateDate from "../../../../../../src/Utils/formateDate";
+import styles from "./agendado.module.css";
 
+// Importando ícones do Material-UI
+import {
+  CalendarToday as CalendarIcon,
+  EventBusy as CalendarRemoveIcon,
+  Warning as CalendarAlertIcon,
+  LocalShipping as TruckIcon,
+  LocalBar as WineBarIcon,
+  Star as CalendarStarIcon,
+  Person as AccountIcon,
+  Home as HomeCityIcon,
+  CheckCircle as AccountCheckIcon,
+  Description as FileDocumentIcon,
+  Group as AccountGroupIcon,
+  Delete as DeleteIcon,
+  Schedule as ClockOutlineIcon,
+  EventAvailable as CalendarCheckIcon,
+} from "@mui/icons-material";
 
 const EventosAgendados = () => {
   const [loading, setLoading] = useState(true);
   const [agendamentos, setAgendamentos] = useState([]);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedEvento, setSelectedEvento] = useState(null);
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [convidadosPresentes, setConvidadosPresentes] = useState({});
 
   useEffect(() => {
-    // Buscar todos os agendamentos da portaria
     const agendamentosRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
 
-    const unsubscribe = onValue(agendamentosRef, (snapshot) => {
+    const unsubscribe = onValue(agendamentosRef, async (snapshot) => {
       const data = snapshot.val();
       const hoje = new Date();
-      hoje.setHours(0, 0, 0, 0); // Define para início do dia
+      hoje.setHours(0, 0, 0, 0);
 
       if (data) {
-        // Processar todos os agendamentos
         const eventosFuturos = [];
+        const presentesData = {};
 
-        // Iterar sobre cada agendamento
-        Object.keys(data).forEach((agendamentoId) => {
-          const eventoData = new Date(data[agendamentoId].dataEvento);
-          eventoData.setHours(0, 0, 0, 0); // Define para início do dia
+        // Processar cada agendamento
+        for (const agendamentoId of Object.keys(data)) {
+          const agendamento = data[agendamentoId];
+          const eventoData = new Date(agendamento.dataEvento);
+          eventoData.setHours(0, 0, 0, 0);
 
           // Verificar se o evento é hoje ou no futuro
           if (eventoData >= hoje) {
             eventosFuturos.push({
               id: agendamentoId,
-              ...data[agendamentoId],
+              ...agendamento,
             });
+
+            // Buscar convidados presentes apenas para eventos que não são mudança
+            if (
+              agendamento.tipo &&
+              agendamento.tipo.toLowerCase() !== "mudança"
+            ) {
+              try {
+                const convidadosRef = ref(
+                  db,
+                  `DadosBelaVista/DadosGerais/Reservas/${agendamentoId}/convidados`
+                );
+                const convidadosSnapshot = await get(convidadosRef);
+
+                if (convidadosSnapshot.exists()) {
+                  const convidadosData = convidadosSnapshot.val();
+                  let presentesCount = 0;
+
+                  // Contar convidados com presente: true
+                  Object.values(convidadosData).forEach((convidado) => {
+                    if (convidado.presente === true) {
+                      presentesCount++;
+                    }
+                  });
+
+                  presentesData[agendamentoId] = presentesCount;
+                } else {
+                  presentesData[agendamentoId] = 0;
+                }
+              } catch (error) {
+                console.error("Erro ao buscar convidados:", error);
+                presentesData[agendamentoId] = 0;
+              }
+            }
           }
-        });
+        }
 
         // Ordenar por data (mais próximos primeiro)
         eventosFuturos.sort(
           (a, b) => new Date(a.dataEvento) - new Date(b.dataEvento)
         );
+
         setAgendamentos(eventosFuturos);
+        setConvidadosPresentes(presentesData);
       } else {
         setAgendamentos([]);
+        setConvidadosPresentes({});
       }
       setLoading(false);
     });
@@ -87,254 +105,240 @@ const EventosAgendados = () => {
     return () => unsubscribe();
   }, []);
 
-  const openDeleteDialog = (evento) => {
-    setSelectedEvento(evento);
-    setDeleteDialogOpen(true);
-  };
+  const deleteEvento = (eventoId) => {
+    if (window.confirm("Tem certeza que deseja excluir este evento?")) {
+      const eventoRef = ref(
+        db,
+        `DadosBelaVista/DadosGerais/Reservas/${eventoId}`
+      );
 
-  const closeDeleteDialog = () => {
-    setDeleteDialogOpen(false);
-    setSelectedEvento(null);
-  };
-
-  const confirmDelete = () => {
-    if (!selectedEvento) return;
-
-    const eventoRef = ref(
-      db,
-      `DadosBelaVista/DadosGerais/Reservas/${selectedEvento.id}`
-    );
-
-    remove(eventoRef)
-      .then(() => {
-        setAgendamentos((prev) =>
-          prev.filter((e) => e.id !== selectedEvento.id)
-        );
-        closeDeleteDialog();
-      })
-      .catch((error) => {
-        setError("Ocorreu um erro ao excluir o evento.");
-        console.error(error);
-        closeDeleteDialog();
-      });
-  };
-
-  const getEventIcon = (tipo) => {
-    if (!tipo) {
-      return <Event sx={{ color: "#FF5252", fontSize: 20 }} />;
-    }
-
-    switch (tipo.toLowerCase()) {
-      case "mudança":
-        return <Event sx={{ color: "#FFD700", fontSize: 20 }} />;
-      case "evento":
-        return <Event sx={{ color: "#4FC3F7", fontSize: 20 }} />;
-      default:
-        return <Event sx={{ color: "#BA68C8", fontSize: 20 }} />;
+      remove(eventoRef)
+        .then(() => {
+          setAgendamentos((prev) => prev.filter((e) => e.id !== eventoId));
+          // Remover também da contagem de presentes
+          setConvidadosPresentes((prev) => {
+            const newData = { ...prev };
+            delete newData[eventoId];
+            return newData;
+          });
+        })
+        .catch((error) => {
+          alert("Erro: Ocorreu um erro ao excluir o evento.");
+          console.error(error);
+        });
     }
   };
 
   if (loading) {
     return (
-      <Box className={styles.container}>
-        <Box className={styles.loadingContainer}>
-          <CircularProgress sx={{ color: "#fff" }} />
-          <Typography className={styles.loadingText}>
-            Carregando agenda da portaria...
-          </Typography>
-        </Box>
-      </Box>
+      <div className={styles.loadingContainer}>
+        <div className={styles.activityIndicator}></div>
+        <p className={styles.loadingText}>Carregando agenda da portaria...</p>
+      </div>
     );
   }
 
+  const getEventIcon = (tipo) => {
+    if (!tipo) {
+      return (
+        <CalendarAlertIcon
+          className={styles.eventIcon}
+          style={{ color: "#FF5252" }}
+        />
+      );
+    }
+
+    switch (tipo.toLowerCase()) {
+      case "mudança":
+        return (
+          <TruckIcon
+            className={styles.eventIcon}
+            style={{ color: "#FFD700" }}
+          />
+        );
+      case "evento":
+        return (
+          <WineBarIcon
+            className={styles.eventIcon}
+            style={{ color: "#4FC3F7" }}
+          />
+        );
+      default:
+        return (
+          <CalendarStarIcon
+            className={styles.eventIcon}
+            style={{ color: "#BA68C8" }}
+          />
+        );
+    }
+  };
+
   return (
-    <Box className={styles.container}>
-      <Box className={styles.gradientBackground}></Box>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <CalendarIcon className={styles.headerIcon} />
+        <h1 className={styles.title}>Próximos Agendamentos</h1>
+      </div>
 
-      <Box className={styles.header}>
-        <CalendarToday sx={{ color: "#FFF", fontSize: 24 }} />
-        <Typography variant="h6" className={styles.title}>
-          Próximos Agendamentos
-        </Typography>
-      </Box>
-
-      {error && (
-        <Alert severity="error" className={styles.alert}>
-          {error}
-        </Alert>
-      )}
-
-      <Box className={styles.scrollContainer}>
+      <div className={styles.scrollContainer}>
         {agendamentos.length > 0 ? (
           agendamentos.map((item) => {
             const isHoje =
               new Date(item.dataEvento).toDateString() ===
               new Date().toDateString();
+            const totalPresentes = convidadosPresentes[item.id] || 0;
 
             return (
-              <Card key={`${item.uid}-${item.id}`} className={styles.card}>
-                <Box className={styles.cardHeader}>
+              <div key={`${item.uid}-${item.id}`} className={styles.card}>
+                <div className={styles.cardHeader}>
                   {getEventIcon(item.tipo)}
-                  <Typography className={styles.eventType}>
+                  <span className={styles.eventType}>
                     {item.tipo || "Evento"}
-                  </Typography>
-                  <Box
+                  </span>
+                  <div
                     className={`${styles.dateBadge} ${
                       isHoje ? styles.todayBadge : ""
                     }`}
                   >
-                    <Typography className={styles.dateBadgeText}>
-                      {formatDateOnly(item.dataEvento)}
+                    <span className={styles.dateBadgeText}>
+                      {FormateDate(item.dataEvento)}
                       {isHoje && " (Hoje)"}
-                    </Typography>
-                  </Box>
-                </Box>
+                    </span>
+                  </div>
+                </div>
 
-                <Divider className={styles.divider} />
+                <hr className={styles.divider} />
 
-                <CardContent className={styles.cardContent}>
-                  <Box className={styles.infoRowContainer}>
-                    <Box className={styles.infoRow}>
-                      <Person sx={{ color: "#EFF3EA", fontSize: 18, mr: 1 }} />
-                      <Typography className={styles.infoText}>
-                        Morador:
-                      </Typography>
-                    </Box>
-                    <Typography className={styles.infoText}>
+                <div className={styles.cardContent}>
+                  <div className={styles.infoRowContainer}>
+                    <div className={styles.infoRow}>
+                      <AccountIcon className={styles.infoIcon} />
+                      <span className={styles.infoText}>Morador:</span>
+                    </div>
+                    <span className={styles.infoText}>
                       {item.nome || "Não informado"}
-                    </Typography>
-                  </Box>
-
-                  <Box className={styles.infoRowContainer}>
-                    <Box className={styles.infoRow}>
-                      <Person sx={{ color: "#EFF3EA", fontSize: 18, mr: 1 }} />
-                      <Typography className={styles.infoText}>CPF:</Typography>
-                    </Box>
-                    <Typography className={styles.infoText}>
+                    </span>
+                  </div>
+                  <div className={styles.infoRowContainer}>
+                    <div className={styles.infoRow}>
+                      <AccountIcon className={styles.infoIcon} />
+                      <span className={styles.infoText}>Cpf:</span>
+                    </div>
+                    <span className={styles.infoText}>
                       {item.cpf || "Não informado"}
-                    </Typography>
-                  </Box>
+                    </span>
+                  </div>
 
-                  <Box className={styles.infoRowContainer}>
-                    <Box className={styles.infoRow}>
-                      <Home sx={{ color: "#EFF3EA", fontSize: 18, mr: 1 }} />
-                      <Typography className={styles.infoText}>Apto:</Typography>
-                    </Box>
-                    <Typography className={styles.infoText}>
-                      {item.apartamento}
-                    </Typography>
-                  </Box>
+                  <div className={styles.infoRowContainer}>
+                    <div className={styles.infoRow}>
+                      <HomeCityIcon className={styles.infoIcon} />
+                      <span className={styles.infoText}>Apto:</span>
+                    </div>
+                    <span className={styles.infoText}>{item.apartamento}</span>
+                  </div>
 
-                  {item.tipo && item.tipo.toLowerCase() !== "mudança" && (
-                    <Box className={styles.infoRowContainer}>
-                      <Box className={styles.infoRow}>
-                        <Groups
-                          sx={{ color: "#EFF3EA", fontSize: 18, mr: 1 }}
-                        />
-                        <Typography className={styles.infoText}>
-                          Pessoas:
-                        </Typography>
-                      </Box>
-                      <Typography className={styles.infoText}>
-                        {item.totalPessoas > 0
-                          ? `${item.totalPessoas} pessoas`
-                          : "Não informado"}
-                      </Typography>
-                    </Box>
-                  )}
-                </CardContent>
-
-                <CardActions className={styles.actionsContainer}>
                   {item.tipo && item.tipo.toLowerCase() !== "mudança" && (
                     <>
-                      <Button
-                        onClick={() =>
-                          navigate(`/portaria/agenda/termos/${item.id}`)
-                        }
-                        className={styles.actionButton}
-                        startIcon={<Description />}
-                      >
-                        Termo
-                      </Button>
+                      <div className={styles.infoRowContainer}>
+                        <div className={styles.infoRow}>
+                          <AccountCheckIcon
+                            className={styles.infoIconConfirmed}
+                          />
+                          <span
+                            className={`${styles.infoText} ${styles.confirmedText}`}
+                          >
+                            Confirmados:
+                          </span>
+                        </div>
+                        <span
+                          className={`${styles.infoText} ${styles.confirmedText}`}
+                        >
+                          {totalPresentes > 0
+                            ? `${totalPresentes} pessoas`
+                            : "Nenhum presente"}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
 
-                  <Button
-  onClick={() => navigate(`/moradores/agenda/convidados/${item.id}?uid=${item.uid}`)}
-  className={styles.actionButton}
-  startIcon={<Groups />}
->
-  Convidados
-</Button>
+                <div className={styles.actionsContainer}>
+                  {item.tipo && item.tipo.toLowerCase() !== "mudança" && (
+                    <>
+                      <Link
+                        to={{
+                          pathname: "/portaria/agenda/termos",
+                          search: `?id=${item.id}`,
+                        }}
+                        className={styles.actionLink}
+                      >
+                        <div className={styles.actionButton}>
+                          <FileDocumentIcon className={styles.actionIcon} />
+                          <span className={styles.actionText}>Termo</span>
+                        </div>
+                      </Link>
+                      <Link
+                        to={{
+                          pathname:
+                            "/moradores/agenda/convidados",
+                          search: `?id=${item.id}&uid=${item.uid}`,
+                        }}
+                        className={styles.actionLink}
+                      >
+                        <div className={styles.actionButton}>
+                          <AccountGroupIcon className={styles.actionIcon} />
+                          <span className={styles.actionText}>Convidados</span>
+                        </div>
+                      </Link>
                     </>
                   )}
 
-                  <Button
-                    className={styles.deleteButton}
-                    startIcon={<Delete />}
-                    onClick={() => openDeleteDialog(item)}
+                  <div
+                    className={styles.actionButton}
+                    onClick={() => deleteEvento(item.id, item.uid)}
                   >
-                    Excluir
-                  </Button>
-                </CardActions>
+                    <DeleteIcon className={styles.deleteIcon} />
+                    <span
+                      className={`${styles.actionText} ${styles.deleteText}`}
+                    >
+                      Excluir
+                    </span>
+                  </div>
+                </div>
 
-                <Box className={styles.cardFooter}>
-                  <Box className={styles.footerTextContainer}>
-                    <Today sx={{ color: "#EFF3EA", fontSize: 14, mr: 1 }} />
-                    <Typography className={styles.footerText}>
-                      Criado em: {formatDateOnly(item.dataCriacao)}
-                    </Typography>
-                  </Box>
+                <div className={styles.cardFooter}>
+                  <div className={styles.footerTextContainer}>
+                    <ClockOutlineIcon className={styles.footerIcon} />
+                    <span className={styles.footerText}>
+                      Criado em: {FormateDate(item.dataCriacao)}
+                    </span>
+                  </div>
 
-                  <Box className={styles.footerTextContainer}>
+                  <div className={styles.footerTextContainer}>
                     {item.criadoPor === "Portaria" && (
                       <>
-                        <CalendarToday
-                          sx={{ color: "#EFF3EA", fontSize: 14, mr: 1 }}
-                        />
-                        <Typography className={styles.footerText}>
+                        <CalendarCheckIcon className={styles.footerIcon} />
+                        <span className={styles.footerText}>
                           Obs: agendado na portaria
-                        </Typography>
+                        </span>
                       </>
                     )}
-                  </Box>
-                </Box>
-              </Card>
+                  </div>
+                </div>
+              </div>
             );
           })
         ) : (
-          <Box className={styles.emptyContainer}>
-            <Event sx={{ color: "#EFF3EA", fontSize: 50 }} />
-            <Typography className={styles.emptyText}>
-              Nenhum evento agendado
-            </Typography>
-            <Typography className={styles.emptySubtext}>
+          <div className={styles.emptyContainer}>
+            <CalendarRemoveIcon className={styles.emptyIcon} />
+            <p className={styles.emptyText}>Nenhum evento agendado</p>
+            <p className={styles.emptySubtext}>
               Não há eventos futuros agendados
-            </Typography>
-          </Box>
+            </p>
+          </div>
         )}
-      </Box>
-
-      {/* Dialog de Confirmação de Exclusão */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={closeDeleteDialog}
-        className={styles.dialog}
-      >
-        <DialogTitle className={styles.dialogTitle}>
-          Confirmar exclusão
-        </DialogTitle>
-        <DialogContent>
-          <Typography>Tem certeza que deseja excluir este evento?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDeleteDialog} className={styles.dialogCancel}>
-            Cancelar
-          </Button>
-          <Button onClick={confirmDelete} className={styles.dialogConfirm}>
-            Excluir
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+      </div>
+    </div>
   );
 };
 

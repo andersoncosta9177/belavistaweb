@@ -58,8 +58,9 @@ function AppRoutes() {
 
         <Route path="/portaria/visitantes" element={<VisitantesPortaria/>} />
          <Route path='/portaria/agenda/relatorio' element={<RelatorioEventos/>} />
-         <Route path='/portaria/agenda/termos/:id' element={<Termos/>} />
-         <Route path='/moradores/agenda/convidados/:id' element={<Convidados/>} />
+        <Route path='/portaria/agenda/termos' element={<Termos/>} />
+
+         <Route path='/moradores/agenda/convidados' element={<Convidados/>} />
         <Route path="/moradores/prestadores-servicos" element={<PrestadoresServicos />} />
         <Route path="/portaria/encomendas/registro" element={<RegistroEncomendas />} />
         <Route path="/portaria/agenda/agendamento" element={<AgendamentoPortaria />} />

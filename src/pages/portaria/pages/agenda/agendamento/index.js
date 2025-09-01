@@ -1,35 +1,21 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Menu,
-  MenuItem,
-  Paper,
-  useMediaQuery,
-  useTheme,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import {
-  CalendarToday,
-  Home,
-  Person,
-  CreditCard,
-  LocalShipping,
-  Celebration,
-  ChevronRight,
-  CheckCircle,
-  Close,
-} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { ref, push } from "firebase/database";
+import { ref, push, get } from "firebase/database";
 import { db } from "../../../../../database/firebaseConfig";
 import { formatDateOnly } from "../../../../../../src/Utils/hourBrazil";
-import styles from "./agendamento.module.css";
+import styles from "./agendamentoPortaria.module.css";
+
+// Importando ícones do Material-UI
+import {
+  CheckCircle as CheckCircleIcon,
+  ExpandMore as ChevronDownIcon,
+  Person as AccountIcon,
+  CreditCard as CardAccountDetailsIcon,
+  Home as HomeIcon,
+  CalendarMonth as CalendarIcon,
+  LocalShipping as TruckDeliveryIcon,
+  Celebration as PartyPopperIcon,
+} from "@mui/icons-material";
 
 function AgendamentosMoradores() {
   const [tipo, setTipo] = useState("");
@@ -37,307 +23,246 @@ function AgendamentosMoradores() {
   const [cpf, setCpf] = useState("");
   const [apartamento, setApartamento] = useState("");
   const [data, setData] = useState(new Date());
-  const [showDatePickerDialog, setShowDatePickerDialog] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [error, setError] = useState("");
-
+  const [showPicker, setShowPicker] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [verificando, setVerificando] = useState(false);
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Função para obter a data local no formato YYYY-MM-DD
-  const getLocalDateString = (date) => {
-    const d = new Date(date);
-    const offset = d.getTimezoneOffset() * 60000; // offset em milissegundos
-    const localDate = new Date(d.getTime() - offset);
-    return localDate.toISOString().split('T')[0];
+  const showDatePicker = () => setShowPicker(true);
+
+  // CORREÇÃO: Função para ajustar a data considerando o fuso horário
+  const adjustForTimezone = (date) => {
+    const adjustedDate = new Date(date);
+    adjustedDate.setMinutes(adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset());
+    return adjustedDate;
   };
 
-  // Função para criar uma data a partir de string YYYY-MM-DD sem problemas de timezone
-  const parseLocalDate = (dateString) => {
-    const [year, month, day] = dateString.split('-').map(Number);
-    return new Date(year, month - 1, day);
+  const onChange = (event) => {
+    const selectedDate = new Date(event.target.value);
+    // CORREÇÃO: Ajustar para o fuso horário local
+    setData(adjustForTimezone(selectedDate));
   };
 
-  const handleTipoClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  // CORREÇÃO: Formatar data para exibição correta
+  const formatDisplayDate = (date) => {
+    return date.toLocaleDateString('pt-BR');
   };
 
-  const handleTipoClose = () => {
-    setAnchorEl(null);
-  };
+  async function verificarAgendamentoExistente(dataISO, tipoAgendamento) {
+    try {
+      const reservasRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
+      const snapshot = await get(reservasRef);
+      
+      if (!snapshot.exists()) return false;
 
-  const handleTipoSelect = (selectedTipo) => {
-    setTipo(selectedTipo);
-    handleTipoClose();
-  };
+      const todosAgendamentos = snapshot.val();
+      // CORREÇÃO: Usar a data formatada corretamente para comparação
+      const dataParaVerificar = new Date(dataISO).toISOString().split('T')[0];
 
-  const handleDateChange = (event) => {
-    const selectedDate = parseLocalDate(event.target.value);
-    setData(selectedDate);
-  };
-
-  const openDatePicker = () => {
-    setShowDatePickerDialog(true);
-  };
-
-  const closeDatePicker = () => {
-    setShowDatePickerDialog(false);
-  };
-
-  const confirmDate = () => {
-    closeDatePicker();
-  };
+      for (const agendamentoId in todosAgendamentos) {
+        const agendamento = todosAgendamentos[agendamentoId];
+        
+        if (agendamento.dataEvento && agendamento.tipo === tipoAgendamento) {
+          const dataExistente = new Date(agendamento.dataEvento).toISOString().split('T')[0];
+          
+          if (dataExistente === dataParaVerificar) {
+            return true;
+          }
+        }
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Erro ao verificar agendamentos:", error);
+      return false;
+    }
+  }
 
   async function salvarAgendamento() {
     if (!tipo || !nome || !apartamento || !cpf) {
-      setError("Preencha todos os campos antes de enviar.");
+      alert("Erro: Preencha todos os campos antes de enviar.");
       return;
     }
 
+    setVerificando(true);
+
     try {
+      // CORREÇÃO: Usar a data ajustada para o fuso horário
+      const dataISO = data.toISOString();
+      
+      const existeAgendamento = await verificarAgendamentoExistente(dataISO, tipo);
+      
+      if (existeAgendamento) {
+        alert(`Conflito de Agendamento: Já existe um agendamento de ${tipo} para a data ${formatDisplayDate(data)}.`);
+        setVerificando(false);
+        return;
+      }
+
       const reservasRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
-      
-      // Formata a data corretamente para o banco (mantém a data local)
-      const dataEvento = new Date(data);
-      const dataEventoFormatada = dataEvento.toLocaleDateString('pt-BR');
-      
       await push(reservasRef, {
         tipo,
         nome,
         cpf,
         apartamento,
-        dataEvento: dataEventoFormatada, // Salva como string no formato local
-        dataEvento: dataEvento.toISOString(), // Salva também como ISO para referência
+        dataEvento: dataISO,
         dataCriacao: new Date().toISOString(),
-        criadoPor: "Portaria",
+        criadoPor: "Portaria",  
       });
 
-      alert("Sucesso! Agendamento realizado com sucesso!");
-      navigate(-1);
+      alert("Sucesso: Agendamento realizado com sucesso!");
+      navigate(-1); // Voltar para a página anterior
     } catch (error) {
       console.error("Erro ao salvar agendamento:", error);
-      setError("Não foi possível salvar o agendamento.");
+      alert("Erro: Não foi possível salvar o agendamento.");
+    } finally {
+      setVerificando(false);
     }
   }
 
   return (
-    <Box className={styles.container}>
-      <Box className={styles.gradientBackground}></Box>
+    <div className={styles.container}>
+      <div className={styles.keyboardAvoidingView}>
+        <div className={styles.scrollContainer}>
+          <div className={styles.content}>
+            <h1 className={styles.title}>Agendar Mudança ou Evento</h1>
 
-      <Paper elevation={10} className={styles.content}>
-        <Typography variant="h5" className={styles.title}>
-          Agendar Mudança ou Evento
-        </Typography>
+            {/* Tipo Selection Button */}
+            <button
+              className={`${styles.selectionButton} ${verificando ? styles.disabled : ''}`}
+              onClick={() => setShowModal(true)}
+              disabled={verificando}
+            >
+              <span className={styles.buttonTitle}>{tipo || "Selecione o Tipo"}</span>
+              {tipo ? (
+                <CheckCircleIcon className={styles.buttonIcon} />
+              ) : (
+                <ChevronDownIcon className={styles.buttonIcon} />
+              )}
+            </button>
 
-        {error && (
-          <Box className={styles.errorContainer}>
-            <Typography className={styles.errorText}>{error}</Typography>
-          </Box>
-        )}
+            {/* Input Fields */}
+            <div className={styles.inputContainer}>
+              <AccountIcon className={styles.inputIcon} />
+              <input
+                type="text"
+                placeholder="Nome do morador"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                className={styles.inputField}
+                disabled={verificando}
+                maxLength={18}
+              />
+            </div>
 
-        {/* Tipo Selection Button */}
-        <Button
-          fullWidth
-          className={styles.selectionButton}
-          onClick={handleTipoClick}
-          endIcon={<ChevronRight />}
-          startIcon={tipo ? <CheckCircle /> : null}
-        >
-          {tipo || "Selecione o Tipo"}
-        </Button>
+            <div className={styles.inputContainer}>
+              <CardAccountDetailsIcon className={styles.inputIcon} />
+              <input
+                type="number"
+                placeholder="CPF"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                className={styles.inputField}
+                disabled={verificando}
+              />
+            </div>
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleTipoClose}
-          className={styles.menu}
-        >
-          <MenuItem
-            onClick={() => handleTipoSelect("mudança")}
-            className={styles.menuItem}
-          >
-            <LocalShipping className={styles.menuIcon} />
-            Mudança
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleTipoSelect("evento")}
-            className={styles.menuItem}
-          >
-            <Celebration className={styles.menuIcon} />
-            Evento
-          </MenuItem>
-        </Menu>
+            <div className={styles.inputContainer}>
+              <HomeIcon className={styles.inputIcon} />
+              <input
+                type="number"
+                placeholder="N° apartamento"
+                value={apartamento}
+                onChange={(e) => setApartamento(e.target.value)}
+                className={styles.inputField}
+                disabled={verificando}
+              />
+            </div>
 
-        {/* Input Fields com ícones dentro */}
-        <Box className={styles.inputContainer}>
-          <Person className={styles.inputIcon} />
-          <TextField
-            fullWidth
-            placeholder="Nome do morador"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            className={styles.inputField}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  border: "none",
-                },
-                "&:hover fieldset": {
-                  border: "none",
-                },
-                "&.Mui-focused fieldset": {
-                  border: "none",
-                  boxShadow: "none",
-                },
-              },
-            }}
-            InputProps={{
-              className: styles.inputText,
-            }}
-            variant="outlined"
-          />
-        </Box>
+            {/* Date Picker Button */}
+            <button
+              className={`${styles.selectionButton} ${verificando ? styles.disabled : ''}`}
+              onClick={showDatePicker}
+              disabled={verificando}
+            >
+              <CalendarIcon className={styles.buttonIcon} />
+              {/* CORREÇÃO: Usar a função de formatação corrigida */}
+              <span className={styles.buttonTitle}>Data: {formatDisplayDate(data)}</span>
+            </button>
 
-        <Box className={styles.inputContainer}>
-          <CreditCard className={styles.inputIcon} />
-          <TextField
-            fullWidth
-            placeholder="CPF"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
-            className={styles.inputField}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  border: "none",
-                },
-                "&:hover fieldset": {
-                  border: "none",
-                },
-                "&.Mui-focused fieldset": {
-                  border: "none",
-                  boxShadow: "none",
-                },
-              },
-            }}
-            InputProps={{
-              className: styles.inputText,
-            }}
-            type="number"
-            variant="outlined"
-          />
-        </Box>
+            {showPicker && (
+              <input
+                type="date"
+                // CORREÇÃO: Formatar a data corretamente para o input
+                value={data.toISOString().split('T')[0]}
+                onChange={onChange}
+                min={new Date().toISOString().split('T')[0]}
+                className={styles.datePicker}
+              />
+            )}
 
-        <Box className={styles.inputContainer}>
-          <Home className={styles.inputIcon} />
-          <TextField
-            fullWidth
-            placeholder="N° apartamento"
-            value={apartamento}
-            onChange={(e) => setApartamento(e.target.value)}
-            className={styles.inputField}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  border: "none",
-                },
-                "&:hover fieldset": {
-                  border: "none",
-                },
-                "&.Mui-focused fieldset": {
-                  border: "none",
-                  boxShadow: "none",
-                },
-              },
-            }}
-            InputProps={{
-              className: styles.inputText,
-            }}
-            type="number"
-            variant="outlined"
-          />
-        </Box>
+            {/* Action Buttons */}
+            <div className={styles.actionButtons}>
+              <button
+                className={styles.cancelButton}
+                onClick={() => navigate(-1)}
+                disabled={verificando}
+              >
+                Cancelar
+              </button>
+              <button
+                className={styles.submitButton}
+                onClick={salvarAgendamento}
+                disabled={verificando}
+              >
+                {verificando ? "Verificando..." : "Agendar"}
+                {verificando && <div className={styles.loadingSpinner}></div>}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* Botão para abrir o date picker */}
-        <Button
-          fullWidth
-          className={styles.selectionButton}
-          onClick={openDatePicker}
-          startIcon={<CalendarToday />}
-        >
-          Data: {formatDateOnly(data)}
-        </Button>
+      {/* Type Selection Modal */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h2 className={styles.modalTitle}>Selecione o Tipo</h2>
 
-        {/* Dialog do Date Picker */}
-        <Dialog
-          open={showDatePickerDialog}
-          onClose={closeDatePicker}
-          maxWidth="sm"
-          fullWidth
-          PaperProps={{ className: styles.datePickerDialog }}
-        >
-          <DialogTitle className={styles.dialogTitle}>
-            Selecione a Data
-            <Button onClick={closeDatePicker} className={styles.closeButton}>
-              <Close />
-            </Button>
-          </DialogTitle>
-          <DialogContent>
-            <TextField
-              fullWidth
-              type="date"
-              value={getLocalDateString(data)}
-              onChange={handleDateChange}
-              className={styles.datePickerInput}
-              InputLabelProps={{
-                shrink: true,
+            <button
+              className={styles.modalOptionButton}
+              onClick={() => {
+                setTipo("mudança");
+                setShowModal(false);
               }}
-              inputProps={{
-                min: getLocalDateString(new Date()),
-                className: styles.dateInput,
+              disabled={verificando}
+            >
+              <TruckDeliveryIcon className={styles.modalIcon} />
+              Mudança
+            </button>
+
+            <button
+              className={styles.modalOptionButton}
+              onClick={() => {
+                setTipo("evento");
+                setShowModal(false);
               }}
-              autoFocus
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={closeDatePicker}
-              className={styles.dialogCancelButton}
+              disabled={verificando}
+            >
+              <PartyPopperIcon className={styles.modalIcon} />
+              Evento
+            </button>
+
+            <button
+              className={styles.modalCancelButton}
+              onClick={() => setShowModal(false)}
+              disabled={verificando}
             >
               Cancelar
-            </Button>
-            <Button
-              onClick={confirmDate}
-              className={styles.dialogConfirmButton}
-            >
-              Confirmar
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Action Buttons */}
-        <Box className={styles.actionButtons}>
-      
-          <Button
-            variant="contained"
-            className={styles.submitButton}
-            onClick={salvarAgendamento}
-            fullWidth={isSmallScreen}
-          >
-            Agendar
-          </Button>
-              <Button
-            variant="outlined"
-            className={styles.cancelButton}
-            onClick={() => navigate(-1)}
-            fullWidth={isSmallScreen}
-          >
-            Cancelar
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

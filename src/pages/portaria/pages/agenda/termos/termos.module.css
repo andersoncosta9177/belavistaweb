@@ -1,29 +1,19 @@
 .container {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  position: relative;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-}
-
-.gradientBackground {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-  z-index: -1;
+  padding: 10px 0;
 }
 
 .headerCard {
   border-radius: 7px;
   margin-bottom: 15px;
-  padding: 12px 0;
+  padding: 15px;
   background-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- 
-  backdrop-filter: blur(10px);
+  border: none;
+  width: 96%;
+  margin: 0 2% 15px 2%;
 }
 
 .headerContent {
@@ -31,24 +21,23 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 96%;
-  margin-left: 2%;
-  margin-right: 2%;
 }
 
 .headerIcon {
-  font-size: 22px;
-  margin-right: 10px;
+  color: #f9f9f9;
+  font-size: 26px;
 }
 
 .headerTitle {
   font-size: 17px;
   font-weight: 600;
   color: #f9f9f9;
+  margin-left: 10px;
 }
 
 .loadingContainer {
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: center;
   margin-top: 50px;
@@ -59,71 +48,77 @@
   color: #f9f9f9;
 }
 
+.emptyContainer {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
 .emptyCard {
   border-radius: 7px;
-  margin: 15px;
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 90%;
+  max-width: 400px;
 }
 
 .emptyContent {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
-.infoIcon {
+.emptyIcon {
+  color: #0F98A1;
   font-size: 40px;
   margin-bottom: 10px;
 }
 
 .emptyText {
+  margin-top: 10px;
   font-size: 16px;
   color: #333;
-  text-align: center;
+  font-weight: 600;
 }
 
-.listContainer {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+.emptySubtext {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #666;
 }
 
-.termosList {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.listContent {
+  padding: 0 10px 20px 10px;
 }
 
 .termoCard {
   border-radius: 8px;
+  margin-bottom: 15px;
   background-color: rgba(255, 255, 255, 0.95);
   overflow: hidden;
   width: 96%;
-  margin-left: 2%;
-  margin-right: 2%;
+  margin: 0 2% 15px 2%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.termoCard:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .termoHeader {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 15px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease;
 }
 
 .termoHeader:hover {
-  background-color: rgba(15, 152, 161, 0.05);
+  background-color: rgba(15, 152, 161, 0.1);
 }
 
 .termoHeaderInfo {
@@ -134,46 +129,49 @@
   font-size: 16px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 4px;
+  margin: 0;
 }
 
 .termoSubtitle {
   font-size: 14px;
   color: #666;
+  margin-top: 2px;
+  margin-bottom: 0;
 }
 
 .chevronIcon {
   color: #0F98A1;
-  font-size: 16px;
+  font-size: 24px;
 }
 
 .termoBody {
-  padding: 0 15px 15px;
+  padding: 0 15px 15px 15px;
+  margin-top: 20px;
 }
 
 .infoRow {
   display: flex;
+  flex-direction: row;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.icon {
+.infoIcon {
   color: #0F98A1;
-  margin-right: 8px;
   font-size: 16px;
-  width: 20px;
-  text-align: center;
 }
 
 .infoText {
   font-size: 14px;
   color: #333;
+  margin-left: 8px;
 }
 
 .divider {
-  height: 1px;
-  background-color: #ddd;
   margin: 15px 0;
+  background-color: #ddd;
+  border: none;
+  height: 1px;
 }
 
 .declaracaoTitle {
@@ -186,34 +184,91 @@
 .declaracaoText {
   font-size: 14px;
   color: #333;
-  line-height: 1.5;
+  line-height: 20px;
+  margin: 0;
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 10px 0;
   }
   
   .headerCard {
-    width: 94%;
-    margin-left: 3%;
-    margin-right: 3%;
+    width: 96%;
+    margin: 0 2% 15px 2%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
   
   .termoCard {
-    width: 94%;
-    margin-left: 3%;
-    margin-right: 3%;
+    width: 96%;
+    margin: 0 2% 15px 2%;
   }
   
   .headerContent {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     text-align: center;
   }
   
-  .headerIcon {
+  .headerTitle {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .termoHeader {
+    flex-direction: row;
+    align-items: flex-start;
+
+
+  }
+.headerContent {
+  display: flex;
+  align-items: center; /* Alinha verticalmente no centro */
+  justify-content: center; /* Centraliza horizontalmente */
+  gap: 10px; /* Espaçamento entre ícone e texto */
+}
+
+.headerIcon {
+  font-size: 30px;
+  color: #f9f9f9;
+  /* Remove qualquer margem ou padding padrão */
+  margin: 0;
+  padding: 0;
+}
+
+.headerTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #f9f9f9;
+  margin: 0; /* Remove margem padrão do h2 */
+  padding: 0;
+  /* Garante alinhamento vertical */
+  display: flex;
+  align-items: center;
+}
+  
+  .cardHeaderContent {
     margin-right: 0;
-    margin-bottom: 8px;
+    width: 100%;
+  }
+  
+  .chevronIcon {
+    align-self: flex-end;
+    /* margin-top: 10px; */
+  }
+  
+  .infoRow {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .infoText {
+    margin-left: 6px;
+    margin-top: 5px;
   }
 }

@@ -1,33 +1,22 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  IconButton,
-  CircularProgress,
-  Card,
-  CardContent,
-  CardActions,
-  Divider,
-  useMediaQuery,
-  useTheme
-} from "@mui/material";
-import {
-  Search,
-  Clear,
-  Event,
-  Person,
-  Home,
-  Groups,
-  CalendarToday,
-  Today
-} from "@mui/icons-material";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, get } from "firebase/database";
 import { db } from "../../../../../database/firebaseConfig";
-import { formatDateOnly } from "../../../../../Utils/hourBrazil";
+import FormateDate from "../../../../../../src/Utils/formateDate";
+import styles from "./realizados.module.css";
 
-import styles from './realizados.module.css';
+// Importando ícones do Material-UI
+import {
+  Search as SearchIcon,
+  Close as CloseIcon,
+  EventBusy as CalendarRemoveIcon,
+  Celebration as PartyPopperIcon,
+  Groups as AccountGroupIcon,
+  LocalShipping as TruckDeliveryIcon,
+  Star as CalendarStarIcon,
+  Person as AccountIcon,
+  Home as HomeOutlineIcon,
+  CheckCircle as AccountCheckIcon,
+} from "@mui/icons-material";
 
 const TodosEventosPassados = () => {
   const [loading, setLoading] = useState(true);
@@ -35,30 +24,77 @@ const TodosEventosPassados = () => {
   const [eventosFiltrados, setEventosFiltrados] = useState([]);
   const [termoBusca, setTermoBusca] = useState("");
 
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
   useEffect(() => {
     const agendamentosRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
-    
-    const unsubscribe = onValue(agendamentosRef, (snapshot) => {
+
+    const unsubscribe = onValue(agendamentosRef, async (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const eventosArray = Object.keys(data).map(key => ({
+        const eventosArray = Object.keys(data).map((key) => ({
           id: key,
-          ...data[key]
+          ...data[key],
         }));
-        
+
         const hoje = new Date();
-        const eventosPassados = eventosArray.filter(evento => {
+        
+        // FILTRO CORRIGIDO: Apenas eventos PASSADOS (exclui hoje)
+        const eventosPassados = eventosArray.filter((evento) => {
           const dataEvento = new Date(evento.dataEvento);
-          return dataEvento < hoje;
+          // Remove a parte da hora para comparar apenas as datas
+          const dataEventoSemHora = new Date(
+            dataEvento.getFullYear(), 
+            dataEvento.getMonth(), 
+            dataEvento.getDate()
+          );
+          const hojeSemHora = new Date(
+            hoje.getFullYear(), 
+            hoje.getMonth(), 
+            hoje.getDate()
+          );
+          
+          return dataEventoSemHora < hojeSemHora; // Apenas eventos anteriores a hoje
         });
-        
-        eventosPassados.sort((a, b) => new Date(b.dataEvento) - new Date(a.dataEvento));
-        
-        setTodosEventos(eventosPassados);
-        setEventosFiltrados(eventosPassados);
+
+        // Buscar número de convidados PRESENTES para cada evento
+        const eventosComConvidados = await Promise.all(
+          eventosPassados.map(async (evento) => {
+            try {
+              const convidadosRef = ref(
+                db,
+                `DadosBelaVista/DadosGerais/Reservas/${evento.id}/convidados`
+              );
+              const convidadosSnapshot = await get(convidadosRef);
+
+              let numeroConvidadosPresentes = 0;
+              if (convidadosSnapshot.exists()) {
+                const convidadosData = convidadosSnapshot.val();
+                Object.values(convidadosData).forEach(convidado => {
+                  if (convidado.presente === true) {
+                    numeroConvidadosPresentes++;
+                  }
+                });
+              }
+
+              return {
+                ...evento,
+                numeroConvidadosPresentes,
+              };
+            } catch (error) {
+              console.error("Erro ao buscar convidados:", error);
+              return {
+                ...evento,
+                numeroConvidadosPresentes: 0,
+              };
+            }
+          })
+        );
+
+        eventosComConvidados.sort(
+          (a, b) => new Date(b.dataEvento) - new Date(a.dataEvento)
+        );
+
+        setTodosEventos(eventosComConvidados);
+        setEventosFiltrados(eventosComConvidados);
       } else {
         setTodosEventos([]);
         setEventosFiltrados([]);
@@ -74,200 +110,164 @@ const TodosEventosPassados = () => {
       setEventosFiltrados(todosEventos);
     } else {
       const termo = termoBusca.toLowerCase();
-      const filtrados = todosEventos.filter(evento => 
-        evento.apartamento.toLowerCase().includes(termo) ||
-        (evento.nome && evento.nome.toLowerCase().includes(termo))
+      const filtrados = todosEventos.filter(
+        (evento) =>
+          evento.apartamento.toLowerCase().includes(termo) ||
+          (evento.nome && evento.nome.toLowerCase().includes(termo))
       );
       setEventosFiltrados(filtrados);
     }
   }, [termoBusca, todosEventos]);
 
-  const clearSearch = () => {
-    setTermoBusca('');
+  const getPrimeiroNome = (nomeCompleto) => {
+    if (!nomeCompleto) return "Não informado";
+    return nomeCompleto.split(" ")[0];
   };
 
   const getEventIcon = (tipo) => {
-    if (!tipo) {
-      return <Event sx={{ color: "#FF5252", fontSize: 20 }} />;
-    }
-
-    switch (tipo.toLowerCase()) {
+    switch (tipo?.toLowerCase()) {
+      case "festa":
+        return (
+          <PartyPopperIcon 
+            className={styles.eventIcon}
+            style={{ color: "#FF6B6B", fontSize: 22 }}
+          />
+        );
+      case "reunião":
+        return (
+          <AccountGroupIcon 
+            className={styles.eventIcon}
+            style={{ color: "#4ECDC4", fontSize: 22 }}
+          />
+        );
       case "mudança":
-        return <Event sx={{ color: "#FFD700", fontSize: 20 }} />;
-      case "evento":
-        return <Event sx={{ color: "#4FC3F7", fontSize: 20 }} />;
+        return (
+          <TruckDeliveryIcon 
+            className={styles.eventIcon}
+            style={{ color: "#FFD166", fontSize: 22 }}
+          />
+        );
       default:
-        return <Event sx={{ color: "#BA68C8", fontSize: 20 }} />;
+        return (
+          <CalendarStarIcon 
+            className={styles.eventIcon}
+            style={{ color: "#BA68C8", fontSize: 22 }}
+          />
+        );
     }
   };
 
+  const renderEvento = (evento, index) => (
+    <div key={evento.id} className={styles.eventCardContainer}>
+      <div className={styles.eventCard}>
+        <div className={styles.cardHeader}>
+          <div className={styles.eventTypeBadge}>
+            {getEventIcon(evento.tipo)}
+            <span className={styles.eventTypeText} title={evento.tipo || "Evento"}>
+              {evento.tipo || "Evento"}
+            </span>
+          </div>
+          <span className={styles.eventDate} title={FormateDate(evento.dataEvento)}>
+            {FormateDate(evento.dataEvento)}
+          </span>
+        </div>
+
+        <hr className={styles.divider} />
+
+        <div className={styles.eventDetails}>
+          <div className={styles.infoRow}>
+            <AccountIcon className={styles.infoIcon} />
+            <span className={styles.detailLabel}>Nome:</span>
+            <span className={styles.detailValue} title={getPrimeiroNome(evento.nome)}>
+              {getPrimeiroNome(evento.nome)}
+            </span>
+          </div>
+          
+          <div className={styles.infoRow}>
+            <HomeOutlineIcon className={styles.infoIcon} />
+            <span className={styles.detailLabel}>Apto:</span>
+            <span className={styles.detailValue}>{evento.apartamento}</span>
+          </div>
+
+          {/* Nova linha para mostrar número de convidados PRESENTES */}
+          {evento.tipo?.toLowerCase() !== "mudança" && (
+            <div className={styles.infoRow}>
+              <AccountCheckIcon className={styles.infoIconPresentes} />
+              <span className={`${styles.detailLabel} ${styles.presentesLabel}`}>Presentes:</span>
+              <span className={`${styles.detailValue} ${styles.presentesValue}`}>
+                {evento.numeroConvidadosPresentes}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
-      <Box className={styles.container}>
-        <Box className={styles.loadingContainer}>
-          <CircularProgress sx={{ color: "#fff" }} />
-          <Typography className={styles.loadingText}>
-            Carregando histórico de eventos...
-          </Typography>
-        </Box>
-      </Box>
+      <div className={styles.loadingContainer}>
+        <div className={styles.activityIndicator}></div>
+        <p className={styles.loadingText}>Carregando eventos...</p>
+      </div>
     );
   }
 
   return (
-    <Box className={styles.container}>
-      <Box className={styles.gradientBackground}></Box>
-      
-      <Box className={styles.header}>
-        <CalendarToday sx={{ color: "#FFF", fontSize: 24 }} />
-        <Typography variant="h5" className={styles.title}>
-          Histórico de Eventos
-        </Typography>
-      </Box>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Histórico de Eventos</h1>
+        <p className={styles.subtitle}>Todos os eventos passados</p>
+      </div>
 
-      <Box className={styles.searchContainer}>
-   <TextField
-  fullWidth
-  placeholder="Buscar por apartamento ou nome"
-  value={termoBusca}
-  onChange={(e) => setTermoBusca(e.target.value)}
-  className={styles.searchInput}
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <Search sx={{ color: "#EFF3EA" }} />
-      </InputAdornment>
-    ),
-    endAdornment: termoBusca.length > 0 && (
-      <InputAdornment position="end">
-        <IconButton onClick={clearSearch} size="small">
-          <Clear sx={{ color: "#EFF3EA" }} />
-        </IconButton>
-      </InputAdornment>
-    ),
-    className: styles.searchInputField
-  }}
-  // Adicione esta propriedade para a cor do placeholder
-  inputProps={{
-    style: {
-      color: "#EFF3EA", // Cor do texto digitado
-    },
-    sx: {
-      "&::placeholder": {
-        color: "#f9f9f9", // Cor do placeholder (ajuste para a cor desejada)
-        opacity: 1, // Garante que a cor seja aplicada completamente
-      }
-    }
-  }}
-  variant="outlined"
-/>
-      </Box>
-      
-      <Box className={styles.resultsContainer}>
-        <Typography className={styles.resultsText}>
-          {eventosFiltrados.length} {eventosFiltrados.length === 1 ? 'evento encontrado' : 'eventos encontrados'}
-        </Typography>
-      </Box>
-
-      <Box className={styles.scrollContainer}>
-        {eventosFiltrados.length > 0 ? (
-          eventosFiltrados.map((item) => (
-            <Card key={item.id} className={styles.card}>
-              <Box className={styles.cardHeader}>
-                {getEventIcon(item.tipo)}
-                <Typography className={styles.eventType}>
-                  {item.tipo || "Evento"}
-                </Typography>
-                <Box className={styles.dateBadge}>
-                  <Typography className={styles.dateBadgeText}>
-                    {formatDateOnly(item.dataEvento)}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Divider className={styles.divider} />
-
-              <CardContent className={styles.cardContent}>
-                <Box className={styles.infoRowContainer}>
-                  <Box className={styles.infoRow}>
-                    <Person sx={{ color: "#EFF3EA", fontSize: 16 }} />
-                    <Typography className={styles.infoText}>Morador:</Typography>
-                  </Box>
-                  <Typography className={styles.infoValue}>
-                    {item.nome || "Não informado"}
-                  </Typography>
-                </Box>
-                
-                <Box className={styles.infoRowContainer}>
-                  <Box className={styles.infoRow}>
-                    <Person sx={{ color: "#EFF3EA", fontSize: 16 }} />
-                    <Typography className={styles.infoText}>CPF:</Typography>
-                  </Box>
-                  <Typography className={styles.infoValue}>
-                    {item.cpf || "Não informado"}
-                  </Typography>
-                </Box>
-
-                <Box className={styles.infoRowContainer}>
-                  <Box className={styles.infoRow}>
-                    <Home sx={{ color: "#EFF3EA", fontSize: 16 }} />
-                    <Typography className={styles.infoText}>Apto:</Typography>
-                  </Box>
-                  <Typography className={styles.infoValue}>{item.apartamento}</Typography>
-                </Box>
-
-                {item.tipo && item.tipo.toLowerCase() !== "mudança" && (
-                  <Box className={styles.infoRowContainer}>
-                    <Box className={styles.infoRow}>
-                      <Groups sx={{ color: "#EFF3EA", fontSize: 16 }} />
-                      <Typography className={styles.infoText}>Pessoas:</Typography>
-                    </Box>
-                    <Typography className={styles.infoValue}>
-                      {item.totalPessoas > 0
-                        ? `${item.totalPessoas} pessoas`
-                        : "Não informado"}
-                    </Typography>
-                  </Box>
-                )}
-              </CardContent>
-
-              <Box className={styles.cardFooter}>
-                <Box className={styles.footerTextContainer}>
-                  <Today sx={{ color: "#EFF3EA", fontSize: 14 }} />
-                  <Typography className={styles.footerText}>
-                    Criado em: {formatDateOnly(item.dataCriacao)}
-                  </Typography>
-                </Box>
-
-                <Box className={styles.footerTextContainer}>
-                  {item.criadoPor === "Portaria" && (
-                    <>
-                      <CalendarToday sx={{ color: "#EFF3EA", fontSize: 14 }} />
-                      <Typography className={styles.footerText}>
-                        Obs: agendado na portaria
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-              </Box>
-            </Card>
-          ))
-        ) : (
-          <Box className={styles.emptyContainer}>
-            <Event sx={{ color: "#EFF3EA", fontSize: 50 }} />
-            <Typography className={styles.emptyText}>
-              {termoBusca ? 'Nenhum evento encontrado' : 'Nenhum evento passado registrado'}
-            </Typography>
-            {termoBusca && (
-              <Box onClick={clearSearch} className={styles.clearSearchButton}>
-                <Clear sx={{ fontSize: 16, marginRight: 1 }} />
-                <Typography>Limpar busca</Typography>
-              </Box>
-            )}
-          </Box>
+      <div className={styles.searchContainer}>
+        <SearchIcon className={styles.searchIcon} />
+        <input
+          type="text"
+          className={styles.searchInput}
+          placeholder="Buscar por apartamento ou nome"
+          value={termoBusca}
+          onChange={(e) => setTermoBusca(e.target.value)}
+        />
+        {termoBusca.length > 0 && (
+          <button
+            onClick={() => setTermoBusca("")}
+            className={styles.clearButton}
+          >
+            <CloseIcon className={styles.clearIcon} />
+          </button>
         )}
-      </Box>
-    </Box>
+      </div>
+
+      <div className={styles.resultsContainer}>
+        <p className={styles.resultsText}>
+          {eventosFiltrados.length}{" "}
+          {eventosFiltrados.length === 1
+            ? "evento encontrado"
+            : "eventos encontrados"}
+        </p>
+      </div>
+
+      {eventosFiltrados.length > 0 ? (
+        <div className={styles.eventsGrid}>
+          {eventosFiltrados.map((evento, index) => renderEvento(evento, index))}
+        </div>
+      ) : (
+        <div className={styles.emptyContainer}>
+          <CalendarRemoveIcon className={styles.emptyIcon} />
+          <p className={styles.emptyText}>
+            {termoBusca
+              ? "Nenhum evento encontrado"
+              : "Nenhum evento passado registrado"}
+          </p>
+          {termoBusca && (
+            <button onClick={() => setTermoBusca("")} className={styles.clearSearchButton}>
+              <span className={styles.clearSearchText}>Limpar busca</span>
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

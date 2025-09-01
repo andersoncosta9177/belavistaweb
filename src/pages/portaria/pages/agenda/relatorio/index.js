@@ -1,26 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Divider,
-  Button,
-  CircularProgress,
-  useMediaQuery,
-  useTheme
-} from "@mui/material";
-import {
-  Description,
-  ChevronLeft,
-  ChevronRight,
-  PictureAsPdf,
-  Event
-} from "@mui/icons-material";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, get } from "firebase/database";
 import { db } from "../../../../../database/firebaseConfig";
-import { formatDateOnly } from "../../../../../Utils/hourBrazil";
-import styles from './relatorio.module.css';
+import FormateDate from "../../../../../../src/Utils/formateDate";
+import styles from "./relatorio.module.css";
 
 const RelatorioEventos = () => {
   const [loading, setLoading] = useState(true);
@@ -28,19 +10,45 @@ const RelatorioEventos = () => {
   const [mesRelatorio, setMesRelatorio] = useState(new Date());
   const [gerandoPDF, setGerandoPDF] = useState(false);
 
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
   useEffect(() => {
     const agendamentosRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
     
-    const unsubscribe = onValue(agendamentosRef, (snapshot) => {
+    const unsubscribe = onValue(agendamentosRef, async (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const todosEventos = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key]
-        }));
+        const todosEventos = await Promise.all(
+          Object.keys(data).map(async (key) => {
+            const evento = data[key];
+            
+            // Buscar número de convidados PRESENTES (apenas com presente: true)
+            let numeroConvidadosPresentes = 0;
+            try {
+              const convidadosRef = ref(db, `DadosBelaVista/DadosGerais/Reservas/${key}/convidados`);
+              const convidadosSnapshot = await get(convidadosRef);
+              if (convidadosSnapshot.exists()) {
+                const convidadosData = convidadosSnapshot.val();
+                // Contar apenas convidados com presente: true
+                Object.values(convidadosData).forEach(convidado => {
+                  if (convidado.presente === true) {
+                    numeroConvidadosPresentes++;
+                  }
+                });
+              }
+            } catch (error) {
+              console.error("Erro ao buscar convidados:", error);
+            }
+            
+            // Calcular total de pessoas (morador + convidados presentes)
+            const totalPessoasPresentes = numeroConvidadosPresentes + 1; // +1 para o morador
+            
+            return {
+              id: key,
+              ...evento,
+              numeroConvidadosPresentes, // Apenas convidados presentes
+              totalPessoasPresentes      // Total de pessoas presentes
+            };
+          })
+        );
         setEventos(todosEventos);
       } else {
         setEventos([]);
@@ -51,6 +59,21 @@ const RelatorioEventos = () => {
     return () => unsubscribe();
   }, []);
 
+  // Função para calcular o valor do evento baseado no número de pessoas PRESENTES
+  const calcularValorEvento = (totalPessoasPresentes) => {
+    const pessoas = parseInt(totalPessoasPresentes) || 0;
+    
+    if (pessoas <= 15) {
+      return 30;
+    } else if (pessoas >= 16 && pessoas <= 30) {
+      return 50;
+    } else if (pessoas >= 31) {
+      return 70;
+    }
+    return 0;
+  };
+
+  // Função para os últimos 30 dias (usada no PDF)
   const getUltimos30Dias = () => {
     const hoje = new Date();
     const trintaDiasAtras = new Date();
@@ -71,192 +94,265 @@ const RelatorioEventos = () => {
     return nomeCompleto.split(' ')[0];
   };
 
+  // Função para filtrar por mês (usada na prévia)
   const filtrarEventosPorMes = () => {
     const primeiroDia = new Date(mesRelatorio.getFullYear(), mesRelatorio.getMonth(), 1);
-    const ultimoDia = new Date(mesRelatorio.getFullYear(), mesRelatorio.getMonth() + 1, 0);
+    
+    // CORREÇÃO: Se for o mês atual, vai até hoje. Senão, vai até o último dia do mês
+    const hoje = new Date();
+    let ultimoDia;
+    
+    if (mesRelatorio.getMonth() === hoje.getMonth() && 
+        mesRelatorio.getFullYear() === hoje.getFullYear()) {
+      // É o mês atual - vai até hoje
+      ultimoDia = hoje;
+    } else {
+      // É um mês passado ou futuro - vai até o último dia do mês
+      ultimoDia = new Date(mesRelatorio.getFullYear(), mesRelatorio.getMonth() + 1, 0);
+    }
+    
     return eventos.filter(evento => {
       const dataEvento = new Date(evento.dataEvento);
       return dataEvento >= primeiroDia && dataEvento <= ultimoDia;
     });
   };
 
-  const gerarRelatorioPDF = async () => {
-    setGerandoPDF(true);
-    try {
-      const eventosFiltrados = filtrarEventosUltimos30Dias();
-      
-      if (eventosFiltrados.length === 0) {
-        alert("Nenhum evento nos últimos 30 dias.");
-        return;
-      }
-      
-      const { inicio, fim } = getUltimos30Dias();
-      const dataInicio = inicio.toLocaleDateString('pt-BR');
-      const dataFim = fim.toLocaleDateString('pt-BR');
-      
-      let html = `
-        <html>
-          <head>
-            <style>
-              body { 
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                padding: 0;
-                margin: 0;
-                color: #333;
+const gerarRelatorioPDF = async () => {
+  setGerandoPDF(true);
+  try {
+    const eventosFiltrados = filtrarEventosUltimos30Dias();
+    
+    if (eventosFiltrados.length === 0) {
+      alert("Aviso: Nenhum evento nos últimos 30 dias.");
+      return;
+    }
+    
+    const { inicio, fim } = getUltimos30Dias();
+    const dataInicio = inicio.toLocaleDateString('pt-BR');
+    const dataFim = fim.toLocaleDateString('pt-BR');
+    
+    // Calcular totais baseados em pessoas PRESENTES
+    let totalEventos = eventosFiltrados.length;
+    let totalValor = 0;
+    let totalConvidadosPresentes = 0;
+    let totalPessoasPresentes = 0;
+    
+    eventosFiltrados.forEach(evento => {
+      const valorEvento = calcularValorEvento(evento.totalPessoasPresentes);
+      totalValor += valorEvento;
+      totalConvidadosPresentes += evento.numeroConvidadosPresentes || 0;
+      totalPessoasPresentes += evento.totalPessoasPresentes || 0;
+    });
+
+    let html = `
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Relatório de Eventos - Condomínio Bela Vista</title>
+          <style>
+              @media print {
+              body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
               }
-              .page {
-                padding: 2cm;
-              }
-              .header {
-                text-align: center;
-                margin-bottom: 30px;
-                border-bottom: 2px solid #2c3e50;
-                padding-bottom: 20px;
-              }
-              .logo {
-                width: 120px;
-                margin-bottom: 15px;
-              }
-              h1 {
-                color: #2c3e50;
-                margin: 0;
-                font-size: 24px;
-                font-weight: 600;
-              }
-              h2 {
-                color: #3498db;
-                margin: 5px 0 0 0;
-                font-size: 18px;
-                font-weight: 500;
-              }
-              .periodo {
-                background-color: #f8f9fa;
-                padding: 8px 15px;
-                border-radius: 5px;
-                display: inline-block;
-                margin-top: 15px;
-                font-size: 14px;
-                color: #555;
-              }
-              table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-              }
+              
               th {
-                background-color: #3498db;
-                color: white;
-                text-align: left;
-                padding: 12px 15px;
-                font-weight: 500;
-                text-transform: uppercase;
-                font-size: 12px;
-                letter-spacing: 0.5px;
+                background-color: #2B1807 !important;
+                color: white !important;
               }
-              td {
-                padding: 12px 15px;
-                border-bottom: 1px solid #e0e0e0;
-                font-size: 13px;
+              
+              .header {
+                background-color: #996c41 !important;
+                color: white !important;
               }
+              
+              .periodo {
+                background-color: rgba(255, 255, 255, 0.2) !important;
+              }
+              
+              .totais-container {
+                background-color: #f8f9fa !important;
+                border-left: 4px solid #2B1807 !important;
+              }
+              
               tr:nth-child(even) {
-                background-color: #f8f9fa;
+                background-color: #f8f9fa !important;
               }
-              tr:hover {
-                background-color: #f1f7fd;
-              }
-              .total {
-                font-weight: bold;
-                margin-top: 20px;
-                text-align: right;
-                font-size: 14px;
-                color: #2c3e50;
-              }
-              .footer {
-                margin-top: 40px;
-                font-size: 11px;
-                text-align: center;
-                color: #7f8c8d;
-                border-top: 1px solid #eee;
-                padding-top: 15px;
-              }
-              .data-hora {
-                font-style: italic;
-                color: #95a5a6;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="page">
-              <div class="header">
-                <div style="font-size: 32px; color: #3498db; margin-bottom: 10px;">🏢</div>
-                <h1>Relatório de Eventos</h1>
-                <h2>Condomínio Bela Vista</h2>
-                <div class="periodo">
-                  Período: ${dataInicio} a ${dataFim}
-                </div>
-              </div>
-              
-              <table>
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Tipo</th>
-                    <th>Morador</th>
-                    <th>Apto</th>
-                    <th>Pessoas</th>
-                  </tr>
-                </thead>
-                <tbody>
-      `;
-      
-      eventosFiltrados.forEach(evento => {
-        html += `
-          <tr>
-            <td>${formatDateOnly(evento.dataEvento)}</td>
-            <td>${evento.tipo || 'Evento'}</td>
-            <td>${evento.nome || 'Não informado'}</td>
-            <td>${evento.apartamento}</td>
-            <td>${evento.totalPessoas || '0'}</td>
-          </tr>
-        `;
-      });
-      
-      html += `
-                </tbody>
-              </table>
-              
-              <div class="total">
-                Total de eventos: ${eventosFiltrados.length}
-              </div>
-              
-              <div class="footer">
-                <p>Relatório gerado automaticamente pelo sistema do condomínio</p>
-                <p class="data-hora">Em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</p>
+            }
+            
+            body { 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+              padding: 0;
+              margin: 0;
+              color: #333;
+            }
+            .page {
+              padding: 1.5cm;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 25px;
+              padding-bottom: 20px;
+              background-color: #996c41  important;
+              color: white;
+              padding: 20px;
+              border-radius: 8px;
+            }
+            h1 {
+              color: #f9f9f9;
+              margin: 0;
+              font-size: 24px;
+              font-weight: 600;
+            }
+            h2 {
+              color: #f9f9f9;
+              margin: 5px 0 0 0;
+              font-size: 18px;
+              font-weight: 500;
+            }
+            .periodo {
+              background-color: rgba(255, 255, 255, 0.2);
+              padding: 8px 15px;
+              border-radius: 5px;
+              display: inline-block;
+              margin-top: 15px;
+              font-size: 14px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            th {
+              background-color: #2B1807;
+              color: white;
+              text-align: center;
+              padding: 10px 8px;
+              font-weight: 500;
+              text-transform: uppercase;
+              font-size: 11px;
+            }
+            td {
+              padding: 10px 8px;
+              border-bottom: 1px solid #e0e0e0;
+              font-size: 12px;
+              text-align: center;
+            }
+            tr:nth-child(even) {
+              background-color: #f8f9fa;
+            }
+            .totais-container {
+              margin-top: 25px;
+              padding: 15px;
+              background-color: #f8f9fa;
+              border-radius: 8px;
+              border-left: 4px solid #2B1807;
+            }
+            .total-item {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 8px;
+              font-size: 13px;
+            }
+            .total-final {
+              font-weight: bold;
+              font-size: 15px;
+              color: #2c3e50;
+              border-top: 2px solid #3498db;
+              padding-top: 10px;
+              margin-top: 10px;
+            }
+            .footer {
+              margin-top: 30px;
+              font-size: 11px;
+              text-align: center;
+              color: #7f8c8d;
+              border-top: 1px solid #eee;
+              padding-top: 15px;
+            }
+            .data-hora {
+              font-style: italic;
+              color: #95a5a6;
+            }
+            .valor {
+              text-align: right;
+              font-weight: 500;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="page">
+            <div class="header">
+              <h1>Relatório de Eventos</h1>
+              <h2>Condomínio Bela Vista</h2>
+              <div class="periodo">
+                Período: ${dataInicio} a ${dataFim}
               </div>
             </div>
-          </body>
-        </html>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Morador</th>
+                  <th>Apto</th>
+                  <th>Convidados</th>
+                  <th>Valor (R$)</th>
+                </tr>
+              </thead>
+              <tbody>
+    `;
+    
+    eventosFiltrados.forEach(evento => {
+      const valorEvento = calcularValorEvento(evento.totalPessoasPresentes);
+      html += `
+        <tr>
+          <td>${FormateDate(evento.dataEvento)}</td>
+          <td>${evento.tipo || 'Evento'}</td>
+          <td>${getPrimeiroNome(evento.nome)}</td>
+          <td>${evento.apartamento}</td>
+          <td>${evento.numeroConvidadosPresentes || '0'}</td>
+          <td class="valor">R$ ${valorEvento.toFixed(2)}</td>
+        </tr>
       `;
+    });
+    
+    html += `
+              </tbody>
+            </table>
+            
+         
+            
+            <div class="footer">
+              <p>Relatório gerado automaticamente pelo sistema do condomínio</p>
+              <p class="data-hora">Em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+    
+    // Para web, abrir em nova janela
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.write(html);
+      newWindow.document.close();
       
-      // Criar e baixar o PDF
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Relatorio_Eventos_${dataInicio.replace(/\//g, '-')}_a_${dataFim.replace(/\//g, '-')}.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-    } catch (error) {
-      console.error("Erro ao gerar relatório:", error);
-      alert("Ocorreu um erro ao gerar o relatório.");
-    } finally {
-      setGerandoPDF(false);
+      // Esperar o conteúdo carregar para imprimir
+      newWindow.onload = function() {
+        newWindow.print();
+      };
     }
-  };
+    
+  } catch (error) {
+    console.error("Erro ao gerar relatório:", error);
+    alert("Erro: Ocorreu um erro ao gerar o relatório.");
+  } finally {
+    setGerandoPDF(false);
+  }
+};
 
   const mudarMesRelatorio = (incremento) => {
     const novoMes = new Date(mesRelatorio);
@@ -266,134 +362,112 @@ const RelatorioEventos = () => {
 
   if (loading) {
     return (
-      <Box className={styles.container}>
-        <Box className={styles.loadingContainer}>
-          <CircularProgress sx={{ color: "#fff" }} />
-          <Typography className={styles.loadingText}>
-            Carregando eventos...
-          </Typography>
-        </Box>
-      </Box>
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p className={styles.loadingText}>Carregando eventos...</p>
+      </div>
     );
   }
 
   return (
-    <Box className={styles.container}>
-      <Box className={styles.gradientBackground}></Box>
-      
-      <Box className={styles.header}>
-        <Description sx={{ color: "#FFF", fontSize: 24 }} />
-        <Typography variant="h5" className={styles.title}>
-          Relatório Mensal
-        </Typography>
-      </Box>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <span className={styles.icon}>📄</span>
+        <h1 className={styles.title}>Relatório Mensal</h1>
+      </div>
 
-      <Box className={styles.scrollContainer}>
-        <Card className={styles.controlCard}>
-          <CardContent>
-            <Box className={styles.monthSelector}>
-              <Button 
-                onClick={() => mudarMesRelatorio(-1)}
-                className={styles.monthButton}
-                startIcon={<ChevronLeft />}
-              >
-                Anterior
-              </Button>
-              
-              <Typography className={styles.monthText}>
-                {mesRelatorio.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
-              </Typography>
-              
-              <Button 
-                onClick={() => mudarMesRelatorio(1)}
-                className={styles.monthButton}
-                disabled={new Date(mesRelatorio) >= new Date()}
-                endIcon={<ChevronRight />}
-              >
-                Próximo
-              </Button>
-            </Box>
-            
-            <Typography className={styles.infoText}>
-              O relatório PDF será gerado com os eventos dos últimos 30 dias
-            </Typography>
-            
-            <Button
-              variant="contained"
-              onClick={gerarRelatorioPDF}
-              disabled={gerandoPDF}
-              className={styles.generateButton}
-              startIcon={gerandoPDF ? <CircularProgress size={20} /> : <PictureAsPdf />}
-              fullWidth
+      <div className={styles.scrollContainer}>
+        <div className={styles.controlCard}>
+          <div className={styles.monthSelector}>
+            <button 
+              onClick={() => mudarMesRelatorio(-1)}
+              className={styles.monthButton}
             >
-              {gerandoPDF ? "Gerando PDF..." : "Gerar Relatório PDF"}
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className={styles.previewCard}>
-          <CardContent>
-            <Typography className={styles.previewTitle}>
-              Prévia: {mesRelatorio.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
-            </Typography>
-            <Divider className={styles.divider} />
+              ◀
+            </button>
             
-            {filtrarEventosPorMes().length > 0 ? (
-              <>
-                <Box className={styles.previewHeader}>
-                  <Typography className={styles.previewHeaderText} sx={{ flex: 2 }}>
-                    Data
-                  </Typography>
-                  <Typography className={styles.previewHeaderText} sx={{ flex: 1.5 }}>
-                    Tipo
-                  </Typography>
-                  <Typography className={styles.previewHeaderText} sx={{ flex: 2 }}>
-                    Morador
-                  </Typography>
-                  <Typography className={styles.previewHeaderText} sx={{ flex: 1 }}>
-                    Apto
-                  </Typography>
-                </Box>
-                
-                {filtrarEventosPorMes().map((evento, index) => (
-                  <Box key={evento.id} className={`
-                    ${styles.previewRow} 
-                    ${index % 2 === 0 ? styles.previewRowEven : ''}
-                  `}>
-                    <Typography className={styles.previewText} sx={{ flex: 2 }}>
-                      {formatDateOnly(evento.dataEvento)}
-                    </Typography>
-                    <Typography className={styles.previewText} sx={{ flex: 1.5 }}>
-                      {evento.tipo || 'Evento'}
-                    </Typography>
-                    <Typography className={styles.previewText} sx={{ flex: 2 }}>
-                      {getPrimeiroNome(evento.nome)}
-                    </Typography>
-                    <Typography className={styles.previewText} sx={{ flex: 1 }}>
-                      {evento.apartamento}
-                    </Typography>
-                    
-                  </Box>
-                ))}
-                
-                <Box className={styles.totalContainer}>
-                  <Typography className={styles.totalText}>
-                    Total: {filtrarEventosPorMes().length} eventos
-                  </Typography>
-                </Box>
-              </>
-            ) : (
-              <Box className={styles.emptyPreview}>
-                <Event sx={{ color: "#EFF3EA", fontSize: 40 }} />
-                <Typography className={styles.emptyPreviewText}>
-                  Nenhum evento em {mesRelatorio.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
-                </Typography>
-              </Box>
-            )}
-          </CardContent>
-        </Card>
-      </Box>
-    </Box>
+            <span className={styles.monthText}>
+              {mesRelatorio.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
+            </span>
+            
+            <button 
+              onClick={() => mudarMesRelatorio(1)}
+              className={styles.monthButton}
+              disabled={new Date(mesRelatorio) >= new Date()}
+            >
+              ▶
+            </button>
+          </div>
+          
+          <p className={styles.infoText}>
+            O relatório PDF será gerado com os eventos dos últimos 30 dias
+          </p>
+          
+          <button
+            onClick={gerarRelatorioPDF}
+            disabled={gerandoPDF}
+            className={styles.generateButton}
+          >
+            {gerandoPDF ? "Gerando PDF..." : "Gerar Relatório PDF"}
+          </button>
+        </div>
+
+        <div className={styles.previewCard}>
+          <h2 className={styles.previewTitle}>
+            Prévia: {mesRelatorio.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
+          </h2>
+          <div className={styles.divider}></div>
+          
+          {filtrarEventosPorMes().length > 0 ? (
+            <>
+              <div className={styles.previewHeader}>
+                <span className={styles.previewHeaderText}>Data</span>
+                <span className={styles.previewHeaderText}>Tipo</span>
+                <span className={styles.previewHeaderText}>Morador</span>
+                <span className={styles.previewHeaderText}>Apto</span>
+                <span className={styles.previewHeaderText}>Presentes</span>
+              </div>
+              
+              {filtrarEventosPorMes().map((evento, index) => (
+                <div key={evento.id} className={`
+                  ${styles.previewRow} 
+                  ${index % 2 === 0 ? styles.previewRowEven : ''}
+                `}>
+                  <span className={styles.previewText}>
+                    {FormateDate(evento.dataEvento)}
+                  </span>
+                  <span className={styles.previewText}>
+                    {evento.tipo || 'Evento'}
+                  </span>
+                  <span className={styles.previewText}>
+                    {getPrimeiroNome(evento.nome)} 
+                  </span>
+                  <span className={styles.previewText}>
+                    {evento.apartamento}
+                  </span>
+                  <span className={styles.previewText}>
+                    {evento.numeroConvidadosPresentes || '0'}
+                  </span>
+                </div>
+              ))}
+              
+              <div className={styles.totalContainer}>
+                <span className={styles.totalText}>
+                  Total: {filtrarEventosPorMes().length} eventos
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className={styles.emptyPreview}>
+              <span className={styles.emptyIcon}>📅</span>
+              <p className={styles.emptyPreviewText}>
+                Nenhum evento em {mesRelatorio.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

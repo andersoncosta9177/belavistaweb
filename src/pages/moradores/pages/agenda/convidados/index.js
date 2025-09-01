@@ -1,26 +1,32 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ref, onValue, push, remove, set } from "firebase/database";
 import { db } from "../../../../../database/firebaseConfig";
-import { 
-  Groups, 
-  Search, 
-  Person, 
-  CheckBox, 
-  CheckBoxOutlineBlank,
-  Close,
-  Add
+import styles from "./convidadosMoradores.module.css";
+
+// Importando ícones do Material-UI
+import {
+  Groups as AccountGroupIcon,
+  Search as MagnifyIcon,
+  CheckBox as CheckboxMarkedIcon,
+  CheckBoxOutlineBlank as CheckboxBlankIcon,
+  Close as CloseIcon,
+  PersonSearch as AccountQuestionIcon,
+  Add as PlusIcon,
 } from "@mui/icons-material";
-import styles from './convidadosMoradores.module.css';
-import { useParams, useSearchParams } from 'react-router-dom';
 
 const Convidados = () => {
   const [convidados, setConvidados] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [novoConvidado, setNovoConvidado] = useState("");
   const [search, setSearch] = useState("");
-  const { id } = useParams();
-  const [searchParams] = useSearchParams();
-  const uid = searchParams.get('uid');
+  
+  // Obter ID da URL - usando window.location para web
+  const getEventIdFromUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+  };
+  
+  const id = getEventIdFromUrl();
 
   const convidadosFiltrados = useMemo(() => {
     return convidados.filter(convidado => 
@@ -28,6 +34,7 @@ const Convidados = () => {
     );
   }, [convidados, search]);
 
+  // Carrega os convidados do Firebase
   useEffect(() => {
     if (!id) return;
 
@@ -58,7 +65,7 @@ const Convidados = () => {
     const novoConvidadoRef = push(convidadosRef);
     set(novoConvidadoRef, {
       nome: novoConvidado.trim(),
-      presente: false,
+      presente: false, // Inicialmente marcado como não presente
     });
 
     setNovoConvidado("");
@@ -68,6 +75,7 @@ const Convidados = () => {
   const handleTogglePresenca = (convidadoId, presenteAtual) => {
     const novoEstado = !presenteAtual;
     
+    // Atualiza apenas o campo 'presente' no Firebase
     const convidadoRef = ref(db, `DadosBelaVista/DadosGerais/Reservas/${id}/convidados/${convidadoId}/presente`);
     set(convidadoRef, novoEstado);
   };
@@ -80,132 +88,134 @@ const Convidados = () => {
   const totalPresentes = convidados.filter(convidado => convidado.presente).length;
 
   return (
-    <div className={styles.gradientBackground}>
-      <div className={styles.container}>
-        {/* Header Card - Versão Compacta */}
-        <div className={styles.headerCard}>
-          <div className={styles.headerContent}>
-            <div className={styles.headerTitleContainer}>
-              <Groups className={styles.headerTitleIcon} />
-              <h2 className={styles.headerTitle}>Lista de Convidados</h2>
+    <div className={styles.container}>
+      {/* Header compacto e elegante */}
+      <div className={styles.headerContainer}>
+        <div className={styles.headerContent}>
+          <div className={styles.headerInfo}>
+            <div className={styles.headerTitleSection}>
+              <AccountGroupIcon className={styles.headerIcon} />
+              <h2 className={styles.headerTitle}>Convidados</h2>
             </div>
-            
-            <div className={styles.headerStats}>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>Total Convidados:</span>
-                <span className={styles.statValue}>{convidados.length}</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>Total Presentes:</span>
-                <span className={styles.statValue}>{totalPresentes}</span>
-              </div>
-            </div>
+              {/* <div className={styles.headerStats}> */}
+              <span className={styles.headerStat}>
+                {totalPresentes} / {convidados.length} presentes
+              </span>
+            {/* </div> */}
+          
           </div>
+          
         </div>
         
-        {convidados.length > 0 && (
-          <div className={styles.searchContainer}>
-            <div className={styles.searchInputContainer}>
-              <Search className={styles.searchIcon} />
-              <input
-                type="text"
-                placeholder="Pesquisar convidado"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className={styles.searchInput}
-              />
-            </div>
+        {/* Input de pesquisa colado ao header */}
+       
+      </div>
+       <div className={styles.searchContainer}>
+          <div className={styles.searchInputWrapper}>
+            <MagnifyIcon className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Pesquisar convidado..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={styles.searchInput}
+            />
           </div>
-        )}
+        </div>
 
-        <div className={styles.scrollContent}>
-          {convidadosFiltrados.length > 0 ? (
-            convidadosFiltrados.map((convidado) => (
-              <div className={styles.cardItem} key={convidado.id}>
-                <div className={styles.itemContainer}>
-                  <div 
-                    className={styles.checkbox}
-                    onClick={() => handleTogglePresenca(convidado.id, convidado.presente)}
-                  >
+      <div className={styles.scrollContent}>
+        {convidadosFiltrados.length > 0 ? (
+          convidadosFiltrados.map((convidado) => (
+            <div className={styles.cardItem} key={convidado.id}>
+              <div className={styles.itemContainer}>
+                <label className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    checked={convidado.presente}
+                    onChange={() => handleTogglePresenca(convidado.id, convidado.presente)}
+                    className={styles.checkboxInput}
+                  />
+                  <span className={styles.checkboxCustom}>
                     {convidado.presente ? (
-                      <CheckBox className={styles.checkedIcon} />
+                      <CheckboxMarkedIcon className={styles.checkedIcon} />
                     ) : (
-                      <CheckBoxOutlineBlank className={styles.uncheckedIcon} />
+                      <CheckboxBlankIcon className={styles.uncheckedIcon} />
                     )}
-                  </div>
-                  
-                  <span className={`${styles.itemText} ${convidado.presente ? styles.strikethrough : ''}`}>
+                  </span>
+                </label>
+                <div className={styles.itemTextContainer}>
+                  <span
+                    className={`${styles.itemText} ${convidado.presente ? styles.strikethrough : ''}`}
+                  >
                     {convidado.nome}
                   </span>
-                  
-                  <div className={styles.spacer}></div>
-                  
                   <button 
-                    className={styles.removeButton}
                     onClick={() => handleRemoverConvidado(convidado.id)}
+                    className={styles.removeButton}
                   >
-                    <Close className={styles.removeIcon} />
+                    <CloseIcon className={styles.removeIcon} />
                   </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className={styles.emptyCard}>
-              <Person className={styles.emptyIcon} />
-              <p className={styles.noGuestsText}>
-                {search ? "Nenhum convidado encontrado" : "Nenhum convidado adicionado"}
-              </p>
-              <p className={styles.noGuestsSubtext}>
-                {search ? "Tente outra busca" : "Clique no botão + para adicionar"}
-              </p>
             </div>
-          )}
-        </div>
-
-        {/* Floating Action Button */}
-        <button
-          className={styles.fab}
-          onClick={() => setModalVisible(true)}
-        >
-          <Add className={styles.fabIcon} />
-        </button>
-
-        {/* Modal para adicionar convidado */}
-        {modalVisible && (
-          <div className={styles.modalOverlay}>
-            <div className={styles.modalContainer}>
-              <h2 className={styles.modalTitle}>Adicionar Convidado</h2>
-
-              <input
-                type="text"
-                className={styles.modalInput}
-                placeholder="Nome do convidado"
-                value={novoConvidado}
-                onChange={(e) => setNovoConvidado(e.target.value)}
-                autoFocus
-              />
-
-              <div className={styles.modalButtons}>
-                <button
-                  className={styles.modalSubmitButton}
-                  onClick={handleAdicionarConvidado}
-                >
-                  Adicionar
-                </button>
-                <button
-                  className={styles.modalCancelButton}
-                  onClick={() => {
-                    setModalVisible(false);
-                    setNovoConvidado("");
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
+          ))
+        ) : (
+          <div className={styles.emptyCard}>
+            <AccountQuestionIcon className={styles.emptyIcon} />
+            <p className={styles.noGuestsText}>
+              {search ? "Nenhum convidado encontrado" : "Nenhum convidado adicionado"}
+            </p>
+            <p className={styles.noGuestsSubtext}>
+              {search ? "Tente outra busca" : "Clique no botão + para adicionar"}
+            </p>
           </div>
         )}
       </div>
+
+      {/* Floating Action Button */}
+      <button
+        className={styles.fab}
+        onClick={() => setModalVisible(true)}
+      >
+        <PlusIcon className={styles.fabIcon} />
+      </button>
+
+      {/* Modal para adicionar convidado */}
+      {modalVisible && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContainer}>
+            <h3 className={styles.modalTitle}>Adicionar Convidado</h3>
+
+            <input
+              type="text"
+              className={styles.modalInput}
+              placeholder="Nome do convidado"
+              value={novoConvidado}
+              onChange={(e) => setNovoConvidado(e.target.value)}
+              autoFocus
+            />
+
+            <div className={styles.modalButtons}>
+              <button
+                className={styles.modalCancelButton}
+                onClick={() => {
+                  setModalVisible(false);
+                  setNovoConvidado("");
+                }}
+              >
+                Cancelar
+              </button>
+
+              <button
+                className={styles.modalSubmitButton}
+                onClick={handleAdicionarConvidado}
+              >
+                Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

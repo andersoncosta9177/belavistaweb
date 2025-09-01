@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { ref, onValue } from "firebase/database";
+import styles from "./convidados.module.css";
 import { db } from "../../../../../database/firebaseConfig";
-import {
-  Groups,
-  Search,
-  Person,
-  CheckBox,
-  CheckBoxOutlineBlank
-} from "@mui/icons-material";
-import styles from './convidados.module.css';
+import { ref, onValue } from "firebase/database";
 
 const ConvidadosPortaria = () => {
   const [convidados, setConvidados] = useState([]);
@@ -41,18 +34,16 @@ const ConvidadosPortaria = () => {
   }, []);
 
   const totalPresentes = convidados.filter((c) => c.presente).length;
-
   const convidadosFiltrados = convidados.filter((c) =>
     c.nome.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className={styles.gradientBackground}>
       <div className={styles.container}>
         <div className={styles.headerCard}>
           <div className={styles.headerContent}>
             <div className={styles.headerBadge}>
-              <Groups className={styles.headerBadgeIcon} />
+              <span className={styles.icon}>👥</span>
               <span className={styles.headerBadgeText}>{convidados.length}</span>
             </div>
             <div className={styles.headerTextContainer}>
@@ -68,15 +59,15 @@ const ConvidadosPortaria = () => {
         </div>
 
         {convidados.length > 0 && (
-          <div className={styles.searchContainer}>
-            <div className={styles.searchInputContainer}>
-              <Search className={styles.searchIcon} />
+          <div className={styles.inputWrapper}>
+            <div className={styles.inputContainer}>
+              <span className={styles.searchIcon}>🔍</span>
               <input
                 type="text"
                 placeholder="Pesquisar convidado"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={styles.searchInput}
+                className={styles.inputText}
               />
             </div>
           </div>
@@ -89,13 +80,17 @@ const ConvidadosPortaria = () => {
                 <div className={styles.itemContainer}>
                   <div className={styles.checkbox}>
                     {convidado.presente ? (
-                      <CheckBox className={styles.checkedIcon} />
+                      <span className={styles.checkedIcon}>☑️</span>
                     ) : (
-                      <CheckBoxOutlineBlank className={styles.uncheckedIcon} />
+                      <span className={styles.uncheckedIcon}>□</span>
                     )}
                   </div>
                   <div className={styles.itemTextContainer}>
-                    <span className={`${styles.itemText} ${convidado.presente ? styles.strikethrough : ''}`}>
+                    <span
+                      className={`${styles.itemText} ${
+                        convidado.presente ? styles.strikethrough : ""
+                      }`}
+                    >
                       {convidado.nome}
                     </span>
                   </div>
@@ -104,14 +99,15 @@ const ConvidadosPortaria = () => {
             ))
           ) : (
             <div className={styles.emptyCard}>
-              <Person className={styles.emptyIcon} />
+              <span className={styles.emptyIcon}>❓</span>
               <p className={styles.noGuestsText}>Nenhum convidado encontrado</p>
-             
+              <p className={styles.noGuestsSubtext}>
+                Verifique com o morador se ele cadastrou
+              </p>
             </div>
           )}
         </div>
       </div>
-    </div>
   );
 };
 

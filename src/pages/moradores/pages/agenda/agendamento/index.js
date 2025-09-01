@@ -1,23 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StatusBar,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-} from "react-native";
+import { View, Text, Alert, StyleSheet, Modal } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
-import { ref, push, get, query } from "firebase/database";
+import { ref, push, get } from "firebase/database";
 import { db } from "../../../../../database/firebaseConfig";
-import GradientLayout from '../../../../../../src/Utils/gradiente';
+import GradientLayout from "../../../../../../src/Utils/gradiente";
 import { Button, Input, Icon } from "@rneui/themed";
-import {getUserId} from "../../../../../Utils/auth/getUser";  
-import { buscarDadosUsuarioMorador } from "../../../../../Utils/auth/getUser";
 import { getAuth } from "firebase/auth";
+import { ThemeProvider } from "../../../../../context/ThemeContext";
 function AgendamentosMoradores() {
   const [tipo, setTipo] = useState("");
   const [nome, setNome] = useState("");
@@ -28,57 +18,56 @@ function AgendamentosMoradores() {
   const [datasOcupadas, setDatasOcupadas] = useState([]); // Armazena datas ocupadas
   const [showModal, setShowModal] = useState(false); // Controle do modal
   const navigation = useNavigation();
-    const [idMorador, setIdMorador] = useState(null); // Alterado para estado
-const [dadosUsuario, setDadosUsuario] = useState(null);
-const [loadingUserData, setLoadingUserData] = useState(true);
+  const [idMorador, setIdMorador] = useState(null); // Alterado para estado
+  const [dadosUsuario, setDadosUsuario] = useState(null);
+  const [loadingUserData, setLoadingUserData] = useState(true);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Limpa os estados antes de buscar novos dados
+        setNome("");
+        setApartamento("");
+        setDadosUsuario(null);
 
-useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      // Limpa os estados antes de buscar novos dados
-      setNome("");
-      setApartamento("");
-      setDadosUsuario(null);
-      
-      const auth = getAuth();
-      const user = auth.currentUser;
-      
-      if (!user) {
-        console.log("Nenhum usuário logado");
-        return;
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+          console.log("Nenhum usuário logado");
+          return;
+        }
+
+        const uid = user.uid;
+        setIdMorador(uid);
+
+        const userRef = ref(
+          db,
+          `DadosBelaVista/usuarios/usuarioMorador/${uid}`
+        );
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          console.log("Dados do usuário logado:", userData); // Verifique no console
+
+          setDadosUsuario(userData);
+          setNome(userData.nome || "");
+          setApartamento(userData.apartamento || "");
+        } else {
+          console.log("Nenhum dado encontrado para o usuário");
+          Alert.alert("Aviso", "Seus dados não foram encontrados");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+        Alert.alert("Erro", "Falha ao carregar seus dados");
+      } finally {
+        setLoadingUserData(false);
       }
+    };
 
-      const uid = user.uid;
-      setIdMorador(uid);
-      
-      const userRef = ref(db, `DadosBelaVista/usuarios/usuarioMorador/${uid}`);
-      const snapshot = await get(userRef);
-      
-      if (snapshot.exists()) {
-        const userData = snapshot.val();
-        console.log("Dados do usuário logado:", userData); // Verifique no console
-        
-        setDadosUsuario(userData);
-        setNome(userData.nome || "");
-        setApartamento(userData.apartamento || "");
-      } else {
-        console.log("Nenhum dado encontrado para o usuário");
-        Alert.alert("Aviso", "Seus dados não foram encontrados");
-      }
-    } catch (error) {
-      console.error("Erro ao buscar dados:", error);
-      Alert.alert("Erro", "Falha ao carregar seus dados");
-    } finally {
-      setLoadingUserData(false);
-    }
-  };
-
-  fetchUserData();
-}, []);
-
-
-
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     async function buscarDatasOcupadas() {
@@ -87,8 +76,11 @@ useEffect(() => {
       try {
         // CORREÇÃO: Adicionar a barra antes do ID
         const minhaAgendaRef = ref(db, `DadosBelaVista/DadosGerais/Reservas`);
-        console.log("Caminho do Firebase:", `DadosBelaVista/DadosGerais/Reservas`);
-        
+        console.log(
+          "Caminho do Firebase:",
+          `DadosBelaVista/DadosGerais/Reservas`
+        );
+
         const snapshot = await get(minhaAgendaRef);
         if (snapshot.exists()) {
           const data = snapshot.val();
@@ -104,7 +96,7 @@ useEffect(() => {
         console.error("Erro detalhado:", {
           message: error.message,
           code: error.code,
-          path: `DadosBelaVista/DadosGerais/Reservas/${idMorador}`
+          path: `DadosBelaVista/DadosGerais/Reservas/${idMorador}`,
         });
         Alert.alert("Erro", "Falha ao carregar agendamentos existentes");
       }
@@ -112,12 +104,6 @@ useEffect(() => {
 
     buscarDatasOcupadas();
   }, [idMorador]);
-
-
-
-
-
-
 
   const showDatePicker = () => setShowPicker(true);
 
@@ -133,68 +119,56 @@ async function salvarAgendamento() {
     return;
   }
 
-  if (!idMorador || !dadosUsuario) {
-    Alert.alert("Erro", "Dados do usuário não carregados.");
-    return;
-  }
-
-  const diaEvento = String(data.getDate()).padStart(2, "0");
-  const mesEvento = String(data.getMonth() + 1).padStart(2, "0");
-  const anoEvento = data.getFullYear();
-  const dataEvento = `${anoEvento}-${mesEvento}-${diaEvento}`;
+  const dataEvento = data.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
   try {
-    // Verifica disponibilidade em TODOS os usuários
-    const reservasRef = ref(db, 'DadosBelaVista/DadosGerais/Reservas');
+    // Verifica se já existe agendamento para esta data e tipo
+    const reservasRef = ref(db, "DadosBelaVista/DadosGerais/Reservas");
     const snapshot = await get(reservasRef);
-    
+
     if (snapshot.exists()) {
       const todosAgendamentos = snapshot.val();
-      
-      for (const userId in todosAgendamentos) {
-        const agendamentosDoUsuario = todosAgendamentos[userId];
+
+      for (const agendamentoId in todosAgendamentos) {
+        const ag = todosAgendamentos[agendamentoId];
         
-        for (const agendamentoId in agendamentosDoUsuario) {
-          const ag = agendamentosDoUsuario[agendamentoId];
-          if (ag.dataEvento === dataEvento && ag.tipo === tipo) {
-            Alert.alert("Conflito", `Já existe ${tipo} agendado para ${diaEvento}/${mesEvento}/${anoEvento}`);
+        if (ag.tipo === tipo) {
+          // Extrai apenas a data (sem hora) para comparação
+          const agData = ag.dataEvento.split('T')[0];
+          
+          if (agData === dataEvento) {
+            Alert.alert(
+              "Conflito",
+              `Já existe ${tipo} agendado para ${data.toLocaleDateString("pt-BR")}`
+            );
             return;
           }
         }
       }
     }
 
-    // Formata data de criação
-    const dataCriacao = new Date().toISOString();
-
-    // Salva no nó do usuário logado
-    const userAgendamentosRef = ref(db, `DadosBelaVista/DadosGerais/Reservas`);
-    
-    await push(userAgendamentosRef, {
+    // Salva o agendamento
+    await push(ref(db, "DadosBelaVista/DadosGerais/Reservas"), {
       tipo,
       nome,
       cpf,
-      apartamento: dadosUsuario.apartamento, // Usa o apartamento do usuário
-      dataEvento,
-      dataCriacao,
-      criadoPor: idMorador
+      apartamento: dadosUsuario.apartamento,
+      dataEvento: data.toISOString(),
+      dataCriacao: new Date().toISOString(),
+      idMorador: idMorador
     });
 
     Alert.alert("Sucesso", "Agendamento realizado com sucesso!");
     navigation.goBack();
-    
   } catch (error) {
     console.error("Erro ao salvar agendamento:", error);
     Alert.alert("Erro", "Não foi possível salvar o agendamento.");
   }
 }
 
-
-
-
   return (
-    <GradientLayout style={styles.container}>
-
+   <ThemeProvider>
+     <GradientLayout style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Agendar Mudança ou Evento</Text>
 
@@ -218,22 +192,22 @@ async function salvarAgendamento() {
         />
 
         {/* Input Fields */}
-      <Input
-  placeholder="Nome do morador"
-  value={nome}
-  onChangeText={setNome} // Mantém editável se precisar corrigir
-  containerStyle={styles.inputContainer}
-  inputStyle={styles.inputText}
-  placeholderTextColor="#EDE9D5"
-  leftIcon={
-    <Icon
-      name="account"
-      type="material-community"
-      size={20}
-      color="#EDE9D5"
-    />
-  }
-/>
+        <Input
+          placeholder="Nome do morador"
+          value={nome}
+          onChangeText={setNome} // Mantém editável se precisar corrigir
+          containerStyle={styles.inputContainer}
+          inputStyle={styles.inputText}
+          placeholderTextColor="#EDE9D5"
+          leftIcon={
+            <Icon
+              name="account"
+              type="material-community"
+              size={20}
+              color="#EDE9D5"
+            />
+          }
+        />
 
         <Input
           placeholder="CPF"
@@ -253,22 +227,22 @@ async function salvarAgendamento() {
           }
         />
 
-      <Input
-  placeholder="N° apartamento"
-  value={apartamento}
-  editable={false} // Impede edição
-  containerStyle={styles.inputContainer}
-  inputStyle={styles.inputText}
-  placeholderTextColor="#EDE9D5"
-  leftIcon={
-    <Icon
-      name="home"
-      type="material-community"
-      size={20}
-      color="#EDE9D5"
-    />
-  }
-/>
+        <Input
+          placeholder="N° apartamento"
+          value={apartamento}
+          editable={false} // Impede edição
+          containerStyle={styles.inputContainer}
+          inputStyle={styles.inputText}
+          placeholderTextColor="#EDE9D5"
+          leftIcon={
+            <Icon
+              name="home"
+              type="material-community"
+              size={20}
+              color="#EDE9D5"
+            />
+          }
+        />
 
         {/* Date Picker Button */}
         <Button
@@ -301,21 +275,20 @@ async function salvarAgendamento() {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-      
           <Button
-            title="Agendar"
-            titleStyle={styles.submitButtonText}
-            buttonStyle={styles.submitButton}
-            containerStyle={styles.actionButtonContainer}
-            onPress={salvarAgendamento}
-          />
-              <Button
             title="Cancelar"
             type="outline"
             titleStyle={styles.cancelButtonText}
             buttonStyle={styles.cancelButton}
             containerStyle={styles.actionButtonContainer}
             onPress={() => navigation.goBack()}
+          />
+          <Button
+            title="Agendar"
+            titleStyle={styles.submitButtonText}
+            buttonStyle={styles.submitButton}
+            containerStyle={styles.actionButtonContainer}
+            onPress={salvarAgendamento}
           />
         </View>
       </View>
@@ -325,7 +298,7 @@ async function salvarAgendamento() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Selecione o Tipo</Text>
-            
+
             <Button
               title="Mudança"
               buttonStyle={styles.modalOptionButton}
@@ -344,7 +317,7 @@ async function salvarAgendamento() {
                 />
               }
             />
-            
+
             <Button
               title="Evento"
               buttonStyle={styles.modalOptionButton}
@@ -363,7 +336,7 @@ async function salvarAgendamento() {
                 />
               }
             />
-            
+
             <Button
               title="Cancelar"
               type="outline"
@@ -376,6 +349,7 @@ async function salvarAgendamento() {
         </View>
       </Modal>
     </GradientLayout>
+   </ThemeProvider>
   );
 }
 
@@ -386,15 +360,15 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 25,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#EDE9D5',
+    fontWeight: "bold",
+    color: "#EDE9D5",
     marginBottom: 30,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.3)',
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
   },
@@ -402,101 +376,102 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   selectionButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: "rgba(255,255,255,0.2)",
     borderRadius: 10,
     paddingVertical: 15,
     borderWidth: 1,
-    borderColor: '#EDE9D5',
+    borderColor: "#EDE9D5",
   },
   buttonTitle: {
-    color: '#EDE9D5',
-    fontWeight: '600',
+    color: "#EDE9D5",
+    fontWeight: "600",
     fontSize: 16,
   },
   buttonIcon: {
     marginLeft: 10,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 0,
+    
   },
   inputText: {
-    color: '#EDE9D5',
+    color: "#EDE9D5",
     paddingLeft: 10,
   },
   actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 20,
   },
   actionButtonContainer: {
-    width: '48%',
+    width: "48%",
   },
   submitButton: {
-    backgroundColor: '#0F98A1',
+    backgroundColor: "#0F98A1",
     borderRadius: 10,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#EDE9D5',
+    borderColor: "#EDE9D5",
   },
   submitButtonText: {
-    color: '#EDE9D5',
-    fontWeight: '600',
+    color: "#EDE9D5",
+    fontWeight: "600",
   },
   cancelButton: {
-    borderColor: '#EDE9D5',
+    borderColor: "#EDE9D5",
     borderRadius: 10,
     borderWidth: 1,
     paddingVertical: 12,
-    backgroundColor: '#F39C12',
+    backgroundColor: "#F39C12",
   },
   cancelButtonText: {
-    color: '#EDE9D5',
-    fontWeight: '600',
+    color: "#EDE9D5",
+    fontWeight: "600",
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.7)",
   },
   modalContent: {
-    backgroundColor: '#0F98A1',
+    backgroundColor: "#0F98A1",
     borderRadius: 15,
     padding: 25,
-    width: '85%',
+    width: "85%",
     borderWidth: 2,
-    borderColor: '#EDE9D5',
+    borderColor: "#EDE9D5",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#EDE9D5',
+    fontWeight: "bold",
+    color: "#EDE9D5",
     marginBottom: 25,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalButtonContainer: {
     marginBottom: 15,
   },
   modalOptionButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: "rgba(255,255,255,0.2)",
     borderRadius: 10,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#EDE9D5',
+    borderColor: "#EDE9D5",
   },
   modalIcon: {
     marginRight: 10,
   },
   modalCancelButton: {
-    borderColor: '#EDE9D5',
+    borderColor: "#EDE9D5",
     borderRadius: 10,
     borderWidth: 1,
     paddingVertical: 12,
-    backgroundColor: '#F39C12',
+    backgroundColor: "#F39C12",
   },
   modalCancelText: {
-    color: '#EDE9D5',
-    fontWeight: '600',
+    color: "#EDE9D5",
+    fontWeight: "600",
   },
 });
 export default AgendamentosMoradores;
