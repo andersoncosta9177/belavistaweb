@@ -65,6 +65,8 @@
   flex-direction: column;
   gap: 15px;
   margin-bottom: 25px;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .access-button {
@@ -73,7 +75,7 @@
     border:  1px solid #ED9121;
   box-shadow: 0 0.5px 4px 0 #ED9121;
   border-radius: 10px;
-  padding: 20px;
+  padding: 25px !important;
   width: 100%;
   display: flex;
   align-items: center;
@@ -89,7 +91,7 @@
 }
 
 .button-icon {
-  font-size: 40px;
+  /* font-size: 70px; */
   color: rgba(255, 255, 255, 0.7);
   margin-right: 15px;
 }
