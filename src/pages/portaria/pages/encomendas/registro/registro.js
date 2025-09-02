@@ -153,8 +153,8 @@ const RegistroEncomendas = () => {
       
       // Redirecionar após 2 segundos
       setTimeout(() => {
-        navigate("/src/pages/portaria/pages/encomendas/pendentes");
-      }, 2000);
+        navigate("/portaria/encomendas/pendentes");
+      }, 300);
     } catch (error) {
       setAlert({ open: true, message: "Falha ao registrar: " + error.message, severity: "error" });
     } finally {
@@ -225,6 +225,48 @@ const RegistroEncomendas = () => {
             </Box>
           )}
 
+
+
+             <Box sx={{ width: '100%', mb: 2 }}>
+            <TextField
+              inputRef={moradorRef}
+              placeholder="Nome do morador"
+              value={form.nomeMorador}
+              onChange={(e) => handleChange("nomeMorador", e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: '#f9f9f9', fontSize: '18px' }} />
+                  </InputAdornment>
+                ),
+                sx: {
+                  color: '#f9f9f9',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '5px',
+                  padding: '0 15px',
+                  height: '48px',
+                  '& fieldset': { border: 'none' },
+                  '& input': { 
+                    color: '#f9f9f9', 
+                    padding: '12px 0', 
+                    fontSize: '14px' 
+                  },
+                  '& input::placeholder': { 
+                    color: '#f9f9f9', 
+                    fontSize: '14px',
+                    opacity: 0.8
+                  }
+                }
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  rastreamentoRef.current?.focus();
+                }
+              }}
+              fullWidth
+            />
+          </Box>
+
           <Box sx={{ width: '100%', mb: 2 }}>
             <TextField
               inputRef={apartamentoRef}
@@ -266,45 +308,7 @@ const RegistroEncomendas = () => {
             />
           </Box>
 
-          <Box sx={{ width: '100%', mb: 2 }}>
-            <TextField
-              inputRef={moradorRef}
-              placeholder="Nome do morador"
-              value={form.nomeMorador}
-              onChange={(e) => handleChange("nomeMorador", e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: '#f9f9f9', fontSize: '18px' }} />
-                  </InputAdornment>
-                ),
-                sx: {
-                  color: '#f9f9f9',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  borderRadius: '5px',
-                  padding: '0 15px',
-                  height: '48px',
-                  '& fieldset': { border: 'none' },
-                  '& input': { 
-                    color: '#f9f9f9', 
-                    padding: '12px 0', 
-                    fontSize: '14px' 
-                  },
-                  '& input::placeholder': { 
-                    color: '#f9f9f9', 
-                    fontSize: '14px',
-                    opacity: 0.8
-                  }
-                }
-              }}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  rastreamentoRef.current?.focus();
-                }
-              }}
-              fullWidth
-            />
-          </Box>
+       
           
           <Box sx={{ width: '100%', mb: 2 }}>
             <TextField
