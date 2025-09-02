@@ -111,7 +111,7 @@ useEffect(() => {
             className="access-button"
           >
             <AdminPanelSettingsIcon className="button-icon" />
-            <span className="button-text">Síndico</span>
+            <span className="button-text">Administração</span>
           </button>
 
           <button 
